@@ -38,34 +38,58 @@ function activate(context) {
     // The command has been defined in the package.json file
     // Now provide the implementation of the command with registerCommand
     // The commandId parameter must match the command field in package.json
-    let disposable = vscode.commands.registerCommand('security-seal.analyze_code', () => {
-        // The code you place here will be executed every time your command is executed
-        // Display a message box to the user
-        vscode.window.showInformationMessage('Your code is sent for analysis.');
-        // Fetch file extension
-        const user_editor = vscode.window.activeTextEditor;
-        if (!user_editor) {
-            //TODO: Add additional information here. Not sure how doing this without an editor would be possible. 
-            return;
-        }
-        // This only works if the file is saved. Should we add another way of checking if the file is not saved?
-        const file_path = user_editor.document.uri.fsPath;
-        const file_extension = file_path.substring(file_path.lastIndexOf('.') + 1);
-        const allowed_extensions = ["py", "c", "cpp", "cs"];
-        if (!allowed_extensions.includes(file_extension)) {
-            output_channel.show();
-            output_channel.appendLine("The file is not supported.\nPlease select code in a c, cpp, cs or py file.");
-            return;
-        }
-        // TODO: Implement sending and receiving of code
-        let text = `Your code is in ${file_extension}.\nAnalyzing code ... `;
-        output_channel.show();
-        output_channel.appendLine(text);
-    });
+    let disposable = vscode.commands.registerCommand('security-seal.analyze_code', () => analyzeCode(output_channel));
     context.subscriptions.push(disposable);
 }
 exports.activate = activate;
 // This method is called when your extension is deactivated
 function deactivate() { }
 exports.deactivate = deactivate;
+function analyzeCode(output_channel) {
+    // Display message to the user. Kept for now for future development.
+    vscode.window.showInformationMessage('Your code is sent for analysis.');
+    const editor = vscode.window.activeTextEditor;
+    if (!editor) {
+        vscode.window.showErrorMessage("No active editor found. Please try again.");
+        return;
+    }
+    const file_extension = getFileExtension(editor);
+    if (!file_extension) {
+        vscode.window.showErrorMessage("No active editor found or file is not saved. Please try again.");
+        return;
+    }
+    if (!languageIsSupported(file_extension)) {
+        vscode.window.showErrorMessage("Unsupported file type. Supported file types: C, C++, C# and Python.");
+        return;
+    }
+    const code = getSelectedCode(editor);
+    if (!code) {
+        vscode.window.showErrorMessage("No code selected.");
+        return;
+    }
+    const text = LLMStub(code, file_extension);
+    output_channel.show();
+    output_channel.appendLine(text);
+}
+;
+function getFileExtension(editor) {
+    const file_path = editor.document.uri.fsPath;
+    // If the file is unsaved, return null
+    if (!file_path)
+        return null;
+    // Returns file extension from path
+    return file_path.substring(file_path.lastIndexOf('.') + 1);
+}
+function languageIsSupported(language) {
+    const allowed_languages = ["py", "c", "cpp", "cs"];
+    return allowed_languages.includes(language);
+}
+function getSelectedCode(editor) {
+    const selection = editor.selection;
+    return editor.document.getText(selection);
+}
+function LLMStub(code, file_extension) {
+    const length_of_code = code.length;
+    return `Hello,\nI am Greg v2\nYou provided the following code:${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`;
+}
 //# sourceMappingURL=extension.js.map
