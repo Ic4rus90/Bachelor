@@ -46,8 +46,6 @@ exports.activate = activate;
 function deactivate() { }
 exports.deactivate = deactivate;
 function analyzeCode(output_channel) {
-    // Display message to the user. Kept for now for future development.
-    vscode.window.showInformationMessage('Your code is sent for analysis.');
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
         vscode.window.showErrorMessage("No active editor found. Please try again.");
@@ -67,8 +65,11 @@ function analyzeCode(output_channel) {
         vscode.window.showErrorMessage("No code selected.");
         return;
     }
+    // Display message to the user. Kept for now for future development.
+    vscode.window.showInformationMessage('Your code is sent for analysis.');
     const text = LLMStub(code, file_extension);
     output_channel.show();
+    output_channel.clear();
     output_channel.appendLine(text);
 }
 ;
@@ -90,6 +91,6 @@ function getSelectedCode(editor) {
 }
 function LLMStub(code, file_extension) {
     const length_of_code = code.length;
-    return `Hello,\nI am Greg v2\nYou provided the following code:${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`;
+    return `Hello,\nI am Greg v2\nYou provided the following code:\n${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`;
 }
 //# sourceMappingURL=extension.js.map

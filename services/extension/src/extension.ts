@@ -26,9 +26,6 @@ export function deactivate() {}
 
 
 function analyzeCode(output_channel: vscode.OutputChannel) {
-		// Display message to the user. Kept for now for future development.
-		vscode.window.showInformationMessage('Your code is sent for analysis.');
-
 		const editor = vscode.window.activeTextEditor;
 		
 		if (!editor) {
@@ -55,9 +52,13 @@ function analyzeCode(output_channel: vscode.OutputChannel) {
 			return;
 		}
 
+		// Display message to the user. Kept for now for future development.
+		vscode.window.showInformationMessage('Your code is sent for analysis.');
+
 		const text = LLMStub(code, file_extension) 
 	
 		output_channel.show();
+		output_channel.clear();
 		output_channel.appendLine(text);
 };
 
@@ -70,6 +71,7 @@ function getFileExtension(editor: vscode.TextEditor ): string | null {
 	// Returns file extension from path
 	return file_path.substring(file_path.lastIndexOf('.') + 1);
 }
+
 
 function languageIsSupported(language: string): boolean {
 	const allowed_languages = ["py", "c", "cpp", "cs"];
@@ -86,5 +88,5 @@ function getSelectedCode(editor: vscode.TextEditor): string {
 function LLMStub(code: string, file_extension: string): string {
 	const length_of_code = code.length;
 	
-	return `Hello,\nI am Greg v2\nYou provided the following code:${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`
+	return `Hello,\nI am Greg v2\nYou provided the following code:\n${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`
 }
