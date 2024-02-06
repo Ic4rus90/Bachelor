@@ -1,33 +1,47 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
 import '../App.css';
 import securityseal from './securityseal.png';
 import { Container, Row, Col, Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { useAuth0 } from '@auth0/auth0-react';
 
 
-function LoginButton() {
-  return (
-    <Link to="/Login">
-      <Button variant="secondary">
-        Login
-      </Button>
-    </Link>
-  );  
+const LoginButton = () => {
+  const { loginWithRedirect } = useAuth0();
+
+  const HandleLogin = async () => {
+    await loginWithRedirect({
+      appState: {
+        returnTo: "/profile",
+      },
+    });
+  };
+
+  return <Button onClick={HandleLogin}>Log In</Button>;
 }
 
-function RegisterButton() {
+
+const RegisterButton = () => {
+  const { loginWithRedirect } = useAuth0();
+
+  const HandleRegistration = async () => {
+    await loginWithRedirect({
+      appState: {
+        returnTo: "/profile",
+      },
+      authorizationParams: {
+        screen_hint: "signup",
+      },
+    });
+  };
+
   return (
-    <Link to="/register">
-      <Button variant="secondary">
-        Sign up
-      </Button>
-    </Link>
+    <Button onClick={HandleRegistration}>Register</Button>
   );
-}
+};
 
 
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="App">
       <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
