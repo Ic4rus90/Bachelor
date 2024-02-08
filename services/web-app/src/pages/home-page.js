@@ -4,20 +4,11 @@ import securityseal from './securityseal.png';
 import { Container, Row, Col, Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { useAuth0 } from '@auth0/auth0-react';
 
-
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
 
-  const HandleLogin = async () => {
-    await loginWithRedirect({
-      appState: {
-        returnTo: "/profile",
-      },
-    });
-  };
-
-  return <Button onClick={HandleLogin}>Log In</Button>;
-}
+  return <Button onClick={() => loginWithRedirect()}>Log In</Button>;
+};
 
 
 const RegisterButton = () => {
@@ -26,7 +17,7 @@ const RegisterButton = () => {
   const HandleRegistration = async () => {
     await loginWithRedirect({
       appState: {
-        returnTo: "/profile",
+        returnTo: origin,
       },
       authorizationParams: {
         screen_hint: "signup",
@@ -40,8 +31,7 @@ const RegisterButton = () => {
 };
 
 
-
-export default function HomePage() {
+export default function Home() {
   return (
     <div className="App">
       <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">

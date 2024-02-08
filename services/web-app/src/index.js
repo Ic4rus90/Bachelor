@@ -9,16 +9,14 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
 root.render(
-<Auth0Provider
-  domain="security-seal.eu.auth0.com"
-  clientId="sl630MwBKRDU2nMatpHntgoSBnmSVAOi"
-  authorizationParams={{
-    redirect_uri: window.location.origin + '/profile'
-  }} 
-  >
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>
+  <Auth0Provider
+    domain="security-seal.eu.auth0.com"
+    clientId="VuzDCxivmpVSsXZC7VZSWZslwFzf0zXB"
+    authorizationParams={{
+      redirect_uri: window.location.origin + '/dashboard'
+    }}
+    >
+      <App />
   </Auth0Provider>
 );
 

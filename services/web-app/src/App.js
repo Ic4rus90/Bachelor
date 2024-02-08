@@ -2,11 +2,11 @@ import React from 'react';
 import './App.css';
 import HomePage from './pages/home-page';
 import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import AuthGuard from './components/auth-guard';
 
-import ProfilePage from './pages/profile-page';
 import NotFoundPage from './pages/not-found-page';
 import DashboardPage from './pages/dashboard-page';
-import User from './pages/UserManagement'
+import UserManagementPage from './pages/user-management-page'
 
 
 function App() {
@@ -16,9 +16,8 @@ function App() {
         <header className="app-header">
           <Routes>
             <Route path="/" element={<HomePage />} />
-            <Route path="/profile" element={<ProfilePage />} />
-            <Route path= "/dashboard" element={<DashboardPage />} />
-            <Route path="/usermanagement" element={<User />} />
+            <Route path= "/dashboard" element={<AuthGuard page={DashboardPage} />} />
+            <Route path="/usermanagement" element={<AuthGuard page={UserManagementPage} />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </header>
