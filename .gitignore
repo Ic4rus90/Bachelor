@@ -1,10 +1,5 @@
 # Ignore node_modules folder
-<<<<<<< HEAD
 node_modules
 
 # Ignore .vscode-test
 .vscode-test/
-
-=======
-node_modules
->>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
