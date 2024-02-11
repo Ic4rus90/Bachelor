@@ -33,6 +33,17 @@ function activate(context) {
     // Use the console to output diagnostic information (console.log) and errors (console.error)
     // This line of code will only be executed once when your extension is activated
     console.log('Congratulations, your extension "security-seal" is now active!');
+    const auth = require('../js/authentication.js');
+    // Register authentication command
+    let auth_disposable = vscode.commands.registerCommand('security-seal.authenticate', () => {
+        // Call the authentication function
+        auth.authenticate().then(() => {
+            vscode.window.showInformationMessage('You are now authenticated.');
+        }).catch((error) => {
+            vscode.window.showErrorMessage('Authentication failed. Please try again.');
+        });
+    });
+    context.subscriptions.push(auth_disposable);
     // Create output channel once
     const output_channel = vscode.window.createOutputChannel('Seal Output Channel');
     // The command has been defined in the package.json file
@@ -45,7 +56,14 @@ exports.activate = activate;
 // This method is called when your extension is deactivated
 function deactivate() { }
 exports.deactivate = deactivate;
-function analyzeCode(output_channel) {
+async function analyzeCode(output_channel) {
+    // Check if the user is authenticated
+    const authenticated = await vscode.secrets.get("security-seal.authenticated");
+    if (!authenticated) {
+        console.log("You are not authenticated. Please authenticate first.");
+        vscode.window.showErrorMessage("You are not authenticated. Please authenticate first.");
+        return;
+    }
     const editor = vscode.window.activeTextEditor;
     if (!editor) {
         vscode.window.showErrorMessage("No active editor found. Please try again.");
@@ -76,8 +94,9 @@ function analyzeCode(output_channel) {
 function getFileExtension(editor) {
     const file_path = editor.document.uri.fsPath;
     // If the file is unsaved, return null
-    if (!file_path)
+    if (!file_path) {
         return null;
+    }
     // Returns file extension from path
     return file_path.substring(file_path.lastIndexOf('.') + 1);
 }
