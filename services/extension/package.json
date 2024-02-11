@@ -51,12 +51,26 @@
   "devDependencies": {
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+<<<<<<< HEAD
+<<<<<<< HEAD
+    "@types/sinon": "^17.0.3",
+=======
+>>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
+=======
+>>>>>>> parent of 1fd3733 (Started implementing tests)
     "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
     "@vscode/test-cli": "^0.0.4",
     "@vscode/test-electron": "^2.3.9",
     "eslint": "^8.56.0",
+<<<<<<< HEAD
+<<<<<<< HEAD
+    "sinon": "^17.0.1",
+=======
+>>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
+=======
+>>>>>>> parent of 1fd3733 (Started implementing tests)
     "typescript": "^5.3.3"
   },
   "dependencies": {

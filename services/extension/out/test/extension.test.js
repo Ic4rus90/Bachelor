@@ -22,14 +22,98 @@ var __importStar = (this && this.__importStar) || function (mod) {
     __setModuleDefault(result, mod);
     return result;
 };
+<<<<<<< HEAD
+<<<<<<< HEAD
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+=======
+>>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
+=======
+>>>>>>> parent of 1fd3733 (Started implementing tests)
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = __importStar(require("assert"));
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 const vscode = __importStar(require("vscode"));
+<<<<<<< HEAD
+<<<<<<< HEAD
+// Importing sinon for mocking
+const sinon_1 = __importDefault(require("sinon"));
+const analysis_1 = require("../analysis");
+suite('Extension Test Suite', () => {
+    vscode.window.showInformationMessage('Starting tests');
+    let sandbox;
+    setup(() => {
+        sandbox = sinon_1.default.createSandbox();
+    });
+    teardown(() => {
+        sandbox.restore();
+    });
+    test('Shows error message when no active editor is found', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value(undefined);
+        const showErrorSpy = sandbox.spy(vscode.window, 'showErrorMessage');
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(showErrorSpy.calledWith("No active editor found. Please try again."));
+    });
+    test('Shows error message when file is not saved', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value({ document: { isUntitled: true } });
+        const showErrorSpy = sandbox.spy(vscode.window, 'showErrorMessage');
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(showErrorSpy.calledWith("No active editor found or file is not saved. Please try again."));
+    });
+    test('Shows error message when file type is not supported', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value({ document: { isUntitled: false, languageId: 'plaintext' } });
+        const showErrorSpy = sandbox.spy(vscode.window, 'showErrorMessage');
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(showErrorSpy.calledWith("Unsupported file type. Supported file types: C, C++, C# and Python."));
+    });
+    test('Shows error message when no code is selected', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value({ document: { isUntitled: false, languageId: 'c' }, selection: { isEmpty: true } });
+        const showErrorSpy = sandbox.spy(vscode.window, 'showErrorMessage');
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(showErrorSpy.calledWith("No code selected."));
+    });
+    test('Shows information message when code is sent for analysis', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value({ document: { isUntitled: false, languageId: 'c' }, selection: { isEmpty: false } });
+        const showInfoSpy = sandbox.spy(vscode.window, 'showInformationMessage');
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(showInfoSpy.calledWith('Your code is sent for analysis.'));
+    });
+    test('Shows output channel when code is sent for analysis', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value({ document: { isUntitled: false, languageId: 'c' }, selection: { isEmpty: false } });
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(mockOutputChannel.show.called);
+    });
+    test('Appends analysis result to output channel', async () => {
+        sandbox.stub(vscode.window, 'activeTextEditor').value({ document: { isUntitled: false, languageId: 'c' }, selection: { isEmpty: false } });
+        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        assert.ok(mockOutputChannel.appendLine.called);
+    });
+=======
 // import * as myExtension from '../../extension';
 suite('Extension Test Suite', () => {
     vscode.window.showInformationMessage('Start all tests.');
+>>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
+=======
+// import * as myExtension from '../../extension';
+suite('Extension Test Suite', () => {
+    vscode.window.showInformationMessage('Start all tests.');
+>>>>>>> parent of 1fd3733 (Started implementing tests)
     test('Sample test', () => {
         assert.strictEqual(-1, [1, 2, 3].indexOf(5));
         assert.strictEqual(-1, [1, 2, 3].indexOf(0));
