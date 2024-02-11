@@ -14,6 +14,10 @@
   "contributes": {
     "commands": [
       {
+        "command": "security-seal.authenticate",
+        "title": "Authenticate with Security Seal"
+      },
+      {
         "command": "security-seal.analyze_code",
         "title": "Analyze code with Security Seal"
       }
@@ -21,9 +25,9 @@
     "menus": {
       "commandPalette": [
         {
-        "command": "security-seal.analyze_code",
-        "when": "editorHasSelection"
-      }
+          "command": "security-seal.analyze_code",
+          "when": "editorHasSelection"
+        }
       ],
       "editor/context": [
         {
@@ -33,9 +37,10 @@
         }
       ]
     }
-
   },
   "scripts": {
+    "build": "tsc && npm run copy-js",
+    "copy-js": "cp -r js/* out/",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
@@ -44,14 +49,17 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.85.0",
     "@types/mocha": "^10.0.6",
     "@types/node": "18.x",
+    "@types/vscode": "^1.85.0",
     "@typescript-eslint/eslint-plugin": "^6.19.1",
     "@typescript-eslint/parser": "^6.19.1",
-    "eslint": "^8.56.0",
-    "typescript": "^5.3.3",
     "@vscode/test-cli": "^0.0.4",
-    "@vscode/test-electron": "^2.3.9"
+    "@vscode/test-electron": "^2.3.9",
+    "eslint": "^8.56.0",
+    "typescript": "^5.3.3"
+  },
+  "dependencies": {
+    "axios": "^1.6.7"
   }
 }

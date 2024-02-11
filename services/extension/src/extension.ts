@@ -10,6 +10,20 @@ export function activate(context: vscode.ExtensionContext) {
 	// This line of code will only be executed once when your extension is activated
 	console.log('Congratulations, your extension "security-seal" is now active!');
 
+	const auth = require('../js/authentication.js');
+
+	// Register authentication command
+	let auth_disposable = vscode.commands.registerCommand('security-seal.authenticate', () => {
+		// Call the authentication function
+		auth.authenticate().then(() => {
+			vscode.window.showInformationMessage('You are now authenticated.');
+		}).catch((error: any) => {
+			vscode.window.showErrorMessage('Authentication failed. Please try again.');
+		});
+	});
+
+	context.subscriptions.push(auth_disposable);
+
 	// Create output channel once
 	const output_channel = vscode.window.createOutputChannel('Seal Output Channel');
 
@@ -25,48 +39,59 @@ export function activate(context: vscode.ExtensionContext) {
 export function deactivate() {}
 
 
-function analyzeCode(output_channel: vscode.OutputChannel) {
-		const editor = vscode.window.activeTextEditor;
-		
-		if (!editor) {
-			vscode.window.showErrorMessage("No active editor found. Please try again.");
-			return;
-		}
+async function analyzeCode(output_channel: vscode.OutputChannel) {
 
-		const file_extension = getFileExtension(editor);
-
-		if (!file_extension) {
-			vscode.window.showErrorMessage("No active editor found or file is not saved. Please try again.");
-			return;
-		}
-
-		if (!languageIsSupported(file_extension)) {
-			vscode.window.showErrorMessage("Unsupported file type. Supported file types: C, C++, C# and Python.");
-			return;
-		}
-
-		const code = getSelectedCode(editor);
-
-		if (!code) {
-			vscode.window.showErrorMessage("No code selected.");
-			return;
-		}
-
-		// Display message to the user. Kept for now for future development.
-		vscode.window.showInformationMessage('Your code is sent for analysis.');
-
-		const text = LLMStub(code, file_extension) 
+	// Check if the user is authenticated
+	const authenticated = await vscode.secrets.get("security-seal.authenticated");
 	
-		output_channel.show();
-		output_channel.clear();
-		output_channel.appendLine(text);
+	
+	if (!authenticated) {
+		console.log("You are not authenticated. Please authenticate first.");
+		vscode.window.showErrorMessage("You are not authenticated. Please authenticate first.");
+		return;
+	}
+	
+	const editor = vscode.window.activeTextEditor;
+		
+	if (!editor) {
+		vscode.window.showErrorMessage("No active editor found. Please try again.");
+		return;
+	}
+
+	const file_extension = getFileExtension(editor);
+
+	if (!file_extension) {
+		vscode.window.showErrorMessage("No active editor found or file is not saved. Please try again.");
+		return;
+	}
+
+	if (!languageIsSupported(file_extension)) {
+		vscode.window.showErrorMessage("Unsupported file type. Supported file types: C, C++, C# and Python.");
+		return;
+	}
+
+	const code = getSelectedCode(editor);
+
+	if (!code) {
+		vscode.window.showErrorMessage("No code selected.");
+		return;
+	}
+
+	// Display message to the user. Kept for now for future development.
+	vscode.window.showInformationMessage('Your code is sent for analysis.');
+
+	const text = LLMStub(code, file_extension);
+	
+	output_channel.show();
+	output_channel.clear();
+	output_channel.appendLine(text);
 };
 
 
 function getFileExtension(editor: vscode.TextEditor ): string | null {
 	const file_path = editor.document.uri.fsPath;
 	// If the file is unsaved, return null
-	if (!file_path) return null; 
+	if (!file_path) { return null; } 
 	
 	// Returns file extension from path
 	return file_path.substring(file_path.lastIndexOf('.') + 1);
@@ -81,12 +106,13 @@ function languageIsSupported(language: string): boolean {
 
 function getSelectedCode(editor: vscode.TextEditor): string {
 	const selection = editor.selection;
-	return editor.document.getText(selection)  
+	return editor.document.getText(selection);  
 }
 
 
 function LLMStub(code: string, file_extension: string): string {
 	const length_of_code = code.length;
 	
-	return `Hello,\nI am Greg v2\nYou provided the following code:\n${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`
+	return `Hello,\nI am Greg v2\nYou provided the following code:\n${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`;
 }
+
