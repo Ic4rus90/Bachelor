@@ -1276,42 +1276,42 @@ class CSharpLexer(CSharpLexerBase):
 
     def INTERPOLATED_REGULAR_STRING_START_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 0:
-             this.OnInterpolatedRegularStringStart(); 
+             self.OnInterpolatedRegularStringStart(); 
      
 
     def INTERPOLATED_VERBATIUM_STRING_START_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 1:
-             this.OnInterpolatedVerbatiumStringStart(); 
+             self.OnInterpolatedVerbatiumStringStart(); 
      
 
     def OPEN_BRACE_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 2:
-             this.OnOpenBrace(); 
+             self.OnOpenBrace(); 
      
 
     def CLOSE_BRACE_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 3:
-             this.OnCloseBrace(); 
+             self.OnCloseBrace(); 
      
 
     def COLON_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 4:
-             this.OnColon(); 
+             self.OnColon(); 
      
 
     def OPEN_BRACE_INSIDE_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 5:
-             this.OpenBraceInside(); 
+             self.OpenBraceInside(); 
      
 
     def DOUBLE_QUOTE_INSIDE_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 6:
-             this.OnDoubleQuoteInside(); 
+             self.OnDoubleQuoteInside(); 
      
 
     def CLOSE_BRACE_INSIDE_action(self, localctx:RuleContext , actionIndex:int):
         if actionIndex == 7:
-             this.OnCloseBraceInside(); 
+             self.OnCloseBraceInside(); 
      
 
     def sempred(self, localctx:RuleContext, ruleIndex:int, predIndex:int):
@@ -1330,22 +1330,22 @@ class CSharpLexer(CSharpLexerBase):
 
     def REGULAR_CHAR_INSIDE_sempred(self, localctx:RuleContext, predIndex:int):
             if predIndex == 0:
-                return  this.IsRegularCharInside() 
+                return  self.IsRegularCharInside() 
          
 
     def VERBATIUM_DOUBLE_QUOTE_INSIDE_sempred(self, localctx:RuleContext, predIndex:int):
             if predIndex == 1:
-                return  this.IsVerbatiumDoubleQuoteInside() 
+                return  self.IsVerbatiumDoubleQuoteInside() 
          
 
     def REGULAR_STRING_INSIDE_sempred(self, localctx:RuleContext, predIndex:int):
             if predIndex == 2:
-                return  this.IsRegularCharInside() 
+                return  self.IsRegularCharInside() 
          
 
     def VERBATIUM_INSIDE_STRING_sempred(self, localctx:RuleContext, predIndex:int):
             if predIndex == 3:
-                return  this.IsVerbatiumDoubleQuoteInside() 
+                return  self.IsVerbatiumDoubleQuoteInside() 
          
 
 
