@@ -3,8 +3,6 @@ import * as assert from 'assert';
 // You can import and use all API from the 'vscode' module
 // as well as import your extension to test it
 import * as vscode from 'vscode';
-<<<<<<< HEAD
-<<<<<<< HEAD
 
 // Importing sinon for mocking
 import sinon from 'sinon';
@@ -92,36 +90,4 @@ suite('Extension Test Suite', () => {
 		await analyzeCode(mockOutputChannel, mockContext);
 		assert.ok(mockOutputChannel.appendLine.called);
 	});
-	
-
-
-=======
-// import * as myExtension from '../../extension';
-
-suite('Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
->>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
-=======
-// import * as myExtension from '../../extension';
-
-suite('Extension Test Suite', () => {
-	vscode.window.showInformationMessage('Start all tests.');
->>>>>>> parent of 1fd3733 (Started implementing tests)
-
-	test('Sample test', () => {
-		assert.strictEqual(-1, [1, 2, 3].indexOf(5));
-		assert.strictEqual(-1, [1, 2, 3].indexOf(0));
-	});
-<<<<<<< HEAD
-<<<<<<< HEAD
-
-
-
-
-
-	
-=======
->>>>>>> e630868c0e0222da25a407fcf8426b8d19782c8f
-=======
->>>>>>> parent of 1fd3733 (Started implementing tests)
 });
