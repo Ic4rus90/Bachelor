@@ -19,7 +19,7 @@ export default function UserManagementPage() {
         <Header /> 
         <header className="App-header">
           <Container fluid>
-            <h1>Welcome to the User Management Page</h1>
+            <h1>Welcome to the Account Page</h1>
             <h2>{user.name}</h2>
             <p>{user.email}</p>
             <p>You are user number {user.sub}. </p>

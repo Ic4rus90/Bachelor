@@ -3,6 +3,7 @@ import '../App.css';
 import securityseal from './securityseal.png';
 import { Container, Row, Col, Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
 import { useAuth0 } from '@auth0/auth0-react';
+import { Link } from 'react-router-dom';
 
 const LoginButton = () => {
   const { loginWithRedirect } = useAuth0();
@@ -31,18 +32,26 @@ const RegisterButton = () => {
 };
 
 
-export default function Home() {
+export default function HomePage() {
   return (
     <div className="App">
       <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
       <Container fluid>
         <img src={securityseal} height={40}/>
-        <Navbar.Brand href="#home">Security Seal</Navbar.Brand>
+        <Navbar.Brand href="/">Security Seal</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="me-auto">
-            <Nav.Link href="#home">Home</Nav.Link>
-            <Nav.Link href="#about">About</Nav.Link>
+            <Link to="/">
+              <Button variant="none">
+                Home
+              </Button>
+            </Link>
+            <Link to="/about">
+              <Button variant="none">
+                About
+              </Button>
+            </Link>
           </Nav>
         </Navbar.Collapse>
         <Navbar.Collapse className="justify-content-end">
