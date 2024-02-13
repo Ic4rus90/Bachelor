@@ -27,14 +27,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = __importStar(require("assert"));
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
-const vscode = __importStar(require("vscode"));
 // Importing sinon for mocking
 const sinon_1 = __importDefault(require("sinon"));
 const utils_1 = require("../utils");
 suite('Extension Test Suite', () => {
-    vscode.window.showInformationMessage('Starting tests');
     let sandbox;
     setup(() => {
         sandbox = sinon_1.default.createSandbox();
@@ -43,6 +39,7 @@ suite('Extension Test Suite', () => {
         sandbox.restore();
     });
     test('Returns null if the file is not saved', () => {
+        // Create a mock text editor with an untitled document
         const mockTextEditor = {
             document: {
                 uri: {
@@ -52,6 +49,7 @@ suite('Extension Test Suite', () => {
             },
         }; // Cast as any to avoid needing to stub every property
         const extension = (0, utils_1.getFileExtension)(mockTextEditor);
+        // 
         assert.strictEqual(extension, null);
     });
     // TODO: Implement fix, as path has no '.' 

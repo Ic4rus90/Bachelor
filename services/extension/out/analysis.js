@@ -50,6 +50,7 @@ async function analyzeCode(output_channel, context) {
         vscode.window.showErrorMessage("Unsupported file type. Supported file types: C, C++, C# and Python.");
         return;
     }
+    // Get the code the user selected in the editor
     const code = (0, utils_1.getSelectedCode)(editor);
     if (!code) {
         vscode.window.showErrorMessage("No code selected.");

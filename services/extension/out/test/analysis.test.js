@@ -43,15 +43,23 @@ suite('Extension Test Suite', () => {
         sandbox.restore();
     });
     test('Shows error message when no active editor is found', async () => {
+        // Stub the activeTextEditor method to return undefined
         sandbox.stub(vscode.window, 'activeTextEditor').value(undefined);
-        const showErrorSpy = sandbox.spy(vscode.window, 'showErrorMessage');
-        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
-        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
-        assert.ok(showErrorSpy.calledWith("No active editor found. Please try again."));
+        // Create a spy for the showErrorMessage method
+        const showErrorMessageSpy = sandbox.spy(vscode.window, 'showErrorMessage');
+        // Create pseudo output channel and context
+        // The output channel is a mock object that has a show method and an appendLine method
+        const pseudoOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
+        // The context is a mock object that has a secrets property that is a mock object that has a get method
+        // The get method is a stub that resolves to a fake token
+        const pseudoContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
+        await (0, analysis_1.analyzeCode)(pseudoOutputChannel, pseudoContext);
+        // Assert that the showErrorMessage method was called with the expected message
+        assert.ok(showErrorMessageSpy.calledWith("No active editor found. Please try again."));
     });
     test('Shows error message when file is not saved', async () => {
         sandbox.stub(vscode.window, 'activeTextEditor').value({
+            // The document in the active text editor is stubbed to have an untitled document
             document: {
                 isUntitled: true,
                 uri: { fsPath: '' }
@@ -65,6 +73,7 @@ suite('Extension Test Suite', () => {
     });
     test('Shows error message when file type is not supported', async () => {
         sandbox.stub(vscode.window, 'activeTextEditor').value({
+            // Document in the active text editor is stubbed to have a file path with an unsupported extension
             document: {
                 isUntitled: false,
                 uri: { fsPath: 'fake-path.lol' },
@@ -81,9 +90,11 @@ suite('Extension Test Suite', () => {
             document: {
                 isUntitled: false,
                 uri: { fsPath: 'fake-path.c' },
+                // Stub the getText method to return a fake code
                 getText: sinon_1.default.stub().returns('const testing_is_fun = true')
             }
         });
+        // Create a spy for the showInformationMessage method
         const showInfoSpy = sandbox.spy(vscode.window, 'showInformationMessage');
         const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
         const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
@@ -101,6 +112,7 @@ suite('Extension Test Suite', () => {
         const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
         const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
         await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        // Assert that outputChannel.show was called
         assert.ok(mockOutputChannel.show.called);
     });
     test('Appends analysis result to output channel', async () => {
@@ -114,6 +126,7 @@ suite('Extension Test Suite', () => {
         const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
         const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
         await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        // Assert that outputChannel.appendLine was called
         assert.ok(mockOutputChannel.appendLine.called);
     });
 });
