@@ -1,6 +1,7 @@
 import * as vscode from 'vscode';
-import { getFileExtension, languageIsSupported, getSelectedCode, LLMStub } from './utils';
+import { getFileExtension, languageIsSupported, getSelectedCode } from './utils';
 import { showAuthenticationPrompt, isAccessTokenExpired } from './auth';
+import { LLMStub } from './llm-stub';
 
 async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode.ExtensionContext) {
 

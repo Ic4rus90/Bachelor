@@ -30,13 +30,14 @@ exports.isAccessTokenExpired = exports.showAuthenticationPrompt = exports.authen
 const vscode = __importStar(require("vscode"));
 const axios_1 = __importDefault(require("axios"));
 const pkce_1 = require("./pkce");
-const development_redirect_listener_1 = require("./development-redirect-listener");
-// This function starts the authentication process
+const auth_code_listener_1 = require("./auth-code-listener");
+// This function authenticates the user and stores the tokens in the context.secrets
 async function authenticate(context) {
-    // Generate a code verifier and code challenge
+    // Generate a code verifier and a code challenge
     const codeVerifier = (0, pkce_1.generateCodeVerifier)();
     const codeChallenge = (0, pkce_1.generateCodeChallenge)(codeVerifier);
     // Create the authentication URL
+    // TODO: Remove the hardcoded client_id and redirect_uri, and place them in a configuration file
     const authURL = `https://security-seal.eu.auth0.com/authorize?` +
         `response_type=code&` +
         'client_id=KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj&' +
@@ -47,10 +48,13 @@ async function authenticate(context) {
         'state=ASDF2F2F2';
     // Open the authentication URL in the user's default web browser
     vscode.env.openExternal(vscode.Uri.parse(authURL));
-    // Start a server to listen for the authentication response
     try {
-        const authorizationCode = await (0, development_redirect_listener_1.getAuthoritzationCode)();
-        await exchangeCodeForTokens(authorizationCode, codeVerifier, context);
+        // Start a server to listen for and get the authorization code. 
+        const authorizationCode = await (0, auth_code_listener_1.getAuthoritzationCode)();
+        // Exchange the authorization code for tokens
+        const tokens = await exchangeCodeForTokens(authorizationCode, codeVerifier, context);
+        // Store the tokens in context.secret
+        await storeTokens(tokens, context);
     }
     catch (err) {
         console.error('Error:', err);
@@ -58,11 +62,13 @@ async function authenticate(context) {
     }
 }
 exports.authenticate = authenticate;
+// Exchanges the authorization code for tokens
 async function exchangeCodeForTokens(authorizationCode, codeVerifier, context) {
     const tokenURL = 'https://security-seal.eu.auth0.com/oauth/token';
     const clientID = 'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
     const redirectURI = 'http://localhost:3000/callback';
     try {
+        // Send a POST request to the token endpoint
         const response = await axios_1.default.post(tokenURL, {
             grant_type: 'authorization_code',
             client_id: clientID,
@@ -73,14 +79,18 @@ async function exchangeCodeForTokens(authorizationCode, codeVerifier, context) {
         const access_token = response.data.access_token;
         const id_token = response.data.id_token;
         const expires_in = response.data.expires_in;
-        // Store the tokens in the user's environment
-        await storeTokens(access_token, id_token, expires_in, context);
+        return { access_token, id_token, expires_in };
     }
     catch (error) {
         console.error('Error:', error);
+        // Throw error so the caller can handle it
+        throw new Error(`Failed to exchange code for tokens: ${error}`);
     }
 }
-async function storeTokens(access_token, id_token, expires_in, context) {
+async function storeTokens(tokens, context) {
+    const access_token = tokens.access_token;
+    const id_token = tokens.id_token;
+    const expires_in = tokens.expires_in;
     const expiry_timestamp = new Date().getTime() + expires_in * 1000;
     try {
         await context.secrets.store('security-seal-access-token', access_token);
@@ -98,8 +108,6 @@ async function isAccessTokenExpired(context) {
     }
     const expiry_time = parseInt(expiry_timestamp, 10);
     const current_time = new Date().getTime();
-    console.log('The expiry time is:', expiry_time);
-    console.log('The current time is:', current_time);
     return current_time >= expiry_time;
 }
 exports.isAccessTokenExpired = isAccessTokenExpired;

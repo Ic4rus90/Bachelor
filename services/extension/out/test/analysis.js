@@ -117,4 +117,4 @@ suite('Extension Test Suite', () => {
         assert.ok(mockOutputChannel.appendLine.called);
     });
 });
-//# sourceMappingURL=extension.test.js.map
+//# sourceMappingURL=analysis.js.map

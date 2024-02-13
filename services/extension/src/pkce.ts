@@ -11,7 +11,6 @@ function base64URLEncode(str: Buffer): string {
   function generateCodeVerifier() {
     // Generate a secure random string to be used as the code_verifier
     const verifier: string = base64URLEncode(randomBytes(32));
-    console.log(`The code verifier is ${verifier}`);
     return verifier;
   }
 
@@ -25,7 +24,6 @@ function base64URLEncode(str: Buffer): string {
     // Encode the code challenge to base64url encoding
     const code_challenge = base64URLEncode(sha256Hashing(verifier));
     
-    console.log(`The code challenge is ${code_challenge}`);
     return code_challenge;
   }
 

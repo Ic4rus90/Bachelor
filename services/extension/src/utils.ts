@@ -1,11 +1,18 @@
 import * as vscode from 'vscode';
 
 
-
 function getFileExtension(editor: vscode.TextEditor ): string | null {
 	const file_path = editor.document.uri.fsPath;
+	
 	// If the file is unsaved, return null
-	if (!file_path) { return null; } 
+	if (!file_path) { 
+		return null; 
+	} 
+
+	// If the file has no extension, return empty string
+	if (file_path.indexOf('.') === -1) {
+		 return ''; 
+		}
 	
 	// Returns file extension from path
 	return file_path.substring(file_path.lastIndexOf('.') + 1);
@@ -24,11 +31,4 @@ function getSelectedCode(editor: vscode.TextEditor): string {
 }
 
 
-function LLMStub(code: string, file_extension: string): string {
-	const length_of_code = code.length;
-	
-	return `Hello,\nI am Greg v2\nYou provided the following code:\n${code}\nThe length is ${length_of_code}\nThe file is ${file_extension}.\nEverything looks okay\nFOR NOW.`;
-}
-
-
-export { getFileExtension, languageIsSupported, getSelectedCode, LLMStub };
+export { getFileExtension, languageIsSupported, getSelectedCode };

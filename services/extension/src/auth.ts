@@ -2,31 +2,47 @@ import * as vscode from 'vscode';
 import axios from 'axios'; 
 
 import { generateCodeVerifier, generateCodeChallenge } from './pkce';
-import { getAuthoritzationCode } from './development-redirect-listener';
+import { getAuthoritzationCode } from './auth-code-listener';
 
-// This function starts the authentication process
+
+// This interface defines the shape of the tokens returned by the authentication server
+interface AuthTokens {
+  access_token: string;
+  id_token: string;
+  expires_in: number;
+}
+
+
+// This function authenticates the user and stores the tokens in the context.secrets
 async function authenticate(context: vscode.ExtensionContext) {
-  // Generate a code verifier and code challenge
+
+  // Generate a code verifier and a code challenge
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = generateCodeChallenge(codeVerifier);
 
   // Create the authentication URL
-  const authURL = `https://security-seal.eu.auth0.com/authorize?` +
-    `response_type=code&` +
-    'client_id=KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj&' +
-    'redirect_uri=http://localhost:3000/callback&' +
-    'scope=openid%20profile%20email&' +
-    `code_challenge=${codeChallenge}&` +
+  // TODO: Remove the hardcoded client_id and redirect_uri, and place them in a configuration file
+  const authURL = `https://security-seal.eu.auth0.com/authorize?` + 
+    `response_type=code&` + 
+    'client_id=KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj&' + 
+    'redirect_uri=http://localhost:3000/callback&' + 
+    'scope=openid%20profile%20email&' + 
+    `code_challenge=${codeChallenge}&` + 
     'code_challenge_method=S256&' + 
     'state=ASDF2F2F2';
 
   // Open the authentication URL in the user's default web browser
   vscode.env.openExternal(vscode.Uri.parse(authURL));
 
-  // Start a server to listen for the authentication response
   try {
+    // Start a server to listen for and get the authorization code. 
     const authorizationCode = await getAuthoritzationCode();
-    await exchangeCodeForTokens(authorizationCode, codeVerifier, context);
+
+    // Exchange the authorization code for tokens
+    const tokens = await exchangeCodeForTokens(authorizationCode, codeVerifier, context);
+    
+    // Store the tokens in context.secret
+    await storeTokens(tokens, context);
 
   } catch (err) {
     console.error('Error:', err);
@@ -35,12 +51,14 @@ async function authenticate(context: vscode.ExtensionContext) {
 }
 
 
-async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: string, context: vscode.ExtensionContext): Promise<void> {
+// Exchanges the authorization code for tokens
+async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: string, context: vscode.ExtensionContext): Promise<AuthTokens> {
   const tokenURL = 'https://security-seal.eu.auth0.com/oauth/token';
   const clientID = 'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
   const redirectURI = 'http://localhost:3000/callback';
-  
+
   try {
+    // Send a POST request to the token endpoint
     const response = await axios.post(tokenURL, {
       grant_type: 'authorization_code',
       client_id: clientID,
@@ -53,17 +71,23 @@ async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: st
     const id_token = response.data.id_token;
     const expires_in = response.data.expires_in;
 
-    // Store the tokens in the user's environment
-    await storeTokens(access_token, id_token, expires_in, context);
+
+    return {access_token, id_token, expires_in};
   }
 
   catch (error) {
     console.error('Error:', error);
+    // Throw error so the caller can handle it
+    throw new Error(`Failed to exchange code for tokens: ${error}`);
   }
 }
 
 
-async function storeTokens(access_token: string, id_token: string, expires_in: number, context: vscode.ExtensionContext): Promise<void> {
+async function storeTokens(tokens: AuthTokens, context: vscode.ExtensionContext): Promise<void> {
+    const access_token = tokens.access_token;
+    const id_token = tokens.id_token;
+    const expires_in = tokens.expires_in;
+    
     const expiry_timestamp = new Date().getTime() + expires_in * 1000;
   
     try {
@@ -86,9 +110,6 @@ async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<b
 
     const expiry_time = parseInt(expiry_timestamp, 10);
     const current_time = new Date().getTime();
-
-    console.log('The expiry time is:', expiry_time);
-    console.log('The current time is:', current_time);
 
     return current_time >= expiry_time;
 }

@@ -1,0 +1,1 @@
+{"version":3,"file":"llm-stub.js","sourceRoot":"","sources":["../src/llm-stub.ts"],"names":[],"mappings":";;;AAAA,SAAS,OAAO,CAAC,IAAY,EAAE,cAAsB;IACpD,MAAM,cAAc,GAAG,IAAI,CAAC,MAAM,CAAC;IAEnC,OAAO,2DAA2D,IAAI,mBAAmB,cAAc,iBAAiB,cAAc,oCAAoC,CAAC;AAC5K,CAAC;AAEQ,0BAAO"}
