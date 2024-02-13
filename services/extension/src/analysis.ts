@@ -17,7 +17,7 @@ async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode
 	const editor = vscode.window.activeTextEditor;
 		
 	if (!editor) {
-		vscode.window.showErrorMessage("No active editor found. Please try.");
+		vscode.window.showErrorMessage("No active editor found. Please try again.");
 		return;
 	}
 
