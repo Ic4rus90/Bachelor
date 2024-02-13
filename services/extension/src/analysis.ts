@@ -34,6 +34,7 @@ async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode
 		return;
 	}
 
+	// Get the code the user selected in the editor
 	const code = getSelectedCode(editor);
 
 	if (!code) {
