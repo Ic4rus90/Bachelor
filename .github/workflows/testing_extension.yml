@@ -1,5 +1,5 @@
 name: testing_extension
-
+# This workflow is triggered on pushes to the extension branch
 on: 
   push:
     branches:
@@ -9,21 +9,16 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps: 
-        uses: actions/checkout@v2
+      - uses: actions/checkout@v2
         with:
           path: 'services/extension'
-
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
           node-version: '14'
-
       - name: Install dependencies
         run: npm install
         working-directory: ./services/extension
-
       - name: Run tests
         run: npm test
         working-directory: ./services/extension
-
-    
