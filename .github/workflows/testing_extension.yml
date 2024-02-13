@@ -10,8 +10,8 @@ jobs:
     runs-on: ubuntu-latest
     steps: 
       - uses: actions/checkout@v2
-        with:
-          path: 'services/extension'
+      - name: List contents of the extension directory
+        run: ls services/extension
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
