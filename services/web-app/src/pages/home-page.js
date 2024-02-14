@@ -66,7 +66,7 @@ export default function HomePage() {
         <Container fluid>
           <img src={securityseal} className="App-logo" />
           <h1 style={{ marginBottom: '30px' }} >Welcome to Security Seal!</h1>
-          <h5>Will you get our Seal of Approval? Sign up now to let us sniff your code.</h5>
+          <h5>Will your code get our Seal of Approval?.</h5>
         </Container>
       </header>
     </div>
