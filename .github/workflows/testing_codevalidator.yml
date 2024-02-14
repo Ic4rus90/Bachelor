@@ -2,11 +2,12 @@ name: Code Validator Tests
 
 on:
   push:
-    branches:
-      - code-validator
+    paths:
+      - 'services/code-validator/**'
   pull_request:
-    branches:
-      - code-validator
+    paths:
+      - 'services/code-validator/**'
+
 
 jobs:
   test-code-validator:
@@ -26,7 +27,6 @@ jobs:
       run: |
         pip install -r services/code-validator/src/requirements.txt
         pip install pytest httpx
-
 
     - name: Cache pip packages
       uses: actions/cache@v2
