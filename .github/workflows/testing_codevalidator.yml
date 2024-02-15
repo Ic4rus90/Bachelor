@@ -1,4 +1,4 @@
-name: Code Validator Tests
+name: Code Validator Tests and Build
 
 on:
   push:
@@ -43,3 +43,30 @@ jobs:
       with:
         name: code-validator-test-results
         path: reports/
+
+  build-and-push-docker:
+    name: Build and Push Docker Image to GitHub Packages
+    needs: test-code-validator
+    runs-on: ubuntu-latest
+    permissions:
+      packages: write
+      contents: read
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v1
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build Docker image
+        run: |
+          docker build -t ghcr.io/${{ github.repository_owner }}/code-validator:latest services/code-validator/
+
+      - name: Push Docker image to GitHub Packages
+        run: |
+          docker push ghcr.io/${{ github.repository_owner }}/code-validator:latest
+          
