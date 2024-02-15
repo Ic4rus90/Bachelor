@@ -1,9 +1,9 @@
 name: testing_extension
-# This workflow is triggered on pushes to the extension branch
+
 on: 
-  push:
+  pull_request:
     branches:
-      - extension
+      - main
 
 jobs: 
   test:
