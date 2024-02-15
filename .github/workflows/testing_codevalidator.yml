@@ -62,11 +62,9 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build Docker image
+      - name: Build and Push Docker image
         run: |
-          docker build -t ghcr.io/${{ github.repository_owner }}/code-validator:latest services/code-validator/
-
-      - name: Push Docker image to GitHub Packages
-        run: |
-          docker push ghcr.io/${{ github.repository_owner }}/code-validator:latest
+          REPOSITORY_LOWER=$(echo "ghcr.io/${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          docker build -t $REPOSITORY_LOWER/code-validator:latest services/code-validator/
+          docker push $REPOSITORY_LOWER/code-validator:latest
           
