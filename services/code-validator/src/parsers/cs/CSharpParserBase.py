@@ -1,3 +1,5 @@
+# This is translated from the Java files in the antlr grammar repository https://github.com/antlr/grammars-v4/blob/master/csharp/Java/CSharpParserBase.java
+
 from antlr4 import Parser
 
 class CSharpParserBase(Parser):
@@ -5,7 +7,6 @@ class CSharpParserBase(Parser):
         super().__init__(input, output)
 
     def IsLocalVariableDeclaration(self):
-        # In Python, isinstance checks if the first arg is an instance of the second arg
         if not isinstance(self._ctx, CSharpParser.Local_variable_declarationContext):
             return False
         local_var_decl = self._ctx

@@ -1,3 +1,5 @@
+# This is translated from the Java files in the antlr grammar repository https://github.com/antlr/grammars-v4/blob/master/csharp/Java/CSharpLexerBase.java
+
 from antlr4 import Lexer
 from collections import deque
 
