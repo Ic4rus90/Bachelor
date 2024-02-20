@@ -3,11 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import securityseal from '../pages/securityseal.png';
 
-function UserButton() {
+function AccountNavButton() {
   return (
-    <Link to="/usermanagement">
+    <Link to="/account">
       <Button variant="secondary">
-        Account management
+        Account
       </Button>
     </Link>
   );
@@ -20,15 +20,23 @@ export default function Header() {
             <Container fluid>
               <img src={securityseal} height={40}/>
               <Navbar.Brand href="#home">Security Seal</Navbar.Brand>
-              <Navbar.Toggle aria-controls="basic-navbar-nav" />
               <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="me-auto">
-                  <Nav.Link href="#dashboard">Dashboard</Nav.Link>
+                    <Link to="/dashboard">
+                      <Button variant="none">
+                        Dashboard
+                      </Button>
+                    </Link>
+                    <Link to="/history">
+                      <Button variant="none">
+                        History
+                      </Button>
+                    </Link>
                   </Nav>
               </Navbar.Collapse>
               <Navbar.Collapse className="justify-content-end">
                 <Navbar.Text>
-                      <UserButton />
+                      <AccountNavButton />
                 </Navbar.Text>
               </Navbar.Collapse>
             </Container>

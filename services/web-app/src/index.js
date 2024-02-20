@@ -13,7 +13,9 @@ root.render(
     domain="security-seal.eu.auth0.com"
     clientId="VuzDCxivmpVSsXZC7VZSWZslwFzf0zXB"
     authorizationParams={{
-      redirect_uri: window.location.origin + '/dashboard'
+      redirect_uri: window.location.origin + '/dashboard',
+      audience: "https://security-seal.eu.auth0.com/api/v2/",
+      scope: "openid email profile read:current_user update:current_user_metadata"
     }}
     >
       <App />
