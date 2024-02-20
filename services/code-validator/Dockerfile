@@ -6,6 +6,6 @@ WORKDIR /usr/src/app/src
 COPY src/requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
 COPY src .
-EXPOSE 8000
+EXPOSE 8200
 ENTRYPOINT ["uvicorn"]
-CMD ["main:app", "--host", "0.0.0.0"]
+CMD ["main:app", "--host", "0.0.0.0", "--port", "8200"]
