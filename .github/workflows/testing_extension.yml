@@ -1,21 +1,30 @@
 name: testing_extension
 
-on: 
+on:
+  push:
+    paths:
+      - 'services/extension/**'
   pull_request:
-    branches:
-      - main
+    paths:
+      - 'services/extension/**'
+  workflow_dispatch:
 
 jobs: 
   run_extension_tests:
     runs-on: ubuntu-latest
     steps: 
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
         with:
           node-version: '20'
+
       - name: Install dependencies
         run: npm ci
         working-directory: ./services/extension
+        
       - name: Run tests
       # xvfb-run is used to run headless 
         run: xvfb-run --auto-servernum npm test
