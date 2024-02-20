@@ -1,6 +1,6 @@
 import React from 'react';
-import { Container, Row, Col, Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import Header from '../components/header'
+import { Container } from 'react-bootstrap';
+import HeaderAuthenticated from '../components/header-authenticated'
 import { useAuth0 } from "@auth0/auth0-react";
 
 export default function Dashboard() {
@@ -18,7 +18,7 @@ export default function Dashboard() {
   return (
     isAuthenticated && (
       <div className="Dashboard">
-        <Header /> 
+        <HeaderAuthenticated /> 
         <header className="App-header">
           <Container fluid>
             <h1>Welcome to the Dashboard Page</h1>

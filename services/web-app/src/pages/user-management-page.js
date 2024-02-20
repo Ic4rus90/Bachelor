@@ -1,13 +1,14 @@
-import React, { useEffect, useState } from 'react';
-import { Container, Row, Col, Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
-import Header from '../components/header'
+import React from 'react';
+import { Container } from 'react-bootstrap';
+import HeaderAuthenticated from '../components/header-authenticated'
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from '../components/logout-button'
 
 
 export default function UserManagementPage() {
   
-  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+  const { user, isAuthenticated, isLoading } = useAuth0();
+  //const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
   
   
 
@@ -17,7 +18,7 @@ export default function UserManagementPage() {
   return (
     isAuthenticated && (
       <div className="Dashboard">
-        <Header /> 
+        <HeaderAuthenticated /> 
         <header className="App-header">
           <Container fluid>
             <h1>Welcome to the Account Page</h1>

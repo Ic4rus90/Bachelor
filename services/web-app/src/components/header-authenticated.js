@@ -1,4 +1,4 @@
-import { Container, Row, Col, Button, Nav, Navbar, NavDropdown } from 'react-bootstrap';
+import { Container, Button, Nav, Navbar } from 'react-bootstrap';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import securityseal from '../pages/securityseal.png';
@@ -13,13 +13,13 @@ function AccountNavButton() {
   );
 }
 
-export default function Header() {
+export default function HeaderAuthenticated() {
     return (
       <div className="App">
         <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
             <Container fluid>
-              <img src={securityseal} height={40}/>
-              <Navbar.Brand href="#home">Security Seal</Navbar.Brand>
+              <img src={securityseal} height={40} alt="Security Seal Logo"/>
+              <Navbar.Brand as={Link} to="/dashboard">Security Seal</Navbar.Brand>
               <Navbar.Collapse id="basic-navbar-nav">
                   <Nav className="me-auto">
                     <Link to="/dashboard">
