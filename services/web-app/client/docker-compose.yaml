@@ -1,0 +1,21 @@
+version: '3.9'
+
+networks:
+  webapp-network:
+    external: true
+
+services: 
+  web-app:
+    build: .
+    ports:
+      - "8500:8500"
+    environment:
+      - DATABASE_URL=postgres://USER:PASSWORD@db:5432/postgres
+    depends_on:
+      - db
+    restart: on-failure
+
+
+
+
+    
