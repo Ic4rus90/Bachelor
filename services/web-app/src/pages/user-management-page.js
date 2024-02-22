@@ -1,8 +1,11 @@
 import React from 'react';
-import { Container } from 'react-bootstrap';
+import { Container, Card, ToggleButton, Button, Row, Col } from 'react-bootstrap';
+import './user-management-page.css';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import HeaderAuthenticated from '../components/header-authenticated'
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from '../components/logout-button'
+
 
 
 export default function UserManagementPage() {
@@ -13,21 +16,44 @@ export default function UserManagementPage() {
   
 
   if (isLoading) {
-    return <div>Loading ...</div>;
+    return <div className="loading">Loading ...</div>;
   }
+  
   return (
     isAuthenticated && (
-      <div className="Dashboard">
-        <HeaderAuthenticated /> 
-        <header className="App-header">
-          <Container fluid>
-            <h1>Welcome to the Account Page</h1>
-            Name: <h2>{user.name}</h2>
-            Mail: <p>{user.email}</p>
-            <p>You are user number {user.sub}. </p>
-            <LogoutButton />
-          </Container>
-        </header>
+      <div className="dashboard">
+        <HeaderAuthenticated />
+        <Container className="my-4">
+        <div className="user-card">
+          <div className="user-header">
+            <h1>{user.name}</h1>
+          </div>
+          <div className="user-body">
+            <Row className="user-info-row">
+              <Col xs={8}>Display Name</Col>
+              <Col xs={4} className="text-end">
+                <Button variant="outline-primary" size="sm">Edit</Button>
+              </Col>
+              <Col xs={12} className="user-info">{user.name}</Col>
+            </Row>
+            <Row className="user-info-row">
+              <Col xs={8}>Email</Col>
+              <Col xs={4} className="text-end">
+                <Button variant="outline-primary" size="sm">Edit</Button>
+              </Col>
+              <Col xs={12} className="user-info">{user.email}</Col>
+            </Row>
+            <Row className="user-info-row">
+              <Col xs={8}>Password</Col>
+              <Col xs={4} className="text-end">
+                <Button variant="outline-primary" size="sm">Change</Button>
+              </Col>
+              <Col xs={12} className="user-info">••••••••</Col>
+            </Row>
+          </div>
+        </div>
+      <LogoutButton />
+    </Container>
       </div>
     )
   );

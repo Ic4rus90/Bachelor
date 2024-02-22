@@ -11,10 +11,6 @@ export default function Dashboard() {
   if (isLoading) {
     return <div>Loading ...</div>;
   }
-  if (!isAuthenticated) {
-    // Optionally redirect to login or show a message
-    return <div>Please log in to vie the dashboard.</div>;
-  }
   return (
     isAuthenticated && (
       <div className="Dashboard">
