@@ -1,5 +1,5 @@
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Request
 from pydantic import BaseModel #, Field
 from loguru import logger
 from datetime import datetime
@@ -47,12 +47,12 @@ class GenerateRequest(BaseModel):
 
 
 # Function that decodes the code in the API request (which is base64 encoded) for validation
-def decode_base(encoded_text):
+def decode_base(encoded_text, source):
     try:
         decoded_code = base64.b64decode(encoded_text.encode('utf-8')).decode('utf-8')
         return decoded_code
     except Exception as e:
-        logger.error(f"Error decoding base64: {e}")
+        logger.error(f"Error decoding base64 from {source}: {e}")
         raise HTTPException(status_code=400, detail="Invalid base64 in request")
 
 # Function that encodes the code back to base64 after validation
@@ -62,34 +62,34 @@ def encode_base(decoded_text):
 
 
 @app.post("/generate/")
-async def generate(request: GenerateRequest):
-    logger.info("Received generation request.")
+async def generate(request: Request, generate_request: GenerateRequest):
+    client_host = request.client.host
+    logger.info(f"Received generation request from {client_host}.")
+    system_prompt = decode_base(generate_request.system_prompt, client_host)
+    user_prompt = decode_base(generate_request.user_prompt, client_host)
     try:
-        system_prompt = decode_base(request.system_prompt)
-        user_prompt = decode_base(request.user_prompt)
-
         chat = [
         {"role": "system", "content": system_prompt},
         {"role": "user", "content": user_prompt},
         ]
 
         input_tokens = len(tokenizer.encode(system_prompt + user_prompt, add_special_tokens=True))
-        logger.info(f"Number of tokens in the input: {input_tokens}")
+        logger.info(f"Number of tokens in the input (from: {client_host}): {input_tokens}")
 
         inputs = tokenizer.apply_chat_template(chat, return_tensors="pt").to("cuda")
 
         start_time = datetime.now()
         output = model.generate(
             input_ids=inputs,
-            max_new_tokens=request.max_new_tokens,
-            temperature=request.temperature,
-            top_p=request.top_p,
-            top_k=request.top_k,
-            num_return_sequences=request.num_return_sequences,
-            early_stopping=request.early_stopping,
-            max_time=request.max_time
-            #force_words_ids=request.force_words_ids,
-            #constraints=request.constraints
+            max_new_tokens=generate_request.max_new_tokens,
+            temperature=generate_request.temperature,
+            top_p=generate_request.top_p,
+            top_k=generate_request.top_k,
+            num_return_sequences=generate_request.num_return_sequences,
+            early_stopping=generate_request.early_stopping,
+            max_time=generate_request.max_time
+            #force_words_ids=generate_request.force_words_ids,
+            #constraints=generate_request.constraints
         )
         end_time = datetime.now()
         # Calculate the duration
@@ -97,11 +97,11 @@ async def generate(request: GenerateRequest):
 
         output = output[0].to("cpu")
         output_tokens = output.size(0)
-        logger.info(f"Number of tokens in the output: {output_tokens}")
-        logger.info(f"Generation took {duration} seconds")
+        logger.info(f"Number of tokens in the output (from {client_host}): {output_tokens}")
+        logger.info(f"Generation took {duration} seconds (from {client_host})")
 
         response = encode_base(tokenizer.decode(output))
-        logger.info("Generation request processed successfully.")
+        logger.info(f"Generation request processed successfully. (from {client_host})")
 
         result = [
             {"input_token_num": input_tokens},
@@ -111,6 +111,6 @@ async def generate(request: GenerateRequest):
         ]
         return result
     except Exception as e:
-        logger.error(f"Error during text generation: {e}")
+        logger.error(f"Error during text generation (from {client_host}): {e}")
         raise HTTPException(status_code=500, detail="Error during text generation")
     
