@@ -1,0 +1,19 @@
+version: '3.8'
+services:
+  codellama-bsc-group-17:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./tokenizer:/usr/src/app/tokenizer
+      - ./model:/usr/src/app/model
+      - ./logs:/usr/src/app/logs
+    ports:
+      - "8300:8300"
+    deploy:
+        resources:
+          reservations:
+            devices:
+              - driver: nvidia
+                device_ids: ['6', '7']
+                capabilities: [gpu]
