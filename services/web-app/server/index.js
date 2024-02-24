@@ -13,8 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 
-app.get('/', (req, res) => {
-    res.send('Hello World!');
+app.get('/:id', async(req, res) => {
+    res.send('Hello World!')
     });
 
 
@@ -38,7 +38,7 @@ app.get('/reports/:id', async(req,res) => {
     try {
         // Need logic to make this safe.
         const {id} = req.params 
-        const getReports = await pool.query("SELECT * FROM reports WHERE id = $1", [id])
+        const getReports = await pool.query("SELECT * FROM vulnerabilities WHERE user_id = $1", [id])
         res.json(getReports.rows)
 
     } catch(error) {
@@ -46,8 +46,6 @@ app.get('/reports/:id', async(req,res) => {
     }
 
 })
-
-
 
 
 app.listen(port, () => {
