@@ -15,7 +15,7 @@ export default function Dashboard() {
   }
   if (!isAuthenticated) {
     // Optionally redirect to login or show a message
-    return <div>Please log in to vie the dashboard.</div>;
+    return <div>Please log in to view the dashboard.</div>;
   }
 
   
@@ -25,9 +25,9 @@ export default function Dashboard() {
         <HeaderAuthenticated /> 
         <header className="App-header">
           <Container fluid>
-            <h1>Your latest vulnerability report</h1>
+            <h1 style={{marginTop:'2rem'}}>Your latest vulnerability report</h1>
             <Container>
-            <DashboardTabs />
+              <DashboardTabs />
             </Container>
           </Container>
         </header>

@@ -2,7 +2,7 @@ import Tab from 'react-bootstrap/Tab';
 import Tabs from 'react-bootstrap/Tabs';
 import VulnerabilityCards from './vulnerability-cards';
 import CodeBlock from './display-code';
-
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 const data = [
   {
@@ -59,15 +59,16 @@ if __name__ == '__main__':
 ]
 
 
+
 function DashboardTabs() {
   return (
     <Tabs
-      defaultActiveKey="Vulnerabilities"
+      defaultActiveKey="vulnerabilities"
       id="Report-tabs"
       className="mb-3"
       style={{ color: '#FFFFFF' }}
     >
-      <Tab eventKey="vulnerabilities" title="Vulnerabilities">
+      <Tab eventKey="vulnerabilities" title="Vulnerabilities ">
         <VulnerabilityCards data={data} />
       </Tab>
       <Tab eventKey="code" title="Code">
@@ -76,5 +77,8 @@ function DashboardTabs() {
     </Tabs>
   );
 }
+
+
+
 
 export default DashboardTabs;

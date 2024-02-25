@@ -34,5 +34,34 @@
     padding-top: 5px; /* Spacing after the title */
 }
 
+.custom-button {
+    background: linear-gradient(180deg, rgba(174,174,182,1) 0%, rgba(94,108,216,1) 100%);
+    border: none;
+    color: white;
+    border-radius: 10px; /* Adjust as needed for desired roundness */
+    padding: 10px 20px; /* Adjust for desired size */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Adjust as needed */
+    transition: all 0.3s ease; /* For a smooth transition on hover */
+}
+  
+.custom-button:hover {
+    background: linear-gradient(180deg, rgb(92, 92, 121) 0%, rgba(102,116,228,1) 100%);
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Slightly more pronounced shadow on hover */
+}
+
+.delete-account-button {
+    background-color: #dc3545; /* Bootstrap's danger color */
+    color: white;
+    border: none;
+    border-radius: 10px; /* Adjust as needed */
+    padding: 10px 20px; /* Adjust for desired size */
+    margin-left: 10px; /* Adds some space between the buttons */
+    font-size: 16px;
+    font-weight: bold;
+}
+  
+.delete-account-button:hover {
+    background-color: #c82333; /* A darker shade for hover */
+}
 
 

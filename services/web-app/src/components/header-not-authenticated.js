@@ -38,7 +38,7 @@ const RegisterButton = () => {
 export default function HeaderNotAuthenticated() {
     return (
       <div className="App">
-        <Navbar expand="lg" className="bg-body-tertiary" bg="dark" data-bs-theme="dark">
+        <Navbar expand="lg" style={{ backgroundColor: '#21212B' }}  data-bs-theme="dark">
             <Container fluid>
                 <img src={securityseal} height={40} alt="Security Seal Logo"/>
                 <Navbar.Brand href="/">Security Seal</Navbar.Brand>
