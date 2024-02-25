@@ -1,0 +1,15 @@
+version: '3.9'
+
+networks:
+  bcs-group-17:
+    external: true
+
+services:
+  code-validator:
+    image: ghcr.io/ic4rus90/bachelor/code-validator:latest
+    volumes:
+      - ./logs:/usr/src/app/logs
+    ports:
+      - "8200:8200"
+    networks:
+      - bcs-group-17
