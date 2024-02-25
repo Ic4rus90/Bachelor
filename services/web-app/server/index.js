@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const pool = require('./db');
+const { Pool } = require('pg');
+require("dotenv").config({ path: '/../.env' });
+
 
 // Run the express library
 const app = express();
@@ -9,11 +11,17 @@ const port = 3000;
 // Middleware
 app.use(cors());
 
+const connection = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
+
+const pool = new Pool({
+    connectionString: connection
+})
+
 // Gives us access to the request body
 app.use(express.json());
 
-
-app.get('/:id', async(req, res) => {
+// For testing purposes
+app.get('/', async(req, res) => {
     res.send('Hello World!')
     });
 

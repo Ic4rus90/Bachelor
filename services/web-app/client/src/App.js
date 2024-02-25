@@ -7,7 +7,7 @@ import AuthGuard from './components/auth-guard';
 import NotFoundPage from './pages/not-found-page';
 import DashboardPage from './pages/dashboard-page';
 import UserManagementPage from './pages/user-management-page'
-
+import ListVulnerabilities from './pages/list_vulnerabilities';
 
 function App() {
   return (
@@ -17,7 +17,7 @@ function App() {
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path= "/dashboard" element={<AuthGuard page={DashboardPage} />} />
-            <Route path="/account" element={<AuthGuard page={UserManagementPage} />} />
+            <Route path="/account" element={< AuthGuard page={ListVulnerabilities}/>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </header>
