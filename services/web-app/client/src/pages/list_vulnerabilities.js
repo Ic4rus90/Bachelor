@@ -5,7 +5,6 @@ const ListVulnerabilities = () => {
 
     const getVulnerabilities = async () => {
         try {
-            
             const response = await fetch("http://localhost:3000/reports/2");
             console.log(response)
             const data = await response.json();

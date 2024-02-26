@@ -52,7 +52,6 @@ app.get('/reports/:id', async(req,res) => {
     } catch(error) {
         console.error(error.message)
     }
-
 })
 
 
