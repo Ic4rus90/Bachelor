@@ -59,7 +59,6 @@ if __name__ == '__main__':
 ]
 
 
-
 function DashboardTabs() {
   return (
     <Tabs
