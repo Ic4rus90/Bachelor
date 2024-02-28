@@ -5,10 +5,13 @@ from loguru import logger
 import os
 import uvicorn
 import requests
+import json
 
 app = FastAPI()
 
 validator_url = "http://localhost:8200/check-syntax"
+llm_url = "http://localhost:8300/generate"
+
 
 class CodeAnalysisRequest(BaseModel):
     code: str
@@ -18,6 +21,18 @@ class CodeAnalysisRequest(BaseModel):
 class SyntaxCheckRequest(BaseModel):
     file_extension: str
     code: str
+
+class LLMRequest(BaseModel):
+    system_prompt: str
+    user_prompt: str
+    max_new_tokens: int
+    temperature: float
+    top_p: float
+    top_k: int
+    num_return_sequences: int
+    early_stopping: bool
+    max_time: int
+
 def set_up_logger():
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(cur_dir)
