@@ -1,6 +1,6 @@
 CREATE TABLE reports (
   id SERIAL PRIMARY KEY,
-  user_id INTEGER NOT NULL,
+  user_id VARCHAR(50) NOT NULL,
   code VARCHAR(5000) NOT NULL
 );
 
@@ -15,10 +15,10 @@ CREATE TABLE vulnerabilities (
 );
 
 
-INSERT INTO reports (user_id, code) VALUES (1, 'const x = 1; const y = 2; const z = x + y;');
-INSERT INTO reports (user_id, code) VALUES (2, 'const x = 1; const y = 2; const z = x - y;');
-INSERT INTO reports (user_id, code) VALUES (3, 'const x = 1; const y = 2; const z = x * y;');
-INSERT INTO reports (user_id, code) VALUES (4, 'const x = 1; const y = 2; const z = x / y;');
+INSERT INTO reports (user_id, code) VALUES ('auth0|65c23300ee05ad4b27e3fb1a', 'const x = 1; const y = 2; const z = x + y;');
+INSERT INTO reports (user_id, code) VALUES ('auth0|65c23300ee05ad4b27e3fb1a', 'const x = 1; const y = 2; const z = x - y;');
+INSERT INTO reports (user_id, code) VALUES (2, 'const x = 1; const y = 2; const z = x * y;');
+INSERT INTO reports (user_id, code) VALUES (3, 'const x = 1; const y = 2; const z = x / y;');
 
 INSERT INTO vulnerabilities (user_id, report_id, vulnerability, vulnerable_code) VALUES (1, 1, 'Addition', 'const z = x + y;');
 INSERT INTO vulnerabilities (user_id, report_id, vulnerability, vulnerable_code) VALUES (2, 2, 'Subtraction', 'const z = x - y;'),

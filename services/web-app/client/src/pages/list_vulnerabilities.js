@@ -1,4 +1,20 @@
+import { useAuth0 } from '@auth0/auth0-react';
 import React, { Fragment, useEffect, useState } from 'react';
+
+
+
+async function GetReports() {
+    const { getAccessTokenSilently } = useAuth0();
+    const token = await getAccessTokenSilently();
+    const response = await fetch('http://localhost:3000/reports', {
+        headers: {
+            Authorization: `Bearer ${token}`,
+    },
+    });
+    const data = await response.json();
+    return data;
+}
+
 
 const ListVulnerabilities = () => {
     const [vulnerabilities, setVulnerabilities] = useState([]);
