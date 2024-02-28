@@ -28,7 +28,7 @@ def set_up_logger():
 
 
 # STUB for testing only!
-@task
+@task(name="Validate Token")
 def validate_token_task(token: str) -> bool:
     logger.info("Validating user token")
     if token != "valid_token":
@@ -37,7 +37,7 @@ def validate_token_task(token: str) -> bool:
     logger.info("Token is valid")
     return True
 
-@task
+@task(name="Validate Code and Generate Prompt")
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
     validation_request = SyntaxCheckRequest(file_extension=file_extension, code=code)
     request_data = validation_request.dict()
@@ -55,21 +55,21 @@ def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
         logger.error(f"Request to code validator failed {e}")
         raise ValueError("Code validation failed due to a network or server error")
 
-@task
+@task(name="Call LLM Model")
 def call_llm_task(prompt: str) -> str:
     logger.info("Calling LLM model to analyze code")
 
     logger.info("LLM output received")
     return "LLM output"
 
-@task
+@task(name="Generate Report")
 def generate_report_task(llm_output: str) -> str:
     logger.info("Sending LLM output to generate report summary")
 
     logger.info("Report summary generated")
     return "Report summary generated"
 
-@task
+@task(name="Store Report")
 def store_report_task(llm_output: str) -> str:
     logger.info("Sending report to web-app for storage")
 
@@ -77,7 +77,7 @@ def store_report_task(llm_output: str) -> str:
     return "Report stored succesfully"
 
 
-@flow
+@flow(name="Code Analysis Flow")
 def code_analysis_flow(code: str, file_extension: str, token: str):
     if validate_token_task(token):
         prompt = generate_prompt_code_validator_task(code, file_extension)
