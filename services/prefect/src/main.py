@@ -4,14 +4,20 @@ from prefect import flow, task
 from loguru import logger
 import os
 import uvicorn
+import requests
 
 app = FastAPI()
+
+validator_url = "http://localhost:8200/check-syntax"
 
 class CodeAnalysisRequest(BaseModel):
     code: str
     file_extension: str
     token: str
 
+class SyntaxCheckRequest(BaseModel):
+    file_extension: str
+    code: str
 def set_up_logger():
     cur_dir = os.path.dirname(os.path.abspath(__file__))
     parent_dir = os.path.dirname(cur_dir)
@@ -33,10 +39,21 @@ def validate_token_task(token: str) -> bool:
 
 @task
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
+    validation_request = SyntaxCheckRequest(file_extension=file_extension, code=code)
+    request_data = validation_request.dict()
     logger.info("Sending code to code validator")
-
-    logger.info("Code is valid")
-    return "This is the prompt"
+    try:
+        response = requests.post(validator_url, json=request_data)
+        response.raise_for_status()
+        validation_result = response.json()
+        logger.info(f"Code validation result: {validation_result}")
+        return validation_result
+    except requests.HTTPError as e:
+        logger.error(f"Request to code validator failed: {e.response.status_code} - {e.response.text}")
+        raise ValueError(f"Code validation failed: {e.response.text}")
+    except requests.RequestException as e:
+        logger.error(f"Request to code validator failed {e}")
+        raise ValueError("Code validation failed due to a network or server error")
 
 @task
 def call_llm_task(prompt: str) -> str:
@@ -81,7 +98,7 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
             return {"summary": result}
         except Exception as e:
             logger.error(f"Error occurred while analyzing code: {e}")
-            raise HTTPException(status_code=500, detail="Error occurred while analyzing code. Please try again later.")
+            raise HTTPException(status_code=500, detail="Internal server error occurred while analyzing code")
 
 set_up_logger()
 
