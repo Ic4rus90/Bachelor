@@ -17,12 +17,13 @@ log_file_path = "/usr/src/app/logs/codellama.log"
 logger.add(log_file_path, rotation="50 MB", enqueue=True)
 
 
-logger.info("Loading tokenizer and model...")
+logger.info("Loading tokenizer")
 tokenizer = AutoTokenizer.from_pretrained(
    model_id,
    cache_dir="/usr/src/app/tokenizer"
 )
 
+logger.info("Loading model")
 model = AutoModelForCausalLM.from_pretrained(
    model_id,
    torch_dtype=torch.float16,
@@ -76,7 +77,10 @@ async def generate(request: Request, generate_request: GenerateRequest):
         input_tokens = len(tokenizer.encode(system_prompt + user_prompt, add_special_tokens=True))
         logger.info(f"Number of tokens in the input (from: {client_host}): {input_tokens}")
 
+        raw_input = tokenizer.apply_chat_template(chat, tokenize=False)
+        logger.info(f"Raw token input: {raw_input}")
         inputs = tokenizer.apply_chat_template(chat, return_tensors="pt").to("cuda")
+        logger.info(f"Token input: {inputs}")
 
         start_time = datetime.now()
         output = model.generate(
