@@ -20,8 +20,10 @@ logger.add(log_file_path, rotation="50 MB", enqueue=True)
 logger.info("Loading tokenizer")
 tokenizer = AutoTokenizer.from_pretrained(
    model_id,
-   cache_dir="/usr/src/app/tokenizer"
+   cache_dir="/usr/src/app/tokenizer",
+   add_eos_token=True
 )
+tokenizer.add_special_tokens({'pad_token': '[PAD]'})
 
 logger.info("Loading model")
 model = AutoModelForCausalLM.from_pretrained(
