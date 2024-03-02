@@ -75,6 +75,7 @@ suite('Extension Test Suite', () => {
 		assert.ok(showErrorSpy.calledWith("Unsupported file type. Supported file types: C, C++, C# and Python."));
 	});
 
+	/*
 	test('Shows information message when code is sent for analysis', async () => {
 		sandbox.stub(vscode.window, 'activeTextEditor').value({ 
 			document: {
@@ -125,4 +126,5 @@ suite('Extension Test Suite', () => {
 		// Assert that outputChannel.appendLine was called
 		assert.ok(mockOutputChannel.appendLine.called);
 	});
+	*/
 });

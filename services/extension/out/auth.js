@@ -46,6 +46,7 @@ async function authenticate(context) {
         `code_challenge=${codeChallenge}&` +
         'code_challenge_method=S256&' +
         'state=ASDF2F2F2';
+    // Possibly change state
     // Open the authentication URL in the user's default web browser
     vscode.env.openExternal(vscode.Uri.parse(authURL));
     try {
@@ -103,6 +104,7 @@ async function storeTokens(tokens, context) {
 }
 async function isAccessTokenExpired(context) {
     const expiry_timestamp = await context.secrets.get('security-seal-access-token-expiry');
+    // TODO: Review logic here
     if (!expiry_timestamp) {
         return true;
     }

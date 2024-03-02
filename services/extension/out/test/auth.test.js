@@ -27,8 +27,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = __importStar(require("assert"));
-// You can import and use all API from the 'vscode' module
-// as well as import your extension to test it
 const vscode = __importStar(require("vscode"));
 // Importing sinon for mocking
 const sinon_1 = __importDefault(require("sinon"));
