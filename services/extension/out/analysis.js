@@ -27,7 +27,7 @@ exports.analyzeCode = void 0;
 const vscode = __importStar(require("vscode"));
 const utils_1 = require("./utils");
 const auth_1 = require("./auth");
-const llm_stub_1 = require("./llm-stub");
+const send_request_1 = require("./send-request");
 async function analyzeCode(output_channel, context) {
     // Check if the user is authenticated
     const authenticated = await context.secrets.get('security-seal-access-token');
@@ -58,9 +58,10 @@ async function analyzeCode(output_channel, context) {
     }
     // Display message to the user. Kept for now for future development.
     vscode.window.showInformationMessage('Your code is sent for analysis.');
-    const text = (0, llm_stub_1.LLMStub)(code, file_extension);
+    // Get the analyzed code
+    const analyzed_code = await (0, send_request_1.getAnalyzedCode)(code, file_extension, authenticated);
     output_channel.show();
-    output_channel.appendLine(text);
+    output_channel.appendLine(analyzed_code);
 }
 exports.analyzeCode = analyzeCode;
 ;

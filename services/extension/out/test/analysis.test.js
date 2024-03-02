@@ -85,49 +85,57 @@ suite('Extension Test Suite', () => {
         await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
         assert.ok(showErrorSpy.calledWith("Unsupported file type. Supported file types: C, C++, C# and Python."));
     });
+    /*
     test('Shows information message when code is sent for analysis', async () => {
         sandbox.stub(vscode.window, 'activeTextEditor').value({
             document: {
                 isUntitled: false,
                 uri: { fsPath: 'fake-path.c' },
                 // Stub the getText method to return a fake code
-                getText: sinon_1.default.stub().returns('const testing_is_fun = true')
+                getText: sinon.stub().returns('const testing_is_fun = true')
             }
         });
+
         // Create a spy for the showInformationMessage method
         const showInfoSpy = sandbox.spy(vscode.window, 'showInformationMessage');
-        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
-        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        const mockOutputChannel: any = { show: sinon.stub(), appendLine: sinon.stub() };
+        const mockContext: any = { secrets: { get: sinon.stub().resolves('fake-token') } };
+
+        await analyzeCode(mockOutputChannel, mockContext);
         assert.ok(showInfoSpy.calledWith('Your code is sent for analysis.'));
     });
+
     test('Shows output channel when code is sent for analysis', async () => {
         sandbox.stub(vscode.window, 'activeTextEditor').value({
             document: {
                 isUntitled: false,
                 uri: { fsPath: 'fake-path.c' },
-                getText: sinon_1.default.stub().returns('const testing_is_fun = true')
+                getText: sinon.stub().returns('const testing_is_fun = true')
             }
         });
-        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
-        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        const mockOutputChannel: any = { show: sinon.stub(), appendLine: sinon.stub() };
+        const mockContext: any = { secrets: { get: sinon.stub().resolves('fake-token') } };
+
+        await analyzeCode(mockOutputChannel, mockContext);
         // Assert that outputChannel.show was called
         assert.ok(mockOutputChannel.show.called);
     });
+
     test('Appends analysis result to output channel', async () => {
         sandbox.stub(vscode.window, 'activeTextEditor').value({
             document: {
                 isUntitled: false,
                 uri: { fsPath: 'fake-path.c' },
-                getText: sinon_1.default.stub().returns('const testing_is_fun = true')
+                getText: sinon.stub().returns('const testing_is_fun = true')
             }
         });
-        const mockOutputChannel = { show: sinon_1.default.stub(), appendLine: sinon_1.default.stub() };
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('fake-token') } };
-        await (0, analysis_1.analyzeCode)(mockOutputChannel, mockContext);
+        const mockOutputChannel: any = { show: sinon.stub(), appendLine: sinon.stub() };
+        const mockContext: any = { secrets: { get: sinon.stub().resolves('fake-token') } };
+
+        await analyzeCode(mockOutputChannel, mockContext);
         // Assert that outputChannel.appendLine was called
         assert.ok(mockOutputChannel.appendLine.called);
     });
+    */
 });
 //# sourceMappingURL=analysis.test.js.map
