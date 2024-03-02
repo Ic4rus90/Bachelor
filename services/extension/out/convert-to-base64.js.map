@@ -1,0 +1,1 @@
+{"version":3,"file":"convert-to-base64.js","sourceRoot":"","sources":["../src/convert-to-base64.ts"],"names":[],"mappings":";;;AAEA,SAAS,cAAc,CAAC,MAAc;IAClC,GAAG;IACH,MAAM,cAAc,GAAW,IAAI,CAAC,MAAM,CAAC,CAAC;IAC5C,OAAO,cAAc,CAAC;AACxB,CAAC;AASQ,wCAAc;AANzB,SAAS,gBAAgB,CAAC,cAAsB;IAC5C,GAAG;IACH,MAAM,cAAc,GAAW,IAAI,CAAC,cAAc,CAAC,CAAC;IACpD,OAAO,cAAc,CAAC;AACxB,CAAC;AAEwB,4CAAgB"}
