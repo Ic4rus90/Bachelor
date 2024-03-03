@@ -4,6 +4,9 @@ const { Pool } = require('pg');
 const { auth } = require('express-oauth2-jwt-bearer')
 require("dotenv").config({ path: '/../.env' });
 const jwt = require('jsonwebtoken');
+var axios = require('axios').default;
+//var request = require("request");
+
 
 // Create a new express application
 const app = express(); 
@@ -74,7 +77,6 @@ app.get('/getreports', checkJWT, async function(req, res) {
 })
 
 
-
 // Add reports
 app.post('/addreports', async(req,res) => {
     try {
@@ -89,7 +91,50 @@ app.post('/addreports', async(req,res) => {
     }
 })
 
+/*
+async function getManagementAPIToken() {
+    var options = { method: 'POST',
+                    url: 'https://security-seal.eu.auth0.com/oauth/token',
+                    headers: { 'content-type': 'application/json' },
+                    body: `{"client_id":${process.env.M2M_CLIENT_ID},"client_secret":${process.env.M2M_CLIENT_SECRET},"audience":${process.env.M2M_AUDIENCE},"grant_type":"client_credentials"}` };
 
+    request(options, function (error, response, body) {
+        if (error) throw new Error(error);
+        console.log(body);
+        const parsed_token = JSON.parse(body);
+        return parsed_token;
+    });
+}
+*/
+
+async function generatePasswordChangeEmail() {
+    //const sleep_token = await getManagementAPIToken();
+
+    var options = {
+        method: 'POST',
+        url: 'https:///security-seal.eu.auth0.com/dbconnections/change_password',
+        headers: {'content-type': 'application/json'},
+        data: {
+          client_id: `${process.env.M2M_CLIENT_ID}`,
+          email: 'thomaswiik_90@hotmail.com',
+          connection: 'Username-Password-Authentication'
+        }
+      };
+      
+      axios.request(options).then(function (response) {
+        console.log(response.data);
+        return response.data;
+      }).catch(function (error) {
+        console.error(error);
+      });
+}
+
+
+app.post('/changepassword', async(req, res) => {
+    //email = req.body.email;
+    const success = await generatePasswordChangeEmail();
+    return success;
+});
 
 
 app.listen(port, () => {

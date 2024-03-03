@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback} from 'react';
 import { Container, Card, Button, Row, Col } from 'react-bootstrap';
 import './user-management-page.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
@@ -6,15 +6,23 @@ import HeaderAuthenticated from '../components/header-authenticated'
 import { useAuth0 } from "@auth0/auth0-react";
 import LogoutButton from '../components/logout-button'
 import { PersonCircle } from 'react-bootstrap-icons';
+import GenerateChangePasswordEmail from '../components/change-password'
 
 
 
 export default function UserManagementPage() {
   
-  const { user, isAuthenticated, isLoading } = useAuth0();
-  //const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
-  
-  
+  const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
+
+  const handleResetPassword = useCallback(async () => {
+    try {
+      const token = await getAccessTokenSilently();
+      await GenerateChangePasswordEmail(token);
+    } catch (error) {
+        console.log(error)
+    }
+  }, [getAccessTokenSilently]);
+
 
   if (isLoading) {
     return <div className="loading">Loading ...</div>;
@@ -75,7 +83,7 @@ export default function UserManagementPage() {
                 <Row className="align-items-center" style={contentStyle}>
                   <Col style={contentColumnStyle}>
                     <div style={labelStyle}>Display Name</div>
-                    <div>Tuva Emilie</div>
+                    <div>Frank</div>
                   </Col>
                   <Col xs="auto" style={buttonColumnStyle}>
                     <Button className="custom-button" size="sm" style={buttonStyle}>Edit</Button>
@@ -98,7 +106,14 @@ export default function UserManagementPage() {
                   <div>••••••••</div>
                 </Col>
                 <Col xs="auto" style={buttonColumnStyle}>
-                  <Button className="custom-button" size="sm" style={buttonStyle}>Change</Button>
+                  <Button 
+                    className="custom-button" 
+                    size="sm" 
+                    style={buttonStyle}
+                    onClick={handleResetPassword}
+                    >
+                      Reset password
+                    </Button>
                 </Col>
               </Row>
               </Card.Body>
