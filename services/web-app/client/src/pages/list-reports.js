@@ -43,8 +43,9 @@ const ListVulnerabilities = () => {
                 </thead>
                 <tbody>
                     {reports.map(report => (
-                        <tr key={report.id}>
-                            <td>{report.code}</td>
+                        <tr key={report.report_id}>
+                            <td>{report.user_id}</td>
+                            <td>{report.report_date}</td>
                         </tr>
                     ))}
                 </tbody>

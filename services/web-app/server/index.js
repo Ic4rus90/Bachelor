@@ -56,7 +56,7 @@ app.get('/getreports', checkJWT, async function(req, res) {
         const userID = decoded.sub; 
 
         // Fetch reports from the database using the user ID
-        const { rows } = await pool.query('SELECT * FROM reports WHERE user_id = $1', [userID]);
+        const { rows } = await pool.query('SELECT * FROM report WHERE user_id = $1', [userID]);
         
         // If no reports are found, return something? 
         /*
