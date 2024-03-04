@@ -43,6 +43,7 @@
     "copy-js": "cp -r js/* out/",
     "vscode:prepublish": "npm run compile",
     "compile": "tsc -p ./",
+    "compile-tests": "tsc -b --clean && tsc -b",
     "watch": "tsc -watch -p ./",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src --ext ts",
