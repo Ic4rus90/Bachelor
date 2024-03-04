@@ -3,7 +3,7 @@ import React, { Fragment, useEffect, useState } from 'react';
 
 
 const ListVulnerabilities = () => {
-    const [reports, setReports] = useState([]);
+    const [reportData, setReportData] = useState(null);
     const { getAccessTokenSilently } = useAuth0();
     useEffect(() => {
         const getReports = async () => {
@@ -18,8 +18,8 @@ const ListVulnerabilities = () => {
                 if (response.ok) {
                     console.log("Response is OK");
                     const data = await response.json();
+                    setReportData(data); 
                     console.log("response fetched. If it fails then it is set reports")
-                    setReports(data);
                 } else {
                     console.error("Error fetching reports")
                 }
@@ -33,21 +33,40 @@ const ListVulnerabilities = () => {
         getReports();
     }, [getAccessTokenSilently]);
 
+    if (!reportData) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <Fragment>
             <table className="table mt-5 text-center">
                 <thead>
                     <tr>
-                        <th>Code</th>
+                        <th>User ID</th>
+                        <th>Report Date</th>
+                        <th>Vulnerabilities</th>
+                        <th>Analyzed Code</th>
                     </tr>
                 </thead>
                 <tbody>
-                    {reports.map(report => (
-                        <tr key={report.report_id}>
-                            <td>{report.user_id}</td>
-                            <td>{report.report_date}</td>
-                        </tr>
-                    ))}
+                    <tr key={reportData.report.report_id}>
+                        <td>{reportData.report.user_id}</td>
+                        <td>{new Date(reportData.report.report_date).toLocaleString()}</td>
+                        <td>
+                            {reportData.vulnerabilities.map(vuln => (
+                                <div key={vuln.vuln_id}>
+                                    {vuln.code_extract} - {vuln.vuln_summary}
+                                </div>
+                            ))}
+                        </td>
+                        <td>
+                            {reportData.analyzed_code.map(code => (
+                                <div key={code.analyzed_code_id}>
+                                    {code.code}
+                                </div>
+                            ))}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
         </Fragment>
