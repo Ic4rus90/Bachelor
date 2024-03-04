@@ -41,7 +41,7 @@ const checkJWT = auth({
 // For testing purposes
 app.get('/', async(req, res) => {
     return res.send('Hello World!')
-    });
+});
 
 
 // Get reports
@@ -87,14 +87,14 @@ app.get('/getreports', checkJWT, async function(req, res) {
         const reportData = rows.reduce((acc, row) => {
             // If the accumulator is empty, initialize it with the report details
             if (!acc.report) {
-                acc = { // Changed from acc.report to acc to properly initialize the accumulator
+                acc = { 
                     report: {
                         report_id: row.report_id,
                         user_id: row.user_id,
                         report_date: row.report_date,
                     },
                     vulnerabilities: [],
-                    analyzed_code: []
+                    analyzed_code: null
                 };
             }
 
@@ -112,14 +112,14 @@ app.get('/getreports', checkJWT, async function(req, res) {
                 });
             }
         
-            // If the row has analyzed code data, add it to the analyzed_code array
-            if (row.analyzed_code_id && !acc.analyzed_code.some(a => a.analyzed_code_id === row.analyzed_code_id)) {
-                acc.analyzed_code.push({
+            // Add analyzed code data to the analyzed_code object
+            if (row.analyzed_code_id && !acc.analyzed_code) {
+                acc.analyzed_code = {
                     analyzed_code_id: row.analyzed_code_id,
                     code: row.code,
                     code_language: row.code_language,
                     starting_line_number: row.starting_line_number
-                });
+                };
             }
         
         
@@ -132,7 +132,7 @@ app.get('/getreports', checkJWT, async function(req, res) {
         console.log("Server error: ", error.message);
         return res.status(500).send(error.message);
     }
-    });
+});
 
 
 
@@ -155,5 +155,5 @@ app.post('/addreports', async(req,res) => {
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
-    });
+});
 
