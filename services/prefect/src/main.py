@@ -1,56 +1,32 @@
 from fastapi import FastAPI, HTTPException, Request
-from pydantic import BaseModel
 from prefect import flow, task
-from loguru import logger
-import os
+from logger import logger, set_up_logger
+from models import TokenRequest, CodeAnalysisRequest, SyntaxCheckRequest, LLMRequest
+from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 import uvicorn
 import requests
-import json
+
 
 app = FastAPI()
 
-validator_url = "http://localhost:8200/check-syntax"
-llm_url = "http://localhost:8300/generate"
 
-
-class CodeAnalysisRequest(BaseModel):
-    code: str
-    file_extension: str
-    token: str
-
-class SyntaxCheckRequest(BaseModel):
-    file_extension: str
-    code: str
-
-class LLMRequest(BaseModel):
-    system_prompt: str
-    user_prompt: str
-    max_new_tokens: int
-    temperature: float
-    top_p: float
-    top_k: int
-    num_return_sequences: int
-    early_stopping: bool
-    max_time: int
-
-def set_up_logger():
-    cur_dir = os.path.dirname(os.path.abspath(__file__))
-    parent_dir = os.path.dirname(cur_dir)
-    logs_dir = os.path.join(parent_dir, "logs")
-    os.makedirs(logs_dir, exist_ok=True)
-    log_file_path = os.path.join(logs_dir, "workflow.log")
-    logger.add(log_file_path, format="{time:YYYY-MM-DD HH:mm:ss.ms} {extra} {level} {message} ", rotation="50 MB", enqueue=True)
-
-
-# STUB for testing only!
 @task(name="Validate Token")
 def validate_token_task(token: str) -> bool:
-    logger.info("Validating user token")
-    if token != "valid_token":
-        logger.error("Token is invalid")
-        raise ValueError("Invalid token")
-    logger.info("Token is valid")
-    return True
+    logger.info("Validating token...")
+    try:
+        token_request = TokenRequest(token=token)
+        response = requests.post(TOKEN_VALIDATOR_URL, json=token_request.model_dump())
+        response.raise_for_status()
+        return True
+    except requests.HTTPError as e:
+        logger.error(f"Request to token validator failed: {e.response.status_code} - {e.response.text}")
+        return False
+    except requests.RequestException as e:
+        logger.error(f"Request to token validator failed {e}")
+        return False
+    except Exception as e:
+        logger.error(f"Token validation failed: {e}")
+        return False
 
 @task(name="Validate Code and Generate Prompt")
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
@@ -58,7 +34,7 @@ def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
     request_data = validation_request.dict()
     logger.info("Sending code to code validator")
     try:
-        response = requests.post(validator_url, json=request_data)
+        response = requests.post(CODE_VALIDATOR_URL, json=request_data)
         response.raise_for_status()
         validation_result = response.json()
         logger.info(f"Code validation result: {validation_result}")
@@ -110,6 +86,8 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
             result = code_analysis_flow(code=code_analysis_request.code, 
                                         file_extension=code_analysis_request.file_extension, 
                                         token=code_analysis_request.token)
+            
+
             return {"summary": result}
         except Exception as e:
             logger.error(f"Error occurred while analyzing code: {e}")
@@ -118,4 +96,4 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
 set_up_logger()
 
 if __name__ == "__main__":
-    uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
+    uvicorn.run("main:app", host="127.0.0.1", port=30000, reload=True)
