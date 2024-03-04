@@ -6,6 +6,7 @@ from jwt.algorithms import RSAAlgorithm
 from loguru import logger
 
 AUTH0_DOMAIN = 'security-seal.eu.auth0.com'
+AUTH0_AUDIENCE = ['https://the-seal-of-approval-api.com/v1/reports', 'https://security-seal.eu.auth0.com/userinfo']
 
 # Sets up loguru to log to a file under token-validator/logs
 def set_up_logger() -> None:
@@ -44,6 +45,7 @@ def verify_token_with_auth0(token: str) -> bool:
                 token,
                 RSAAlgorithm.from_jwk(rsa_key),
                 algorithms=['RS256'],
+                audience=AUTH0_AUDIENCE,
                 issuer=f'https://{AUTH0_DOMAIN}/'
             )
             print("Token is valid.")
