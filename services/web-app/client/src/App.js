@@ -7,7 +7,7 @@ import NotFoundPage from './pages/not-found-page';
 import DashboardPage from './pages/dashboard-page';
 import UserManagementPage from './pages/user-management-page'
 import ReportHistoryPage from './pages/report-history-page';
-import ListReports from './pages/list-reports';
+
 
 function App() {
   return (
@@ -18,7 +18,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path= "/dashboard" element={<AuthGuard page={DashboardPage} />} />
             <Route path="/account" element={<AuthGuard page={UserManagementPage} />} />
-            <Route path="/history" element={<AuthGuard page={ListReports}/>} />
+            <Route path="/history" element={<AuthGuard page={ReportHistoryPage}/>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </header>

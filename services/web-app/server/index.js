@@ -41,7 +41,7 @@ const checkJWT = auth({
 // For testing purposes
 app.get('/', async(req, res) => {
     return res.send('Hello World!')
-    });
+});
 
 
 // Get reports
@@ -55,23 +55,84 @@ app.get('/getreports', checkJWT, async function(req, res) {
         const decoded = jwt.decode(token);
         const userID = decoded.sub; 
 
-        // Fetch reports from the database using the user ID
-        const { rows } = await pool.query('SELECT * FROM reports WHERE user_id = $1', [userID]);
-        
-        // If no reports are found, return something? 
-        /*
+        // Fetch the most recent report and related data for the user
+        const query = `
+            WITH recent_report AS (
+                SELECT report_id, user_id, report_date
+                FROM report
+                WHERE user_id = $1
+                ORDER BY report_date DESC
+                LIMIT 1
+            )
+            SELECT 
+                r.report_id, r.user_id, r.report_date,
+                v.vuln_id, v.code_extract, v.vuln_summary,
+                c.cwe_id, c.cwe_name, c.cwe_description,
+                a.analyzed_code_id, a.code, a.code_language, a.starting_line_number
+            FROM 
+                recent_report r
+            LEFT JOIN vulnerability v ON r.report_id = v.report_id
+            LEFT JOIN cwe c ON v.cwe_id = c.cwe_id
+            LEFT JOIN analyzed_code a ON r.report_id = a.report_id;
+        `;
+
+        const { rows } = await pool.query(query, [userID]);
+
+        // If no report is found, return a 404 status
         if (rows.length === 0) {
             return res.status(404).send('No reports found');
         }
-        */
-        
-        res.json(rows);
 
+        // Process the rows to group vulnerabilities and analyzed code under the same report
+        const reportData = rows.reduce((acc, row) => {
+            // If the accumulator is empty, initialize it with the report details
+            if (!acc.report) {
+                acc = { 
+                    report: {
+                        report_id: row.report_id,
+                        user_id: row.user_id,
+                        report_date: row.report_date,
+                    },
+                    vulnerabilities: [],
+                    analyzed_code: null
+                };
+            }
+
+            // If the row has vulnerability data, add it to the vulnerabilities array
+            if (row.vuln_id && !acc.vulnerabilities.some(v => v.vuln_id === row.vuln_id)) {
+                acc.vulnerabilities.push({
+                    vuln_id: row.vuln_id,
+                    code_extract: row.code_extract,
+                    vuln_summary: row.vuln_summary,
+                    cwe: {
+                        cwe_id: row.cwe_id,
+                        cwe_name: row.cwe_name,
+                        cwe_description: row.cwe_description
+                    }
+                });
+            }
+        
+            // Add analyzed code data to the analyzed_code object
+            if (row.analyzed_code_id && !acc.analyzed_code) {
+                acc.analyzed_code = {
+                    analyzed_code_id: row.analyzed_code_id,
+                    code: row.code,
+                    code_language: row.code_language,
+                    starting_line_number: row.starting_line_number
+                };
+            }
+        
+        
+            return acc;
+        }, {});
+        
+        res.json(reportData);
+        
     } catch(error) {
         console.log("Server error: ", error.message);
         return res.status(500).send(error.message);
     }
-})
+});
 
 
 
@@ -94,5 +155,5 @@ app.post('/addreports', async(req,res) => {
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`);
-    });
+});
 
