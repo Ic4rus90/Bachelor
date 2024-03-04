@@ -44,6 +44,7 @@ async function authenticate(context) {
         'redirect_uri=http://localhost:3000/callback&' +
         'scope=openid%20profile%20email&' +
         `code_challenge=${codeChallenge}&` +
+        'audience=https://the-seal-of-approval-API.com/v1/reports&' +
         'code_challenge_method=S256&' +
         'state=ASDF2F2F2';
     // Possibly change state

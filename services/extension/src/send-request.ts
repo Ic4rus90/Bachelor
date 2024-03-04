@@ -19,7 +19,7 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
     };
 
     // Define the URL to send the request to
-    const url = 'http://localhost:8000/secretary/summarize';
+    const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
 
     // Return the fetch call and its promise chain
     return fetch(url, {
