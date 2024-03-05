@@ -57,7 +57,15 @@ export default function UserManagementPage() {
     paddingLeft: '0', // This removes padding to the left of the button column, if desired
   };
 
-
+  
+/*
+Fjernet fra Return frem til vi 
+<h1 style={{ color: '#fff', marginBottom: '2rem', marginLeft: '0.3rem', textAlign: 'left', fontSize:30 }}> 
+          
+          <PersonCircle size={60} style={{marginRight: '1rem'}}/>
+          Tuva Emilie
+          </h1>
+          */
   
   return (
     isAuthenticated && (
@@ -66,22 +74,9 @@ export default function UserManagementPage() {
       <header className="App-header">
         <Container fluid className="my-4">
           <div style={cardContainerStyle}>
-          <h1 style={{ color: '#fff', marginBottom: '2rem', marginLeft: '0.3rem', textAlign: 'left', fontSize:30 }}> 
-          <PersonCircle size={60} style={{marginRight: '1rem'}}/>
-          Tuva Emilie
-          </h1>
+          
             <Card style={cardStyle}>
               <Card.Body>
-                <Row className="align-items-center" style={contentStyle}>
-                  <Col style={contentColumnStyle}>
-                    <div style={labelStyle}>Display Name</div>
-                    <div>Tuva Emilie</div>
-                  </Col>
-                  <Col xs="auto" style={buttonColumnStyle}>
-                    <Button className="custom-button" size="sm" style={buttonStyle}>Edit</Button>
-                  </Col>
-                </Row>
-
               <Row className="align-items-center" style={contentStyle}>
                 <Col style={contentColumnStyle}>
                   <div style={labelStyle}>Email</div>
