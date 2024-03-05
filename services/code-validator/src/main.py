@@ -98,7 +98,7 @@ async def check_syntax(request: SyntaxCheckRequest):
             raise HTTPException(status_code=400, detail="Invalid C# code")
     else:
         logger.warning("Invalid file extension")
-        raise HTTPException(status_code=400, detail="Invalid file extension")
+        raise HTTPException(status_code=422, detail="Invalid file extension")
 
 # TODO: send the prompt to Kong gateway
 
