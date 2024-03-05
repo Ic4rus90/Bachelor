@@ -1,10 +1,11 @@
 from datetime import datetime
 from fastapi import HTTPException
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from config import model_id, cache_dir_model, cache_dir_tokenizer
+from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt, max_new_tokens, max_time, repetition_penalty, typical_p, do_sample
 from encoder import decode_base, encode_base
 from logger import logger
-from models import GenerateRequest
+from models import GenerateRequest, GenerateResponse
+from response_cleaner import clean_response
 
 import torch
 
@@ -25,12 +26,11 @@ logger.info("Model loaded")
 
 
 # Generate the LLM response from the input prompts
-async def generate_text(request, generate_request: GenerateRequest):
+async def generate_text(request, generate_request: GenerateRequest) -> GenerateResponse:
     # Get client host for logging
     client_host = request.client.host
     logger.info(f"Received generation request from {client_host}.")
 
-    system_prompt = decode_base(generate_request.system_prompt, client_host)
     user_prompt = decode_base(generate_request.user_prompt, client_host)
 
     # Generation
@@ -51,11 +51,11 @@ async def generate_text(request, generate_request: GenerateRequest):
         start_time = datetime.now()
         output = model.generate(
             input_ids=inputs,
-            max_new_tokens=generate_request.max_new_tokens,
-            max_time=generate_request.max_time,
-            repetition_penalty=generate_request.repetition_penalty,
-            typical_p=generate_request.typical_p,
-            do_sample=False
+            max_new_tokens=max_new_tokens,
+            max_time=max_time,
+            repetition_penalty=repetition_penalty,
+            typical_p=typical_p,
+            do_sample=do_sample
         )
         end_time = datetime.now()
         duration = (end_time - start_time).total_seconds()
@@ -67,16 +67,27 @@ async def generate_text(request, generate_request: GenerateRequest):
         logger.info(f"Generation took {duration} seconds (from {client_host})")
 
         # Encode to base64 before response
-        response = encode_base(tokenizer.decode(output, skip_special_tokens=True))
+        llm_response = tokenizer.decode(output)
+        response = encode_base(clean_response(llm_response))
         logger.info(f"Generation request processed successfully. (from {client_host})")
 
-        result = [
-            {"input_token_num": input_tokens},
-            {"output_token_num": output_tokens},
-            {"generation_time": duration},
-            {"response": response}
-        ]
+        result = GenerateResponse(
+            input_token_num=input_tokens,
+            output_token_num=output_tokens,
+            generation_time=duration,
+            llm_output=response
+        )
         return result
+    except ValueError as e:
+        if str(e) == "Could not find JSON in the output.":
+            logger.error(f"Could not find JSON in the output (from {client_host}): {e}")
+            raise HTTPException(status_code=400, detail="Could not find JSON in the output")
+        elif str(e) == "Could not find LLM response in the output.":
+            logger.error(f"Could not find LLM response in the output (from {client_host}): {e}")
+            raise HTTPException(status_code=400, detail="Could not find LLM response in the output")
+        else:
+            logger.error(f"Error during text generation (from {client_host}): {e}")
+            raise HTTPException(status_code=500, detail="Error during text generation")
     except Exception as e:
         logger.error(f"Error during text generation (from {client_host}): {e}")
         raise HTTPException(status_code=500, detail="Error during text generation")
