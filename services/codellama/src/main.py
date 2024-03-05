@@ -32,6 +32,16 @@ tokenizer = AutoTokenizer.from_pretrained(
 )
 logger.info("Tokenizer loaded")
 
+# Example of modifying the eos_token directly
+# Check if the tokenizer has an eos_token attribute first
+if hasattr(tokenizer, 'eos_token'):
+    original_eos = tokenizer.eos_token
+    tokenizer.eos_token = '<step>'
+    print(f"Changed eos_token from {original_eos} to {tokenizer.eos_token}")
+else:
+    print("This tokenizer does not have an eos_token attribute.")
+
+
 logger.info("Loading model...")
 model = AutoModelForCausalLM.from_pretrained(
    model_id,
