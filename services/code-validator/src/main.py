@@ -36,7 +36,7 @@ def decode_code(encoded_code):
         return decoded_code
     except Exception as e:
         logger.error(f"Error decoding code: {e}")
-        raise HTTPException(status_code=400, detail="Invalid request")
+        raise HTTPException(status_code=500, detail="Invalid base64 in request")
 
 # Function that encodes the code back to base64 after validation
 def encode_code(decoded_code):
