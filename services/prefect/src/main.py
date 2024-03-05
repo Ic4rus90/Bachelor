@@ -5,7 +5,6 @@ from logger import logger, set_up_logger
 from models import CodeAnalysisRequest
 
 
-
 app = FastAPI()
 
 
@@ -36,21 +35,15 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
             if str(e) == "Invalid token received": # If token is invalid
                 logger.error("Raised 401 due to invalid token")
                 raise HTTPException(status_code=401, detail="Invalid token received")
-            elif str(e) == "Error validating token": # If token validation fails for any other reason
-                logger.error("Raised 500 due to error validating token")
-                raise HTTPException(status_code=500, detail="Error validating token")
             elif str(e) == "Invalid code received": # If the code received is invalid
                 logger.error("Raised 400 due to invalid code")
                 raise HTTPException(status_code=400, detail="Invalid code received")
-            elif str(e) == "Error validating code": # If the code validation fails for any other reason
-                logger.error("Raised 500 due to error validating code")
-                raise HTTPException(status_code=500, detail="Error validating code")
             elif str(e) == "Invalid file extension received": # If an invalid file extension is received
                 logger.error("Raised 422 due to invalid file extension")
                 raise HTTPException(status_code=422, detail="Invalid file extension received")
             else:
                 logger.error("Raised 500 due to unknown error")
-                raise HTTPException(status_code=500, detail="Server error occurred")
+                raise HTTPException(status_code=500, detail="Server error occurred, please contact us for assistance.")
 
 set_up_logger()
 
