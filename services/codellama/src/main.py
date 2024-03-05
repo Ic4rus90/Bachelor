@@ -38,13 +38,13 @@ logger.info("Tokenizer and model loaded successfully.")
 class GenerateRequest(BaseModel):
     system_prompt: str = "WW91IGFyZSBhbiBleHBlcnQgcHJvZ3JhbW1lciB0aGF0IGdpdmVzIHNob3J0IGFuZCBjb25jaXNlIGFuc3dlcnMgdG8gdGhlIGdpdmVuIHF1ZXN0aW9ucw=="
     user_prompt: str = "QW5hbHl6ZSB0aGUgZm9sbG93aW5nIGNvZGUgYW5kIGdpdmUgYSBsaXN0IG9mIHZ1bG5lcmFiaWxpdGllcyBkaXNjb3ZlcmVkOgoKY2hhciAqIGNvcHlfaW5wdXQoY2hhciAqdXNlcl9zdXBwbGllZF9zdHJpbmcpewppbnQgaSwgZHN0X2luZGV4OwpjaGFyICpkc3RfYnVmID0gKGNoYXIqKW1hbGxvYyg0KnNpemVvZihjaGFyKSAqIE1BWF9TSVpFKTsKaWYgKCBNQVhfU0laRSA8PSBzdHJsZW4odXNlcl9zdXBwbGllZF9zdHJpbmcpICl7CmRpZSgidXNlciBzdHJpbmcgdG9vIGxvbmcsIGRpZSBldmlsIGhhY2tlciEiKTsKfQpkc3RfaW5kZXggPSAwOwpmb3IgKCBpID0gMDsgaSA8IHN0cmxlbih1c2VyX3N1cHBsaWVkX3N0cmluZyk7IGkrKyApewppZiggJyYnID09IHVzZXJfc3VwcGxpZWRfc3RyaW5nW2ldICl7CmRzdF9idWZbZHN0X2luZGV4KytdID0gJyYnOwpkc3RfYnVmW2RzdF9pbmRleCsrXSA9ICdhJzsKZHN0X2J1Zltkc3RfaW5kZXgrK10gPSAnbSc7CmRzdF9idWZbZHN0X2luZGV4KytdID0gJ3AnOwpkc3RfYnVmW2RzdF9pbmRleCsrXSA9ICc7JzsKfQplbHNlIGlmICgnPCcgPT0gdXNlcl9zdXBwbGllZF9zdHJpbmdbaV0gKXsKCi8qIGVuY29kZSB0byAmbHQ7ICovCn0KZWxzZSBkc3RfYnVmW2RzdF9pbmRleCsrXSA9IHVzZXJfc3VwcGxpZWRfc3RyaW5nW2ldOwp9CnJldHVybiBkc3RfYnVmOwp9"
-    max_new_tokens: int = 4096
-    temperature: float = 1.0
-    top_p: float = 1.0
-    top_k: int = 50
-    num_return_sequences: int = 1
-    early_stopping: bool = False
+    max_new_tokens: int = 2048
+    #temperature: float = 0.01
+    #top_p: float = 0.9
+    #top_k: int = 20
     max_time: int = 120
+    repetition_penalty: float = 1.15
+    typical_p: float = 1
     #force_words_ids: Optional[List[int]] = Field(default_factory=list)
     #constraints: Optional[List[str]] = Field(default_factory=list)
 
@@ -88,12 +88,13 @@ async def generate(request: Request, generate_request: GenerateRequest):
         output = model.generate(
             input_ids=inputs,
             max_new_tokens=generate_request.max_new_tokens,
-            temperature=generate_request.temperature,
-            top_p=generate_request.top_p,
-            top_k=generate_request.top_k,
-            num_return_sequences=generate_request.num_return_sequences,
-            early_stopping=generate_request.early_stopping,
-            max_time=generate_request.max_time
+            #temperature=generate_request.temperature,
+            #top_p=generate_request.top_p,
+            #top_k=generate_request.top_k,
+            max_time=generate_request.max_time,
+            repetition_penalty=generate_request.repetition_penalty,
+            typical_p=generate_request.typical_p,
+            do_sample=False
             #force_words_ids=generate_request.force_words_ids,
             #constraints=generate_request.constraints
         )
