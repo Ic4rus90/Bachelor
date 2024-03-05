@@ -1,4 +1,9 @@
 version: "3.8"
+
+networks:
+  bsc-group-17:
+    external: true
+
 services:
   bsc-group-17-llm:
     build:
