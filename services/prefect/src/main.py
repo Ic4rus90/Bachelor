@@ -23,6 +23,14 @@ def code_analysis_flow(code: str, file_extension: str, token: str):
 @app.post("/analyze-code/")
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
     client_host = request.client.host
+
+    # Extract authorization token first:
+    #authorization: str = request.headers.get("Authorization")
+    #if authorization and authorization.startswith("Bearer "):
+    #    token = authorization[7:]
+    #else:
+    #    raise HTTPException(status_code=401, detail="Invalid authorization bearer received")
+
     with logger.contextualize(client_host=client_host):
         logger.info(f"Received code analysis request: {code_analysis_request}")
         try:
