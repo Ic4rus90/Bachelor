@@ -41,7 +41,7 @@ def test_check_c_syntax(mock_check_c_syntax):
     mock_check_c_syntax.return_value = False
     response = client.post("/check-syntax/", json={"file_extension": "c", "code": encode_code("int mains; +2")})
     assert response.status_code == 400
-    assert response.json() == {"detail": "Invalid C code"}
+    assert response.json() == {"detail": "Invalid code"}
 
 # Test CPP code
 @patch('validators.cpp_val.check_cpp_syntax')
