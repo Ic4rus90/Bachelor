@@ -88,6 +88,6 @@ def test_check_csharp_syntax(mock_check_csharp_syntax):
 # Test invalid file extension
 def test_invalid_file_extension():
     response = client.post("/check-syntax/", json={"file_extension": "java", "code": encode_code("import java.util.*;")})
-    assert response.status_code == 400
+    assert response.status_code == 422
     assert response.json() == {"detail": "Invalid file extension"}
 
