@@ -4,7 +4,7 @@ from transformers import AutoTokenizer, AutoModelForCausalLM
 from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt, max_new_tokens, max_time, repetition_penalty, typical_p, do_sample
 from encoder import decode_base, encode_base
 from logger import logger
-from models import GenerateRequest
+from models import GenerateRequest, GenerateResponse
 
 import torch
 
@@ -25,7 +25,7 @@ logger.info("Model loaded")
 
 
 # Generate the LLM response from the input prompts
-async def generate_text(request, generate_request: GenerateRequest):
+async def generate_text(request, generate_request: GenerateRequest) -> GenerateResponse:
     # Get client host for logging
     client_host = request.client.host
     logger.info(f"Received generation request from {client_host}.")
@@ -69,12 +69,12 @@ async def generate_text(request, generate_request: GenerateRequest):
         response = encode_base(tokenizer.decode(output))
         logger.info(f"Generation request processed successfully. (from {client_host})")
 
-        result = [
-            {"input_token_num": input_tokens},
-            {"output_token_num": output_tokens},
-            {"generation_time": duration},
-            {"llm_output": response}
-        ]
+        result = GenerateResponse(
+            input_token_num=input_tokens,
+            output_token_num=output_tokens,
+            generation_time=duration,
+            llm_output=response
+        )
         return result
     except Exception as e:
         logger.error(f"Error during text generation (from {client_host}): {e}")
