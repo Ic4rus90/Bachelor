@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 class TransformRequest(BaseModel):
-    encoded_json: str
+    llm_output: str
     user_id: str
     file_extension: str
     analyzed_code: str

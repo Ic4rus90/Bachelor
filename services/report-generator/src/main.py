@@ -16,7 +16,7 @@ set_up_logger()
 @app.post("/generate-report", response_model=TransformResponse)
 async def generate_report(request: TransformRequest):
     try:
-        reports = await generate_reports(request)
+        reports = generate_reports(request)
         return reports
     except ValueError as e:
         if str(e) == "Validation of JSON schema failed":
