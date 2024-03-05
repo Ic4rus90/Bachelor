@@ -2,6 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAnalyzedCode = void 0;
 const convert_to_base64_1 = require("./convert-to-base64");
+// Helper function for formatting each vulnerability
+function formatVulnerability(vuln) {
+    return `${vuln.cweID}
+			${vuln.vulnSummary}
+			Vulnerable code: ${vuln.codeExtract}
+
+			`;
+}
 // Might need to change the return type of this function
 async function getAnalyzedCode(code, file_extension, token) {
     const data = {
@@ -10,28 +18,26 @@ async function getAnalyzedCode(code, file_extension, token) {
     };
     // Define the URL to send the request to
     const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
-    // Return the fetch call and its promise chain
-    return fetch(url, {
-        method: 'POST',
-        headers: {
-            'Authorization': `Bearer ${token}`,
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(data),
-    })
-        .then(response => {
+    try {
+        const response = await fetch(url, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data),
+        });
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
-        return response.json();
-    })
-        .then(data => {
-        return data;
-    })
-        .catch(error => {
+        const vulnerability_data = await response.json();
+        const formatted = vulnerability_data.vulnerabilities.map(formatVulnerability).join('');
+        return formatted;
+    }
+    catch (error) {
         console.error('Error:', error);
         throw error;
-    });
+    }
 }
 exports.getAnalyzedCode = getAnalyzedCode;
 //# sourceMappingURL=send-request.js.map
