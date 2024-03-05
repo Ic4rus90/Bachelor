@@ -4,12 +4,13 @@ const { Pool } = require('pg');
 const { auth } = require('express-oauth2-jwt-bearer')
 require("dotenv").config({ path: '/../.env' });
 const jwt = require('jsonwebtoken');
+const { insertAnalyzedCode, insertReport, insertVulnerability } = require('./database/insert-queries');
 
 // Create a new express application
 const app = express(); 
 const port = 3000; 
 
-// Middleware
+// Middleware. Not sure if origin parameter is necessary. 
 app.use(cors({
     origin: 'http://localhost:8500', 
 }));
@@ -138,17 +139,37 @@ app.get('/getreports', checkJWT, async function(req, res) {
 
 // Add reports
 app.post('/addreports', async(req,res) => {
+    const { userID, vulnerabilities, analyzedCode } = req.body;
+
+    // Borrow a pool connect
+    const client = await pool.connect();
+
     try {
-        const { code } = req.body;
-        const { report } = req.body;
-        const { vulnerabilities } = req.body;
-        console.log(req.body);
-        newReport = await pool.query("INSERT INTO reports (code, report, vulnerabilities) VALUES($1, $2, $3)", [code, report, vulnerabilities])
-        res.json(newReport.rows) 
+        await client.query('BEGIN'); // Start transaction
+
+        const reportID = await insertReport(client, userID);
+        if (!reportID) {
+            throw new Error('Failed to insert report');
+        }
+
+        for (const vuln of vulnerabilities) {
+            await insertVulnerability(client, reportID, vuln.cweID, vuln.codeExtract, vuln.vulnSummary );
+        }
+
+        await insertAnalyzedCode(client, reportID, analyzedCode.code, analyzedCode.language);
+
+        await client.query('COMMIT'); // Commit the transaction if no errors occur
+        
+        res.send('Success');
+
     } catch(error) {
-        console.log(error.message)
+        await client.query('ROLLBACK'); // Roll back the transaction if errors occured
+        console.error("Transaction error", error);
+        res.status(500).send('An error occured.');
+    } finally {
+        client.release(); // Release the borrowed client back to the connection pool. 
     }
-})
+});
 
 
 
