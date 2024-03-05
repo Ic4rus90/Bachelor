@@ -1,6 +1,6 @@
 from logger import logger
 from prefect import task
-from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest
+from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 
 import requests
@@ -57,9 +57,25 @@ def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
 @task(name="Call LLM Model")
 def call_llm_task(prompt: str) -> str:
     logger.info("Calling LLM model to analyze code")
-
-    logger.info("LLM output received")
-    return "LLM output"
+    try:
+        request_data = LLMRequest(user_prompt=prompt)
+        response = requests.post(LLM_URL, json=request_data.model_dump())
+        response.raise_for_status()
+        llm_output = LLMResponse(**response.json()).llm_output
+        logger.info(f"LLM output received: {llm_output}")
+        return llm_output
+    except requests.HTTPError as e:
+        if e.response.status_code == 500:
+            logger.error(f"Internal server error occured in LLM: {e.response.status_code} - {e.response.text}")
+            raise ValueError("LLM server error occured")
+        logger.error(f"Error calling LLM model: {e.response.status_code} - {e.response.text}")
+        raise ValueError("Error calling LLM model")
+    except requests.RequestException as e:
+        logger.error(f"Request to LLM model failed {e}")
+        raise ValueError("LLM model call failed due to a network or server error")
+    except Exception as e:
+        logger.error(f"LLM model call failed: {e}")
+        raise ValueError("LLM model call failed")
 
 @task(name="Generate Report")
 def generate_report_task(llm_output: str) -> str:
