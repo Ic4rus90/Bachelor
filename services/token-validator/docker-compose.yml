@@ -1,0 +1,18 @@
+version: "3.8"
+
+networks:
+  bsc-group-17:
+    external: true
+
+services:
+  bsc-group-17-tokenval:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: bsc-group-17-tokenval
+    volumes:
+      - ./logs:/usr/src/app/logs
+    networks:
+      - bsc-group-17
+    ports:
+      - "30001:30001"
