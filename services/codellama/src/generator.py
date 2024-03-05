@@ -5,6 +5,7 @@ from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt
 from encoder import decode_base, encode_base
 from logger import logger
 from models import GenerateRequest, GenerateResponse
+from response_cleaner import clean_response
 
 import torch
 
@@ -66,7 +67,8 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
         logger.info(f"Generation took {duration} seconds (from {client_host})")
 
         # Encode to base64 before response
-        response = encode_base(tokenizer.decode(output))
+        llm_response = tokenizer.decode(output)
+        response = encode_base(clean_response(llm_response))
         logger.info(f"Generation request processed successfully. (from {client_host})")
 
         result = GenerateResponse(
@@ -76,6 +78,19 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
             llm_output=response
         )
         return result
+    except ValueError as e:
+        if str(e) == "Error decoding JSON":
+            logger.error(f"Error decoding JSON (from {client_host}): {e}")
+            raise HTTPException(status_code=400, detail="Error decoding JSON")
+        elif str(e) == "Could not find JSON in the output.":
+            logger.error(f"Could not find JSON in the output (from {client_host}): {e}")
+            raise HTTPException(status_code=400, detail="Could not find JSON in the output")
+        elif str(e) == "Could not find LLM response in the output.":
+            logger.error(f"Could not find LLM response in the output (from {client_host}): {e}")
+            raise HTTPException(status_code=400, detail="Could not find LLM response in the output")
+        else:
+            logger.error(f"Error during text generation (from {client_host}): {e}")
+            raise HTTPException(status_code=500, detail="Error during text generation")
     except Exception as e:
         logger.error(f"Error during text generation (from {client_host}): {e}")
         raise HTTPException(status_code=500, detail="Error during text generation")
