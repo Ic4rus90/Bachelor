@@ -1,0 +1,17 @@
+version: "3.8"
+
+networks:
+  bsc-group-17:
+    external: true
+
+services:
+  bsc-group-17-prefect:
+    container_name: bsc-group-17-prefect
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs:/usr/src/app/logs
+    ports:
+      - "30000:30000"
+      
