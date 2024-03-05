@@ -19,14 +19,15 @@ def validate_token_task(token: str) -> bool:
         response.raise_for_status()
         return True
     except requests.HTTPError as e:
+        if e.response.status_code == 401:
+            logger.error(f"Invalid token received: {e.response.status_code} - {e.response.text}")
+            raise ValueError("Invalid token received")
         logger.error(f"Request to token validator failed: {e.response.status_code} - {e.response.text}")
-        return False
     except requests.RequestException as e:
         logger.error(f"Request to token validator failed {e}")
-        return False
     except Exception as e:
         logger.error(f"Token validation failed: {e}")
-        return False
+    return False
 
 @task(name="Validate Code and Generate Prompt")
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
@@ -39,11 +40,23 @@ def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
         logger.info(f"Code validation result: {validation_result}")
         return validation_result
     except requests.HTTPError as e:
+        if e.response.status_code == 400:
+            logger.error(f"Invalid code received: {e.response.status_code} - {e.response.text}")
+            raise ValueError("Invalid code received")
+        elif e.response.status_code == 422:
+            logger.error(f"Invalid file extension received: {e.response.status_code} - {e.response.text}")
+            raise ValueError("Invalid file extension received")
+        elif e.response.status_code == 500:
+            logger.error(f"Error validating code: {e.response.status_code} - {e.response.text}")
+            raise ValueError("Error validating code")
         logger.error(f"Request to code validator failed: {e.response.status_code} - {e.response.text}")
-        raise ValueError(f"Code validation failed: {e.response.text}")
+        raise ValueError(f"Error validating code")
     except requests.RequestException as e:
         logger.error(f"Request to code validator failed {e}")
         raise ValueError("Code validation failed due to a network or server error")
+    except Exception as e:
+        logger.error(f"Code validation failed: {e}")
+        raise ValueError("Code validation failed")
 
 @task(name="Call LLM Model")
 def call_llm_task(prompt: str) -> str:
@@ -75,6 +88,9 @@ def code_analysis_flow(code: str, file_extension: str, token: str):
         report_summary = generate_report_task(llm_output)
         storage_result = store_report_task(llm_output)
         return report_summary
+    else:
+        logger.error("Error validating token")
+        raise ValueError("Error validating token")
 
 @app.post("/analyze-code/")
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
@@ -85,12 +101,27 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
             result = code_analysis_flow(code=code_analysis_request.code, 
                                         file_extension=code_analysis_request.file_extension, 
                                         token=code_analysis_request.token)
-            
 
             return {"summary": result}
-        except Exception as e:
-            logger.error(f"Error occurred while analyzing code: {e}")
-            raise HTTPException(status_code=500, detail="Internal server error occurred while analyzing code")
+        except ValueError as e:
+            if str(e) == "Invalid token received": # If token is invalid
+                logger.error("Raised 401 due to invalid token")
+                raise HTTPException(status_code=401, detail="Invalid token received")
+            elif str(e) == "Error validating token": # If token validation fails for any other reason
+                logger.error("Raised 500 due to error validating token")
+                raise HTTPException(status_code=500, detail="Error validating token")
+            elif str(e) == "Invalid code received": # If the code received is invalid
+                logger.error("Raised 400 due to invalid code")
+                raise HTTPException(status_code=400, detail="Invalid code received")
+            elif str(e) == "Error validating code": # If the code validation fails for any other reason
+                logger.error("Raised 500 due to error validating code")
+                raise HTTPException(status_code=500, detail="Error validating code")
+            elif str(e) == "Invalid file extension received": # If an invalid file extension is received
+                logger.error("Raised 422 due to invalid file extension")
+                raise HTTPException(status_code=422, detail="Invalid file extension received")
+            else:
+                logger.error("Raised 500 due to unknown error")
+                raise HTTPException(status_code=500, detail="Server error occurred")
 
 set_up_logger()
 
