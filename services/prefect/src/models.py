@@ -12,6 +12,9 @@ class SyntaxCheckRequest(BaseModel):
     file_extension: str
     code: str
 
+class SyntaxCheckResponse(BaseModel):
+    user_prompt: str
+
 class LLMRequest(BaseModel):
     system_prompt: str
     user_prompt: str

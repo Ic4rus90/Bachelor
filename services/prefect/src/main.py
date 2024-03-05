@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException, Request
 from prefect import flow, task
 from logger import logger, set_up_logger
-from models import TokenRequest, CodeAnalysisRequest, SyntaxCheckRequest, LLMRequest
+from models import TokenRequest, CodeAnalysisRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 import uvicorn
 import requests
@@ -36,9 +36,9 @@ def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
         request_data = SyntaxCheckRequest(file_extension=file_extension, code=code)
         response = requests.post(CODE_VALIDATOR_URL, json=request_data.model_dump())
         response.raise_for_status()
-        validation_result = response.json()
-        logger.info(f"Code validation result: {validation_result}")
-        return validation_result
+        user_prompt = SyntaxCheckResponse(**response.json()).user_prompt
+        logger.info(f"Received prompt from code-validator: {user_prompt}")
+        return user_prompt
     except requests.HTTPError as e:
         if e.response.status_code == 400:
             logger.error(f"Invalid code received: {e.response.status_code} - {e.response.text}")
