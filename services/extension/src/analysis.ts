@@ -1,7 +1,7 @@
 import * as vscode from 'vscode';
 import { getFileExtension, languageIsSupported, getSelectedCode } from './utils';
 import { showAuthenticationPrompt, isAccessTokenExpired } from './auth';
-import { LLMStub } from './llm-stub';
+import { getAnalyzedCode } from './send-request';
 
 async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode.ExtensionContext) {
 
@@ -45,10 +45,11 @@ async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode
 	// Display message to the user. Kept for now for future development.
 	vscode.window.showInformationMessage('Your code is sent for analysis.');
 
-	const text = LLMStub(code, file_extension);
+	// Get the analyzed code
+	const analyzed_code = await getAnalyzedCode(code, file_extension, authenticated);
 	
 	output_channel.show();
-	output_channel.appendLine(text);
+	output_channel.appendLine(analyzed_code);
 };
 
 export { analyzeCode };

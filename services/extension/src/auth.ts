@@ -28,8 +28,10 @@ async function authenticate(context: vscode.ExtensionContext) {
     'redirect_uri=http://localhost:3000/callback&' + 
     'scope=openid%20profile%20email&' + 
     `code_challenge=${codeChallenge}&` + 
+    'audience=https://the-seal-of-approval-API.com/v1/reports&' +
     'code_challenge_method=S256&' + 
     'state=ASDF2F2F2';
+    // Possibly change state
 
   // Open the authentication URL in the user's default web browser
   vscode.env.openExternal(vscode.Uri.parse(authURL));
@@ -104,6 +106,7 @@ async function storeTokens(tokens: AuthTokens, context: vscode.ExtensionContext)
 async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<boolean> {
   const expiry_timestamp = await context.secrets.get('security-seal-access-token-expiry');
   
+  // TODO: Review logic here
   if (!expiry_timestamp) {
     return true;
     }
