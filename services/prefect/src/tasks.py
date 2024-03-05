@@ -2,8 +2,10 @@ from logger import logger
 from prefect import task
 from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
+from json_verifier import verify_llm_output_format
 
 import requests
+
 
 
 @task(name="Validate Token")
@@ -54,7 +56,7 @@ def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
         logger.error(f"Code validation failed: {e}")
         raise ValueError("Code validation failed")
 
-@task(name="Call LLM Model")
+@task(name="Call LLM Model", retries=3, retry_delay_seconds=10)
 def call_llm_task(prompt: str) -> str:
     logger.info("Calling LLM model to analyze code")
     try:
@@ -67,7 +69,10 @@ def call_llm_task(prompt: str) -> str:
         output_token_num = LLMResponse(**response.json()).output_token_num
         generation_time = LLMResponse(**response.json()).generation_time
         logger.info(f"LLM output received: \nInput tokens: {input_token_num}, output tokens: {output_token_num}, generation time: {generation_time}\nLLM output: {llm_output}")
-        return llm_output
+        if verify_llm_output_format(llm_output):
+            return llm_output
+        else:
+            raise ValueError("LLM output did not follow schema")
     except requests.HTTPError as e:
         if e.response.status_code == 500:
             logger.error(f"Internal server error occured in LLM: {e.response.status_code} - {e.response.text}")
