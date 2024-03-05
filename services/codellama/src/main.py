@@ -11,28 +11,35 @@ import base64
 
 app = FastAPI()
 
+#model_id = "codellama/CodeLlama-34b-Instruct-hf"
 model_id = "codellama/CodeLlama-70b-Instruct-hf"
 
-log_file_path = "/usr/src/app/logs/codellama.log"
-logger.add(log_file_path, rotation="50 MB", enqueue=True)
+def set_up_logger():
+    cur_dir = os.path.dirname(os.path.abspath(__file__))
+    parent_dir = os.path.dirname(cur_dir)
+    logs_dir = os.path.join(parent_dir, "logs")
+    os.makedirs(logs_dir, exist_ok=True)
+    log_file_path = os.path.join(logs_dir, "codellama-70b.log")
+    logger.add(log_file_path, rotation="50 MB", enqueue=True)
+
+set_up_logger()
 
 
-logger.info("Loading tokenizer")
+logger.info("Loading tokenizer...")
 tokenizer = AutoTokenizer.from_pretrained(
    model_id,
-   cache_dir="/usr/src/app/tokenizer",
-   add_eos_token=True
+   cache_dir="/usr/src/app/tokenizer"
 )
-tokenizer.add_special_tokens({'pad_token': '[PAD]'})
+logger.info("Tokenizer loaded")
 
-logger.info("Loading model")
+logger.info("Loading model...")
 model = AutoModelForCausalLM.from_pretrained(
    model_id,
    torch_dtype=torch.float16,
    device_map="auto",
    cache_dir="/usr/src/app/model"
 )
-logger.info("Tokenizer and model loaded successfully.")
+logger.info("Model loaded")
 
 
 class GenerateRequest(BaseModel):
