@@ -30,11 +30,10 @@ def validate_token_task(token: str) -> bool:
 
 @task(name="Validate Code and Generate Prompt")
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
-    validation_request = SyntaxCheckRequest(file_extension=file_extension, code=code)
-    request_data = validation_request.dict()
     logger.info("Sending code to code validator")
     try:
-        response = requests.post(CODE_VALIDATOR_URL, json=request_data)
+        request_data = SyntaxCheckRequest(file_extension=file_extension, code=code)
+        response = requests.post(CODE_VALIDATOR_URL, json=request_data.model_dump())
         response.raise_for_status()
         validation_result = response.json()
         logger.info(f"Code validation result: {validation_result}")
