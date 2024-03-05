@@ -79,10 +79,7 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
         )
         return result
     except ValueError as e:
-        if str(e) == "Error decoding JSON":
-            logger.error(f"Error decoding JSON (from {client_host}): {e}")
-            raise HTTPException(status_code=400, detail="Error decoding JSON")
-        elif str(e) == "Could not find JSON in the output.":
+        if str(e) == "Could not find JSON in the output.":
             logger.error(f"Could not find JSON in the output (from {client_host}): {e}")
             raise HTTPException(status_code=400, detail="Could not find JSON in the output")
         elif str(e) == "Could not find LLM response in the output.":
