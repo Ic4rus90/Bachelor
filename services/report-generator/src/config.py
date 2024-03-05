@@ -1,32 +1,31 @@
 # The input schema (for reference)
 INPUT_SCHEMA = {
-    "type": "object",
-    "required": ["vulnerabilities"],
-    "properties": {
-        "vulnerabilities": {
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "type": "object",
-                "required": ["cweID", "codeExtract", "vulnSummary"],
-                "properties": {
-                    "cweID": {
-                        "type": "string",
-                        "pattern": "^CWE-\\d+$"
-                    },
-                    "codeExtract": {
-                        "type": "string"
-                    },
-                    "lineNumber": {
-                        "type": "integer"
-                    },
-                    "vulnSummary": {
-                        "type": "string"
-                    }
-                }
-            }
+  "type": "object",
+  "required": ["vulnerabilities"],
+  "properties": {
+    "vulnerabilities": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": ["cweID", "codeExtract", "vulnSummary"],
+        "properties": {
+          "cweID": {
+            "type": "string",
+            "pattern": "^CWE-\\d+$"
+          },
+          "codeExtract": {
+            "type": "string"
+          },
+          "lineNumber": {
+            "type": "integer"
+          },
+          "vulnSummary": {
+            "type": "string"
+          }
         }
+      }
     }
+  }
 }
 
 # The summary report schema
