@@ -28,4 +28,8 @@ async def check_syntax(request: SyntaxCheckRequest):
     except Exception as e:
         logger.error(f"Error occured: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="127.0.0.1", port=30002)
     
