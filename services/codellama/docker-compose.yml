@@ -1,6 +1,6 @@
-version: '3.8'
+version: "3.8"
 services:
-  bsc-group-17:
+  bsc-group-17-llm:
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,11 +9,11 @@ services:
       - ./model:/usr/src/app/model
       - ./logs:/usr/src/app/logs
     ports:
-      - "8300:8300"
+      - "30003:30003"
     deploy:
-        resources:
-          reservations:
-            devices:
-              - driver: nvidia
-                device_ids: ['6', '7']
-                capabilities: [gpu]
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['6', '7']
+              capabilities: ['gpu']
