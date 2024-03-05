@@ -19,4 +19,7 @@ class LLMRequest(BaseModel):
     user_prompt: str
 
 class LLMResponse(BaseModel):
+    input_token_num: int
+    output_token_num: int
+    generation_time: float
     llm_output: str

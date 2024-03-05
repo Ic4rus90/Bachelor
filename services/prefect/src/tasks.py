@@ -61,8 +61,12 @@ def call_llm_task(prompt: str) -> str:
         request_data = LLMRequest(user_prompt=prompt)
         response = requests.post(LLM_URL, json=request_data.model_dump())
         response.raise_for_status()
+        print(response.json())
         llm_output = LLMResponse(**response.json()).llm_output
-        logger.info(f"LLM output received: {llm_output}")
+        input_token_num = LLMResponse(**response.json()).input_token_num
+        output_token_num = LLMResponse(**response.json()).output_token_num
+        generation_time = LLMResponse(**response.json()).generation_time
+        logger.info(f"LLM output received: \nInput tokens: {input_token_num}, output tokens: {output_token_num}, generation time: {generation_time}\nLLM output: {llm_output}")
         return llm_output
     except requests.HTTPError as e:
         if e.response.status_code == 500:
