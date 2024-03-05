@@ -14,23 +14,18 @@ const DashboardTabs = () => {
       const getReports = async () => {
           try {
               const token = await getAccessTokenSilently(); 
-              console.log(token)
+              
               const response = await fetch('http://127.0.0.1:3000/getreports', {
                   headers: {
                       Authorization: `Bearer ${token}`,
                   },
               });
               if (response.ok) {
-                  console.log("Response is OK");
                   const data = await response.json();
                   setReportData(data); 
-                  console.log("response fetched. If it fails then it is set reports")
-              } else {
-                  console.error("Error fetching reports")
-              }
+              } 
 
           } catch (error) {
-              console.log("List vulnerabilities error")
               console.error(error);
           }
       };
@@ -38,9 +33,11 @@ const DashboardTabs = () => {
     getReports();
   }, [getAccessTokenSilently]);
 
+  
   if (!reportData) {
-    return <div>Loading...</div>;
+    return <div>You have no reports</div>;
   }
+  
 
   return (
     <Tabs

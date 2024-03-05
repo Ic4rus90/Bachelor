@@ -14,6 +14,16 @@ function AccountNavButton() {
   );
 }
 
+/*
+Removed this from header for now, as report history is not implemented.
+<Link to="/history">
+                    <Button variant="none">
+                      History
+                    </Button>
+                  </Link>
+
+*/
+
 export default function HeaderAuthenticated() {
   return (
     <div className="App">
@@ -26,11 +36,6 @@ export default function HeaderAuthenticated() {
                   <Link to="/dashboard">
                     <Button variant="none">
                       Dashboard
-                    </Button>
-                  </Link>
-                  <Link to="/history">
-                    <Button variant="none">
-                      History
                     </Button>
                   </Link>
                 </Nav>

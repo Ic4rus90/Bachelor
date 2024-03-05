@@ -8,11 +8,11 @@ const { insertAnalyzedCode, insertReport, insertVulnerability } = require('./dat
 
 // Create a new express application
 const app = express(); 
-const port = 3000; 
+const port = process.env.SERVER_PORT; 
 
 // Middleware. Not sure if origin parameter is necessary. 
 app.use(cors({
-    origin: 'http://localhost:8500', 
+    origin: `${process.env.WEB_APP_URL}`, 
 }));
 
 // Connection string for the database
@@ -136,7 +136,6 @@ app.get('/getreports', checkJWT, async function(req, res) {
 });
 
 
-
 // Add reports
 app.post('/addreports', async(req,res) => {
     const { userID, vulnerabilities, analyzedCode } = req.body;
@@ -170,8 +169,6 @@ app.post('/addreports', async(req,res) => {
         client.release(); // Release the borrowed client back to the connection pool. 
     }
 });
-
-
 
 
 app.listen(port, () => {

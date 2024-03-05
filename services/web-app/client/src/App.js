@@ -18,7 +18,7 @@ function App() {
             <Route path="/" element={<HomePage />} />
             <Route path= "/dashboard" element={<AuthGuard page={DashboardPage} />} />
             <Route path="/account" element={<AuthGuard page={UserManagementPage} />} />
-            <Route path="/history" element={<AuthGuard page={ReportHistoryPage}/>} />
+            <Route path="/history" element={<AuthGuard page={NotFoundPage}/>} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
         </header>
