@@ -1,7 +1,7 @@
 version: '3.9'
 
 networks:
-  bcs-group-17:
+  bsc-group-17:
     external: true
 
 services:
@@ -12,4 +12,4 @@ services:
     ports:
       - "30002:30002"
     networks:
-      - bcs-group-17
+      - bsc-group-17
