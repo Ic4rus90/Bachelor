@@ -14,5 +14,9 @@ def decode_base(encoded_text, source):
 
 # Function that encodes the code back to base64 after validation
 def encode_base(decoded_text):
-    encoded_code = base64.b64encode(decoded_text.encode('utf-8')).decode('utf-8')
-    return encoded_code
+    try:
+        encoded_code = base64.b64encode(decoded_text.encode('utf-8')).decode('utf-8')
+        return encoded_code
+    except Exception as e:
+        logger.error(f"Error during encoding to base64: {e}")
+        raise HTTPException(status_code=400, detail="Error during base64 encoding")

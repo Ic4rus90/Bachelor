@@ -3,3 +3,7 @@ node_modules
 
 # Ignore .vscode-test
 .vscode-test/
+
+venv
+
+__pycache__
