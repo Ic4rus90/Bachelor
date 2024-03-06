@@ -4,6 +4,8 @@ from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMReq
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 from json_verifier import verify_llm_output_format
 
+from encoder import encode_base
+
 import requests
 
 
@@ -106,8 +108,8 @@ def generate_report_task(llm_output: str) -> GenerateReportResponse:
         }"""
     full_report = '{"userID": "user123","vulnerabilities": [{"cweID": "CWE-79","codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp","vulnSummary": "Funnypants"},{"cweID": "CWE-89","codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp","vulnSummary": "cHJpbnQoIkhlbGxvIHdvcmxkISIp"}],"analyzedCode":{"code": "cHJpbnQoIkhlbGxvIHdvcmxkISIp","language": "cpp","startingLineNumber": 1}}'
     result = GenerateReportResponse(
-        report_full = full_report,
-        report_summary = report_summary
+        report_full = encode_base(full_report),
+        report_summary = encode_base(report_summary)
     )
     return result
     
@@ -117,7 +119,7 @@ def store_report_task(report_full: str) -> bool:
     logger.info("Sending report to web-app for storage")
     try:
         request_data = StoreReportRequest(report_full=report_full)
-        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump()["report_full"].json())
+        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(f"Error storing report: {e.response.status_code} - {e.response.text}")
