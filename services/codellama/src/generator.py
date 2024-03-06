@@ -32,6 +32,7 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
     logger.info(f"Received generation request from {client_host}.")
 
     user_prompt = decode_base(generate_request.user_prompt, client_host)
+    system_prompt = decode_base(generate_request.system_prompt, client_host)
 
     # Generation
     try:
