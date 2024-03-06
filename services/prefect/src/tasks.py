@@ -68,7 +68,7 @@ def call_llm_task(prompt: str) -> str:
         output_token_num = LLMResponse(**response.json()).output_token_num
         generation_time = LLMResponse(**response.json()).generation_time
         logger.info(f"LLM output received: \nInput tokens: {input_token_num}, output tokens: {output_token_num}, generation time: {generation_time}\nLLM output: {llm_output}")
-        if verify_llm_output_format(llm_output):
+        if verify_llm_output_format(llm_output, source="LLM"):
             return llm_output
         else:
             raise ValueError("LLM output did not follow schema")
@@ -96,7 +96,8 @@ def generate_report_task(llm_output: str) -> str:
         report_full = GenerateReportResponse(**response.json()).report_full
         logger.info(f"Report summary generated: {report_summary}")
         logger.info(f"Full report generated: {report_full}")
-        return {"summary": report_summary, "full": report_full}
+        if verify_llm_output_format(report_summary, source="report_summary") and verify_llm_output_format(report_full, source="report_full"):
+            return {"report_summary": report_summary, "report_full": report_full}
     except requests.HTTPError as e:
         logger.error(f"Error generating report summary: {e.response.status_code} - {e.response.text}")
         raise ValueError("Error generating report summary")
