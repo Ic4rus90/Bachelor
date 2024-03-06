@@ -1,6 +1,6 @@
 from logger import logger
 from prefect import task
-from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse
+from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse, StoreReportRequest
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 from json_verifier import verify_llm_output_format
 
@@ -127,17 +127,16 @@ def generate_report_task(llm_output: str) -> GenerateReportResponse:
         }"""
     result = GenerateReportResponse(
         report_full = full_report,
-        report_summart = report_summary
+        report_summary = report_summary
     )
-
     return result
     
 
 @task(name="Store Report")
-def store_report_task(llm_output: str) -> str:
+def store_report_task(report_full: str) -> bool:
     logger.info("Sending report to web-app for storage")
     try:
-        request_data = GenerateReportRequest(llm_output=llm_output)
+        request_data = StoreReportRequest(report_full=report_full)
         response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
         response.raise_for_status()
     except requests.HTTPError as e:
@@ -151,4 +150,4 @@ def store_report_task(llm_output: str) -> str:
         raise ValueError("Report storage failed")
 
     logger.info("Report stored successfully")
-    return "Report stored succesfully"
+    return True
