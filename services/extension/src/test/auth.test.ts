@@ -1,42 +1,55 @@
 import * as assert from 'assert';
 import * as vscode from 'vscode';
-
-// Importing sinon for mocking
 import sinon from 'sinon';
-
 import { isAccessTokenExpired } from '../auth';
 
-
 suite('Auth Suite', () => {
-	vscode.window.showInformationMessage('Starting tests');
+  vscode.window.showInformationMessage('Starting tests');
+  let sandbox: sinon.SinonSandbox;
 
-	let sandbox: sinon.SinonSandbox;
+  setup(() => {
+    sandbox = sinon.createSandbox();
+  });
 
-	setup(() => {
-		sandbox = sinon.createSandbox();
-	});
+  teardown(() => {
+    sandbox.restore();
+  });
 
-	teardown(() => {
-		sandbox.restore();
-	});
-
-  // Testing for expiration of access tokens
   test('Return true if no access token is found', async () => {
-    const mockContext: any = { secrets: { get: sinon.stub().resolves(undefined) } };
+    const mockContext: any = {
+      secrets: {
+        get: sandbox.stub().resolves(undefined),
+        store: sandbox.stub(),
+        delete: sandbox.stub(),
+      },
+    };
+
     const expired = await isAccessTokenExpired(mockContext);
     assert.strictEqual(expired, true);
   });
-
 
   test('Return true if access token is expired', async () => {
-    const mockContext: any = { secrets: { get: sinon.stub().resolves('3') } };
+    const mockContext: any = {
+      secrets: {
+        get: sandbox.stub().resolves('3'),
+        store: sandbox.stub(),
+        delete: sandbox.stub(),
+      },
+    };
+
     const expired = await isAccessTokenExpired(mockContext);
     assert.strictEqual(expired, true);
   });
 
-
   test('Return true if access token is not expired', async () => {
-    const mockContext: any = { secrets: { get: sinon.stub().resolves('999999999999999999') } };
+    const mockContext: any = {
+      secrets: {
+        get: sandbox.stub().resolves('999999999999999999'),
+        store: sandbox.stub(),
+        delete: sandbox.stub(),
+      },
+    };
+
     const expired = await isAccessTokenExpired(mockContext);
     assert.strictEqual(expired, false);
   });

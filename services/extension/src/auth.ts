@@ -118,6 +118,7 @@ async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<b
       context.secrets.delete('security-seal-access-token-expiry');
       context.secrets.delete('security-seal-access-token');
       context.secrets.delete('security-seal-id-token');
+      
       return true;
     } else {
       return false;
