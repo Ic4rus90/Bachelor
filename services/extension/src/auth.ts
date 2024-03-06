@@ -32,7 +32,7 @@ async function authenticate(context: vscode.ExtensionContext) {
     'audience=https://the-seal-of-approval-API.com/v1/reports&' +
     'code_challenge_method=S256&' + 
     'state=ASDF2F2F2';
-    // Possibly change state
+    //TODO: Change state
 
   // Open the authentication URL in the user's default web browser
   vscode.env.openExternal(vscode.Uri.parse(authURL));
