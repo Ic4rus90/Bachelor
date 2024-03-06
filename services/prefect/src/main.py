@@ -50,8 +50,12 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
                 logger.error("Raised 422 due to invalid file extension")
                 raise HTTPException(status_code=422, detail="Invalid file extension received")
             else:
-                logger.error("Raised 500 due to unknown error")
+                logger.error(f"Raised 500 due to unknown error: {e}")
                 raise HTTPException(status_code=500, detail="Server error occurred, please contact us for assistance.")
+        except Exception as e:
+            logger.error(f"Raised 500 due to unknown error: {e}")
+            raise HTTPException(status_code=500, detail="Server error occurred, please contact us for assistance.")
+        
 
 set_up_logger()
 
