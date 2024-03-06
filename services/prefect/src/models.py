@@ -6,7 +6,7 @@ class TokenRequest(BaseModel):
 class CodeAnalysisRequest(BaseModel):
     code: str
     file_extension: str
-    token: str
+    #token: str
 
 class SyntaxCheckRequest(BaseModel):
     file_extension: str

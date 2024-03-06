@@ -93,38 +93,18 @@ def generate_report_task(llm_output: str) -> GenerateReportResponse:
     report_summary = """{
         "vulnerabilities": [
             {
-            "cweID": "CWE-79",
+            "cweID": "cHJpbnQoIkhlbGxvIHdvcmxkISIp-79",
             "codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp",
-            "vulnSummary": "Funnypants"
+            "vulnSummary": "cHJpbnQoIkhlbGxvIHdvcmxkISIp"
             },
             {
             "cweID": "CWE-89",
-            "codeExtract": "stmt.setString(1, req.getParameter("id"));",
-            "vulnSummary": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+            "codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp",
+            "vulnSummary": "cHJpbnQoIkhlbGxvIHdvcmxkISIp"
             }
         ]
         }"""
-    full_report = """{
-        "userID": "user123",
-        "vulnerabilities": [
-            {
-            "cweID": "CWE-79",
-            "codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp",
-            "vulnSummary": "Funnypants"
-            },
-            {
-            "cweID": "CWE-89",
-            "codeExtract": "stmt.setString(1, req.getParameter("id"));",
-            "vulnSummary": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
-            }
-        ],
-        "analyzedCode":
-            {
-            "code": "public class HelloWorld { public static void main(String[] args) { System.out.println("Hello, world!"); } }",
-            "language": "C++",
-            "startingLineNumber": 1
-            }
-        }"""
+    full_report = '{"userID": "user123","vulnerabilities": [{"cweID": "CWE-79","codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp","vulnSummary": "Funnypants"},{"cweID": "CWE-89","codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp","vulnSummary": "cHJpbnQoIkhlbGxvIHdvcmxkISIp"}],"analyzedCode":{"code": "cHJpbnQoIkhlbGxvIHdvcmxkISIp","language": "cpp","startingLineNumber": 1}}'
     result = GenerateReportResponse(
         report_full = full_report,
         report_summary = report_summary
@@ -137,7 +117,7 @@ def store_report_task(report_full: str) -> bool:
     logger.info("Sending report to web-app for storage")
     try:
         request_data = StoreReportRequest(report_full=report_full)
-        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
+        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump()["report_full"].json())
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(f"Error storing report: {e.response.status_code} - {e.response.text}")
