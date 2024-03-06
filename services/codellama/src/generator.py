@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import HTTPException
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt, max_new_tokens, max_time, repetition_penalty, typical_p, do_sample
+from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt_preset, max_new_tokens, max_time, repetition_penalty, typical_p, do_sample
 from encoder import decode_base, encode_base
 from logger import logger
 from models import GenerateRequest, GenerateResponse
@@ -70,9 +70,9 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
         output_tokens = output.size(0)
         logger.info(f"Number of tokens in the output (from {client_host}): {output_tokens}")
         logger.info(f"Generation took {duration} seconds (from {client_host})")
-
         # Encode to base64 before response
         llm_response = tokenizer.decode(output)
+        logger.info(f"LLM RESPONSE: {llm_response}")
         response = encode_base(clean_response(llm_response))
         logger.info(f"Generation request processed successfully. (from {client_host})")
 
