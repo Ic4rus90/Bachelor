@@ -17,7 +17,7 @@ LLM_SCHEMA = {
 }
 
 REPORT_SUMMARY_SCHEMA = {
-    "type": "object",
+  "type": "object",
   "required": ["vulnerabilities"],
   "properties": {
     "vulnerabilities": {
