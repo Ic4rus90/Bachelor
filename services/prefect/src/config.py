@@ -2,7 +2,7 @@ TOKEN_VALIDATOR_URL = "http://localhost:30001/verify-token"
 CODE_VALIDATOR_URL = "http://localhost:30002/check-syntax"
 LLM_URL = "http://localhost:30003/generate"
 REPORT_GENERATOR_URL = "http://localhost:30004/generate-report"
-REPORT_STORAGE_URL = "http://localhost:30005/store-report"
+REPORT_STORAGE_URL = "http://localhost:3000/addreports"
 
 LLM_SCHEMA = {
     "type": "object",
