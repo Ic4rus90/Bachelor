@@ -29,6 +29,11 @@ exports.deactivate = exports.activate = void 0;
 const vscode = __importStar(require("vscode"));
 const analysis_1 = require("./analysis");
 const auth_1 = require("./auth");
+const dotenv = __importStar(require("dotenv"));
+const path_1 = require("path");
+dotenv.config({
+    path: (0, path_1.join)(__dirname, '..', '.env')
+});
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 function activate(context) {

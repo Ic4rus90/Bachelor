@@ -24,6 +24,7 @@ services:
       POSTGRES_PORT: ${DB_PORT}
     volumes:
       - ./server/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./server/database/data:/var/lib/postgresql/data
     networks:
       - webapp-network
 
