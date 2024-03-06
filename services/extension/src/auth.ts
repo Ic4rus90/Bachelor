@@ -106,7 +106,6 @@ async function storeTokens(tokens: AuthTokens, context: vscode.ExtensionContext)
 async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<boolean> {
   const expiry_timestamp = await context.secrets.get('security-seal-access-token-expiry');
   
-  // TODO: Review logic here
   if (!expiry_timestamp) {
     return true;
     }
@@ -114,7 +113,15 @@ async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<b
     const expiry_time = parseInt(expiry_timestamp, 10);
     const current_time = new Date().getTime();
 
-    return current_time >= expiry_time;
+    // Delete token if expired
+    if (current_time >= expiry_time){
+      context.secrets.delete('security-seal-access-token-expiry');
+      context.secrets.delete('security-seal-access-token');
+      context.secrets.delete('security-seal-id-token');
+      return true;
+    } else {
+      return false;
+    }
 }
 
 
