@@ -12,7 +12,7 @@ services:
     volumes:
       - ./tokenizer:/usr/src/app/tokenizer
       - ./model:/usr/src/app/model
-      - ./logs:/usr/src/app/logs
+      - ./logs:/usr/src/logs
     ports:
       - "30003:30003"
     deploy:
