@@ -5,6 +5,7 @@ import { generateCodeVerifier, generateCodeChallenge } from './pkce';
 import { getAuthoritzationCode } from './auth-code-listener';
 
 
+
 // This interface defines the shape of the tokens returned by the authentication server
 interface AuthTokens {
   access_token: string;
@@ -31,7 +32,7 @@ async function authenticate(context: vscode.ExtensionContext) {
     'audience=https://the-seal-of-approval-API.com/v1/reports&' +
     'code_challenge_method=S256&' + 
     'state=ASDF2F2F2';
-    // Possibly change state
+    //TODO: Change state
 
   // Open the authentication URL in the user's default web browser
   vscode.env.openExternal(vscode.Uri.parse(authURL));
@@ -55,9 +56,9 @@ async function authenticate(context: vscode.ExtensionContext) {
 
 // Exchanges the authorization code for tokens
 async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: string, context: vscode.ExtensionContext): Promise<AuthTokens> {
-  const tokenURL = 'https://security-seal.eu.auth0.com/oauth/token';
-  const clientID = 'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
-  const redirectURI = 'http://localhost:3000/callback';
+  const tokenURL = `${process.env.TOKEN_URL}`; // 'https://security-seal.eu.auth0.com/oauth/token';
+  const clientID = `${process.env.CLIENT_ID}`; //'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
+  const redirectURI = `${process.env.REDIRECT_URI}`; //'http://localhost:3000/callback';
 
   try {
     // Send a POST request to the token endpoint
@@ -79,7 +80,6 @@ async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: st
 
   catch (error) {
     console.error('Error:', error);
-    // Throw error so the caller can handle it
     throw new Error(`Failed to exchange code for tokens: ${error}`);
   }
 }
@@ -106,7 +106,6 @@ async function storeTokens(tokens: AuthTokens, context: vscode.ExtensionContext)
 async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<boolean> {
   const expiry_timestamp = await context.secrets.get('security-seal-access-token-expiry');
   
-  // TODO: Review logic here
   if (!expiry_timestamp) {
     return true;
     }
@@ -114,7 +113,16 @@ async function isAccessTokenExpired(context: vscode.ExtensionContext): Promise<b
     const expiry_time = parseInt(expiry_timestamp, 10);
     const current_time = new Date().getTime();
 
-    return current_time >= expiry_time;
+    // Delete token if expired
+    if (current_time >= expiry_time){
+      context.secrets.delete('security-seal-access-token-expiry');
+      context.secrets.delete('security-seal-access-token');
+      context.secrets.delete('security-seal-id-token');
+      
+      return true;
+    } else {
+      return false;
+    }
 }
 
 
