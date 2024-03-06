@@ -30,3 +30,6 @@ class GenerateReportRequest(BaseModel):
 class GenerateReportResponse(BaseModel):
     report_summary: str
     report_full: str
+
+class StoreReportRequest(BaseModel):
+    report_full: str

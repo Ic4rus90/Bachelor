@@ -85,33 +85,70 @@ def call_llm_task(prompt: str) -> str:
         logger.error(f"LLM model call failed: {e}")
         raise ValueError("LLM model call failed")
 
+
+# Stub for report generation
 @task(name="Generate Report")
-def generate_report_task(llm_output: str) -> str:
+def generate_report_task(llm_output: str) -> GenerateReportResponse:
     logger.info("Sending LLM output to generate report summary")
-    try:
-        request_data = GenerateReportRequest(llm_output=llm_output)
-        response = requests.post(REPORT_GENERATOR_URL, json=request_data.model_dump())
-        response.raise_for_status()
-        report_summary = GenerateReportResponse(**response.json()).report_summary
-        report_full = GenerateReportResponse(**response.json()).report_full
-        logger.info(f"Report summary generated: {report_summary}")
-        logger.info(f"Full report generated: {report_full}")
-        if verify_llm_output_format(report_summary, source="report_summary") and verify_llm_output_format(report_full, source="report_full"):
-            return {"report_summary": report_summary, "report_full": report_full}
-    except requests.HTTPError as e:
-        logger.error(f"Error generating report summary: {e.response.status_code} - {e.response.text}")
-        raise ValueError("Error generating report summary")
-    except requests.RequestException as e:
-        logger.error(f"Request to report generator failed {e}")
-        raise ValueError("Report generation failed due to a network or server error")
-    except Exception as e:
-        logger.error(f"Report generation failed: {e}")
-        raise ValueError("Report generation failed")
+    report_summary = """{
+        "vulnerabilities": [
+            {
+            "cweID": "CWE-79",
+            "codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp",
+            "vulnSummary": "Funnypants"
+            },
+            {
+            "cweID": "CWE-89",
+            "codeExtract": "stmt.setString(1, req.getParameter("id"));",
+            "vulnSummary": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+            }
+        ]
+        }"""
+    full_report = """{
+        "userID": "user123",
+        "vulnerabilities": [
+            {
+            "cweID": "CWE-79",
+            "codeExtract": "cHJpbnQoIkhlbGxvIHdvcmxkISIp",
+            "vulnSummary": "Funnypants"
+            },
+            {
+            "cweID": "CWE-89",
+            "codeExtract": "stmt.setString(1, req.getParameter("id"));",
+            "vulnSummary": "Improper Neutralization of Special Elements used in an SQL Command ('SQL Injection')"
+            }
+        ],
+        "analyzedCode":
+            {
+            "code": "public class HelloWorld { public static void main(String[] args) { System.out.println("Hello, world!"); } }",
+            "language": "C++",
+            "startingLineNumber": 1
+            }
+        }"""
+    result = GenerateReportResponse(
+        report_full = full_report,
+        report_summart = report_summary
+    )
+
+    return result
     
 
 @task(name="Store Report")
 def store_report_task(llm_output: str) -> str:
     logger.info("Sending report to web-app for storage")
+    try:
+        request_data = GenerateReportRequest(llm_output=llm_output)
+        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
+        response.raise_for_status()
+    except requests.HTTPError as e:
+        logger.error(f"Error storing report: {e.response.status_code} - {e.response.text}")
+        raise ValueError("Error storing report")
+    except requests.RequestException as e:
+        logger.error(f"Request to report storage failed {e}")
+        raise ValueError("Report storage failed due to a network or server error")
+    except Exception as e:
+        logger.error(f"Report storage failed: {e}")
+        raise ValueError("Report storage failed")
 
     logger.info("Report stored successfully")
     return "Report stored succesfully"
