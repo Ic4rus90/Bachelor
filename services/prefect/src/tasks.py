@@ -68,7 +68,7 @@ def call_llm_task(prompt: str) -> str:
         output_token_num = LLMResponse(**response.json()).output_token_num
         generation_time = LLMResponse(**response.json()).generation_time
         logger.info(f"LLM output received: \nInput tokens: {input_token_num}, output tokens: {output_token_num}, generation time: {generation_time}\nLLM output: {llm_output}")
-        if verify_llm_output_format(llm_output, source="LLM"):
+        if verify_llm_output_format(llm_output, source="llm"):
             return llm_output
         else:
             raise ValueError("LLM output did not follow schema")
