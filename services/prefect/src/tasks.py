@@ -1,6 +1,6 @@
 from logger import logger
 from prefect import task
-from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse
+from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 from json_verifier import verify_llm_output_format
 
@@ -63,7 +63,6 @@ def call_llm_task(prompt: str) -> str:
         request_data = LLMRequest(user_prompt=prompt)
         response = requests.post(LLM_URL, json=request_data.model_dump())
         response.raise_for_status()
-        print(response.json())
         llm_output = LLMResponse(**response.json()).llm_output
         input_token_num = LLMResponse(**response.json()).input_token_num
         output_token_num = LLMResponse(**response.json()).output_token_num
@@ -89,9 +88,25 @@ def call_llm_task(prompt: str) -> str:
 @task(name="Generate Report")
 def generate_report_task(llm_output: str) -> str:
     logger.info("Sending LLM output to generate report summary")
-
-    logger.info("Report summary generated")
-    return "Report summary generated"
+    try:
+        request_data = GenerateReportRequest(llm_output=llm_output)
+        response = requests.post(REPORT_GENERATOR_URL, json=request_data.model_dump())
+        response.raise_for_status()
+        report_summary = GenerateReportResponse(**response.json()).report_summary
+        report_full = GenerateReportResponse(**response.json()).report_full
+        logger.info(f"Report summary generated: {report_summary}")
+        logger.info(f"Full report generated: {report_full}")
+        return {"summary": report_summary, "full": report_full}
+    except requests.HTTPError as e:
+        logger.error(f"Error generating report summary: {e.response.status_code} - {e.response.text}")
+        raise ValueError("Error generating report summary")
+    except requests.RequestException as e:
+        logger.error(f"Request to report generator failed {e}")
+        raise ValueError("Report generation failed due to a network or server error")
+    except Exception as e:
+        logger.error(f"Report generation failed: {e}")
+        raise ValueError("Report generation failed")
+    
 
 @task(name="Store Report")
 def store_report_task(llm_output: str) -> str:

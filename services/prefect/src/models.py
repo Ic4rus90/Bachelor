@@ -23,3 +23,10 @@ class LLMResponse(BaseModel):
     output_token_num: int
     generation_time: float
     llm_output: str
+
+class GenerateReportRequest(BaseModel):
+    llm_output: str
+
+class GenerateReportResponse(BaseModel):
+    report_summary: str
+    report_full: str
