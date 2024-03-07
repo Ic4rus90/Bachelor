@@ -11,6 +11,6 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./logs:/usr/src/app/logs
+      - ./logs:/usr/src/logs
     ports:
       - "30004:30004"
