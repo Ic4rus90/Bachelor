@@ -10,7 +10,7 @@ app = FastAPI()
 
 @flow(name="Code Analysis Flow")
 def code_analysis_flow(code: str, file_extension: str, token: str):
-    user_id = validate_token_task(token):
+    user_id = validate_token_task(token)
     if user_id == "":
         logger.error("Invalid token received")
         raise ValueError("Invalid token received")
