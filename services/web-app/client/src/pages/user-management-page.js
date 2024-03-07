@@ -106,10 +106,8 @@ Fjernet fra Return frem til vi
             justifyContent: 'center',
             gap: '40px' /* This adds 20px of space between any flex items */
           }}>
-            <LogoutButton />
-            <Button className="delete-account-button" size="sm" style={buttonStyle}>
-              Delete Account
-            </Button>
+            <LogoutButton />       
+            <a href="mailto:thomasnw@uia.no?subject=Request%20Account%20Deletion">Request Account Deletion</a>
           </div>
         </Container>
       </header>
