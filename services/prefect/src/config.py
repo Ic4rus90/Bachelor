@@ -5,15 +5,33 @@ REPORT_GENERATOR_URL = "http://localhost:30004/generate-report"
 REPORT_STORAGE_URL = "http://localhost:3000/addreports"
 
 LLM_SCHEMA = {
-    "type": "object",
-    "properties": {
-        "vulnerability": {"type": "string"},
-        "excerpt": {"type": "string"},
-        "line_number": {"type": "number"},
-        "description": {"type": "string"},
-    },
-    "required": ["vulnerability", "excerpt", "line_number", "description"],
-    "additionalProperties": False
+  "type": "object",
+  "required": ["vulnerabilities"],
+  "properties": {
+    "vulnerabilities": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["cweID", "codeExtract", "vulnSummary"],
+        "properties": {
+          "cweID": {
+            "type": "string",
+            "pattern": "^CWE-\\d+$"
+          },
+          "codeExtract": {
+            "type": "string"
+          },
+          "lineNumber": {
+            "type": "integer"
+          },
+          "vulnSummary": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
 }
 
 REPORT_SUMMARY_SCHEMA = {
