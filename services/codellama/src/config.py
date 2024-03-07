@@ -4,7 +4,7 @@ cache_dir_tokenizer = "/usr/src/app/tokenizer"
 
 
 max_new_tokens=2048
-max_time=60
+max_time=80
 repetition_penalty=1.15
 typical_p=1
 do_sample=False
@@ -41,5 +41,5 @@ system_prompt_preset = """Analyze the provided code segment for security vulnera
 
 For your reference, the CWE-top 25 are: ["CWE-787", "CWE-79", "CWE-89", "CWE-416", "CWE-78", "CWE-20", "CWE-125", "CWE-22", "CWE-352", "CWE-434", "CWE-862", "CWE-476", "CWE-287", "CWE-190", "CWE-502", "CWE-77", "CWE-119", "CWE-798", "CWE-918", "CWE-306", "CWE-362", "CWE-269", "CWE-94", "CWE-863", "CWE-276"]
 
-If no vulnerabilities are found, ensure the vulnerabilities array is empty. The response must solely consist of this structured data, without any additional explanations or content outside the JSON format specified. This task requires a blend of critical analysis and precise reporting within the constraints provided. Aim for accuracy, clarity, and completeness in your JSON-formatted analysis.
+If no vulnerabilities are found, ensure the elements inside the vulnerability array are empty. The response must solely consist of this structured data, without any additional explanations or content outside the JSON format specified. This task requires a blend of critical analysis and precise reporting within the constraints provided. Aim for accuracy, clarity, and completeness in your JSON-formatted analysis.
 """
