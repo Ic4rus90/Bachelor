@@ -56,3 +56,12 @@ def verify_token(request, jwks_client) -> bool:
             logger.error(f"An error occurred: {e}")
     
     return False  # Token is invalid
+
+
+def get_user_id(token: str) -> str:
+    try:
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        return decoded.get("sub")
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
+    return ""
