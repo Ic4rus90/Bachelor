@@ -35,8 +35,10 @@ dotenv.config({
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln) {
     const decoded_code = (0, convert_to_base64_2.decodeFromBase64)(vuln.codeExtract);
-    return `${vuln.cweID}
-			${vuln.vulnSummary}
+    const decoded_cweID = (0, convert_to_base64_2.decodeFromBase64)(vuln.cweID);
+    const decoded_summary = (0, convert_to_base64_2.decodeFromBase64)(vuln.vulnSummary);
+    return `${decoded_cweID}
+			${decoded_summary}
 			Vulnerable code: ${decoded_code}
 
 			`;

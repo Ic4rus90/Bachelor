@@ -22,8 +22,10 @@ interface Vulnerability {
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSummary: string }): string {
     const decoded_code = decodeFromBase64(vuln.codeExtract);
-	return `${vuln.cweID}
-			${vuln.vulnSummary}
+    const decoded_cweID = decodeFromBase64(vuln.cweID);
+    const decoded_summary = decodeFromBase64(vuln.vulnSummary); 
+	return `${decoded_cweID}
+			${decoded_summary}
 			Vulnerable code: ${decoded_code}
 
 			`;
