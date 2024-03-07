@@ -138,17 +138,7 @@ app.get('/getreports', checkJWT, async function(req, res) {
 
 // Add reports
 app.post('/addreports', async(req,res) => {
-    // Receive the base64 encoded report from the request body
-    const { report_full } = req.body;
-        
-    // Decode the base64 string
-    const decodedReport = Buffer.from(report_full, 'base64').toString('utf-8');
-
-    // Parse the decoded string into a JSON object
-    const reportJson = JSON.parse(decodedReport);
-
-    // Destructure the JSON object to get the desired properties
-    const { userID, vulnerabilities, analyzedCode } = reportJson;
+    const { userID, vulnerabilities, analyzedCode } = req.body;
 
     // Borrow a pool connect
     const client = await pool.connect();
