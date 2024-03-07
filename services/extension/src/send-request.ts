@@ -2,6 +2,8 @@ import { encodeToBase64 } from "./convert-to-base64";
 import * as vscode from 'vscode';
 import * as dotenv from 'dotenv';
 import { resolve } from 'path';
+import { decodeFromBase64 } from "./convert-to-base64";
+
 
 declare const __dirname: string;
 
@@ -19,9 +21,10 @@ interface Vulnerability {
 
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSummary: string }): string {
+    const decoded_code = decodeFromBase64(vuln.codeExtract);
 	return `${vuln.cweID}
 			${vuln.vulnSummary}
-			Vulnerable code: ${vuln.codeExtract}
+			Vulnerable code: ${decoded_code}
 
 			`;
 }
