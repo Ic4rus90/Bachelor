@@ -10,21 +10,22 @@ app = FastAPI()
 
 @flow(name="Code Analysis Flow")
 def code_analysis_flow(code: str, file_extension: str, token: str):
-    #if validate_token_task(token):
-    #    prompt = generate_prompt_code_validator_task(code, file_extension)
-    #    llm_output = call_llm_task(prompt)
-    #    reports = generate_report_task(llm_output)
-    #    storage_result = store_report_task(reports.report_full)
-    #    if storage_result:
-    #        return reports.report_summary
-    #    else:
-    #        logger.error("Could not store the full report")
-    #        raise ValueError("Error storing full report")
-    #else:
-    #    logger.error("Error validating token")
-    #    raise ValueError("Error validating token")
-    reports = generate_report_task("hey")
-    storage_result = store_report_task(reports.report_full)
+    user_id = validate_token_task(token):
+    if user_id == "":
+        logger.error("Invalid token received")
+        raise ValueError("Invalid token received")
+    else:
+        prompt = generate_prompt_code_validator_task(code, file_extension)
+        llm_output = call_llm_task(prompt)
+        reports = generate_report_task(llm_output)
+        storage_result = store_report_task(reports.report_full)
+        if storage_result:
+            return reports.report_summary
+        else:
+            logger.error("Could not store the full report")
+            raise ValueError("Error storing full report")
+    #reports = generate_report_task("hey")
+    #storage_result = store_report_task(reports.report_full)
 
 @app.post("/analyze-code/")
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):

@@ -1,6 +1,6 @@
 from logger import logger
 from prefect import task
-from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse, StoreReportRequest
+from models import TokenRequest, TokenResponse, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse, StoreReportRequest
 from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 from json_verifier import verify_llm_output_format
 
@@ -11,13 +11,13 @@ import requests
 
 
 @task(name="Validate Token")
-def validate_token_task(token: str) -> bool:
+def validate_token_task(token: str) -> str:
     logger.info("Validating token...")
     try:
         token_request = TokenRequest(token=token)
         response = requests.post(TOKEN_VALIDATOR_URL, json=token_request.model_dump())
         response.raise_for_status()
-        return True
+        return TokenResponse(**response.json()).user_id
     except requests.HTTPError as e:
         if e.response.status_code == 401:
             logger.error(f"Invalid token received: {e.response.status_code} - {e.response.text}")
@@ -27,7 +27,7 @@ def validate_token_task(token: str) -> bool:
         logger.error(f"Request to token validator failed {e}")
     except Exception as e:
         logger.error(f"Token validation failed: {e}")
-    return False
+    return ""
 
 @task(name="Validate Code and Generate Prompt")
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
