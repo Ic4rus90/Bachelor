@@ -28,14 +28,18 @@ const convert_to_base64_1 = require("./convert-to-base64");
 const vscode = __importStar(require("vscode"));
 const dotenv = __importStar(require("dotenv"));
 const path_1 = require("path");
+const convert_to_base64_2 = require("./convert-to-base64");
 dotenv.config({
     path: (0, path_1.resolve)(__dirname, '/../.env')
 });
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln) {
-    return `${vuln.cweID}
-			${vuln.vulnSummary}
-			Vulnerable code: ${vuln.codeExtract}
+    const decoded_code = (0, convert_to_base64_2.decodeFromBase64)(vuln.codeExtract);
+    const decoded_cweID = (0, convert_to_base64_2.decodeFromBase64)(vuln.cweID);
+    const decoded_summary = (0, convert_to_base64_2.decodeFromBase64)(vuln.vulnSummary);
+    return `${decoded_cweID}
+			${decoded_summary}
+			Vulnerable code: ${decoded_code}
 
 			`;
 }
