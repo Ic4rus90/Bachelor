@@ -20,6 +20,7 @@ class SyntaxCheckResponse(BaseModel):
 
 class LLMRequest(BaseModel):
     user_prompt: str
+    system_prompt: str = ""
 
 class LLMResponse(BaseModel):
     input_token_num: int

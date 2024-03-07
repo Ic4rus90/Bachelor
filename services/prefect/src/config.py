@@ -10,7 +10,6 @@ LLM_SCHEMA = {
   "properties": {
     "vulnerabilities": {
       "type": "array",
-      "minItems": 1,
       "items": {
         "type": "object",
         "required": ["cweID", "codeExtract", "vulnSummary"],
