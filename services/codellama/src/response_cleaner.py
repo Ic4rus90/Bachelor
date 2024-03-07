@@ -2,7 +2,7 @@ import json
 
 def clean_response(llm_output) -> str:  # Change the return type hint to str
     # Locate the last occurrence of "Destination: user"
-    last_occurrence_index = llm_output.rfind("Source: assistant\nDestination: user")
+    last_occurrence_index = llm_output.rfind("### Assistant\n")
 
     # Extract everything after "Destination: user"
     if last_occurrence_index != -1:
