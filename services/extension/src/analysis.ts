@@ -45,11 +45,14 @@ async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode
 	// Display message to the user. Kept for now for future development.
 	vscode.window.showInformationMessage('Your code is sent for analysis.');
 
+	try {
 	// Get the analyzed code
 	const analyzed_code = await getAnalyzedCode(code, file_extension, authenticated);
-	
 	output_channel.show();
 	output_channel.appendLine(analyzed_code);
+	} catch (error) {
+		vscode.window.showErrorMessage(`An error occured: ${error}`);
+	  }	
 };
 
 export { analyzeCode };

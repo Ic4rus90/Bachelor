@@ -1,12 +1,12 @@
 version: '3.9'
 
 networks:
-  webapp-network:
-    external: false
+  bsc-group-17:
+    external: true
 
 services:
   db:
-    image: postgres
+    image: postgres:16.2
     restart: on-failure
     # set shared memory limit when using docker-compose
     shm_size: 128mb
@@ -24,8 +24,9 @@ services:
       POSTGRES_PORT: ${DB_PORT}
     volumes:
       - ./server/database/init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
     networks:
-      - webapp-network
+      - bsc-group-17
 
   server:
     build:
@@ -41,7 +42,7 @@ services:
     depends_on:
       - db
     networks:
-      - webapp-network
+      - bsc-group-17
 
   webapp:
     build:
@@ -51,14 +52,17 @@ services:
     ports:
       - 8500:8500
     networks:
-      - webapp-network
+      - bsc-group-17
     depends_on:
       - server
 
   adminer:
-    image: adminer
+    image: adminer:4.8.1
     restart: on-failure
     ports:
       - 8080:8080
     networks:
-      - webapp-network
+      - bsc-group-17
+
+volumes: 
+  postgres-data:

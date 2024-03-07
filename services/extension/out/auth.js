@@ -47,7 +47,7 @@ async function authenticate(context) {
         'audience=https://the-seal-of-approval-API.com/v1/reports&' +
         'code_challenge_method=S256&' +
         'state=ASDF2F2F2';
-    // Possibly change state
+    //TODO: Change state
     // Open the authentication URL in the user's default web browser
     vscode.env.openExternal(vscode.Uri.parse(authURL));
     try {
@@ -66,9 +66,9 @@ async function authenticate(context) {
 exports.authenticate = authenticate;
 // Exchanges the authorization code for tokens
 async function exchangeCodeForTokens(authorizationCode, codeVerifier, context) {
-    const tokenURL = 'https://security-seal.eu.auth0.com/oauth/token';
-    const clientID = 'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
-    const redirectURI = 'http://localhost:3000/callback';
+    const tokenURL = `${process.env.TOKEN_URL}`; // 'https://security-seal.eu.auth0.com/oauth/token';
+    const clientID = `${process.env.CLIENT_ID}`; //'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
+    const redirectURI = `${process.env.REDIRECT_URI}`; //'http://localhost:3000/callback';
     try {
         // Send a POST request to the token endpoint
         const response = await axios_1.default.post(tokenURL, {
@@ -85,7 +85,6 @@ async function exchangeCodeForTokens(authorizationCode, codeVerifier, context) {
     }
     catch (error) {
         console.error('Error:', error);
-        // Throw error so the caller can handle it
         throw new Error(`Failed to exchange code for tokens: ${error}`);
     }
 }
@@ -105,13 +104,21 @@ async function storeTokens(tokens, context) {
 }
 async function isAccessTokenExpired(context) {
     const expiry_timestamp = await context.secrets.get('security-seal-access-token-expiry');
-    // TODO: Review logic here
     if (!expiry_timestamp) {
         return true;
     }
     const expiry_time = parseInt(expiry_timestamp, 10);
     const current_time = new Date().getTime();
-    return current_time >= expiry_time;
+    // Delete token if expired
+    if (current_time >= expiry_time) {
+        context.secrets.delete('security-seal-access-token-expiry');
+        context.secrets.delete('security-seal-access-token');
+        context.secrets.delete('security-seal-id-token');
+        return true;
+    }
+    else {
+        return false;
+    }
 }
 exports.isAccessTokenExpired = isAccessTokenExpired;
 async function showAuthenticationPrompt(context) {

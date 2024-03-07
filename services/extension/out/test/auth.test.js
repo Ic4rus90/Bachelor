@@ -28,7 +28,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const assert = __importStar(require("assert"));
 const vscode = __importStar(require("vscode"));
-// Importing sinon for mocking
 const sinon_1 = __importDefault(require("sinon"));
 const auth_1 = require("../auth");
 suite('Auth Suite', () => {
@@ -40,19 +39,36 @@ suite('Auth Suite', () => {
     teardown(() => {
         sandbox.restore();
     });
-    // Testing for expiration of access tokens
     test('Return true if no access token is found', async () => {
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves(undefined) } };
+        const mockContext = {
+            secrets: {
+                get: sandbox.stub().resolves(undefined),
+                store: sandbox.stub(),
+                delete: sandbox.stub(),
+            },
+        };
         const expired = await (0, auth_1.isAccessTokenExpired)(mockContext);
         assert.strictEqual(expired, true);
     });
     test('Return true if access token is expired', async () => {
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('3') } };
+        const mockContext = {
+            secrets: {
+                get: sandbox.stub().resolves('3'),
+                store: sandbox.stub(),
+                delete: sandbox.stub(),
+            },
+        };
         const expired = await (0, auth_1.isAccessTokenExpired)(mockContext);
         assert.strictEqual(expired, true);
     });
     test('Return true if access token is not expired', async () => {
-        const mockContext = { secrets: { get: sinon_1.default.stub().resolves('999999999999999999') } };
+        const mockContext = {
+            secrets: {
+                get: sandbox.stub().resolves('999999999999999999'),
+                store: sandbox.stub(),
+                delete: sandbox.stub(),
+            },
+        };
         const expired = await (0, auth_1.isAccessTokenExpired)(mockContext);
         assert.strictEqual(expired, false);
     });
