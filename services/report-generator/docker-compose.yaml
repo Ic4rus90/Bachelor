@@ -1,0 +1,16 @@
+version: "3.8"
+
+networks:
+  bsc-group-17:
+    external: true
+
+services:
+  bsc-group-17-report-generator:
+    container_name: bsc-group-17-report-generator
+    build:
+      context: .
+      dockerfile: Dockerfile
+    volumes:
+      - ./logs:/usr/src/logs
+    ports:
+      - "30004:30004"
