@@ -1,29 +1,14 @@
 import { encodeToBase64 } from "./convert-to-base64";
 import * as vscode from 'vscode';
-import * as dotenv from 'dotenv';
-import { resolve } from 'path';
 import { decodeFromBase64 } from "./convert-to-base64";
 
 
-declare const __dirname: string;
-
-dotenv.config({
-    path: resolve(__dirname, '/../.env')
-});
-
-interface Vulnerability {
-	vulnerabilities: Array <{
-		cweID: string;
-		codeExtract: string;
-		vulnSummary: string
-	}>;
-}
 
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSummary: string }): string {
-    const decoded_code = decodeFromBase64(vuln.codeExtract);
-    const decoded_cweID = decodeFromBase64(vuln.cweID);
-    const decoded_summary = decodeFromBase64(vuln.vulnSummary); 
+    const decoded_code = vuln.codeExtract;
+    const decoded_cweID = vuln.cweID;
+    const decoded_summary = vuln.vulnSummary; 
 	return `${decoded_cweID}
 			${decoded_summary}
 			Vulnerable code: ${decoded_code}
@@ -74,11 +59,30 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
             }
         } 
 
-        const vulnerability_data: Vulnerability = await response.json() as Vulnerability;
+        // Read response body as text
+        const responseBody = await response.text();
+        
+        // Decode from base64 to utf-8
+        const decodedReport = Buffer.from(responseBody, 'base64').toString('utf-8');
+        //Buffer.from(responseBody, 'base64').toString('utf-8');
+        
+        // Convert JSON to vulnerability format
+        const reportJson: {
+            vulnerabilities: Array<{ 
+                cweID: string;
+                codeExtract: string;
+                vulnSummary: string; 
+            }> } = JSON.parse(decodedReport);
 
-        const formatted  = vulnerability_data.vulnerabilities.map(formatVulnerability).join('');
+        if (reportJson.vulnerabilities.length === 0) {
+            return 'Congratulations, your code looks squeaky clean.\nYou get a seal of approval.';
+        }
+        
+        // Format output
+        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n';
+        const formattedVulnerabilities  = reportJson.vulnerabilities.map(formatVulnerability).join('');
 
-        return formatted;
+        return vulnerabilityMessage + formattedVulnerabilities;
 
     } catch (error: unknown) {
         if (error instanceof Error) {
