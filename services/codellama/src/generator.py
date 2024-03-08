@@ -51,8 +51,8 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
         start_time = datetime.now()
         generate_ids = model.generate(inputs.input_ids.to("cuda"), max_new_tokens=max_new_tokens, repetition_penalty=repetition_penalty, do_sample=do_sample, top_p=top_p, top_k=top_k, temperature=temperature)
         completion = tokenizer.batch_decode(generate_ids, skip_special_tokens=True, clean_up_tokenization_spaces=False)[0]
-        completion = completion.replace(system_prompt, "").split("\n\n\n")[0]
-        completion = completion.replace(user_prompt, "").split("\n\n\n")[0]
+        #completion = completion.replace(system_prompt, "").split("\n\n\n")[0]
+        #completion = completion.replace(user_prompt, "").split("\n\n\n")[0]
         end_time = datetime.now()
         
         duration = (end_time - start_time).total_seconds()
