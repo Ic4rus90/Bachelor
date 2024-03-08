@@ -4,4 +4,4 @@ class GenerateRequest(BaseModel):
     token: str
 
 class GenerateResponse(BaseModel):
-    user_id: str
+    message: str
