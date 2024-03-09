@@ -14,8 +14,8 @@ services:
       - ./tokenizer:/usr/src/app/tokenizer
       - ./model:/usr/src/app/model
       - ./logs:/usr/src/logs
-    ports:
-      - "30003:30003"
+    #ports:
+    #  - "30003:30003"
     deploy:
       resources:
         reservations:
@@ -23,3 +23,5 @@ services:
             - driver: nvidia
               device_ids: ['6', '7']
               capabilities: ['gpu']
+    networks:
+      - bsc-group-17
