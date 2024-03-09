@@ -19,16 +19,19 @@ def code_analysis_flow(code: str, file_extension: str, token: str):
         if user_id == "":
             logger.error("Invalid token received, could not extract user ID")
             raise ValueError("Invalid token received")
+        
+        if len(code) > 15000:
+            logger.error(f"Client: {user_id} Code length exceeds 15000 characters")
+            raise ValueError("Code too long")
+
         prompt = generate_prompt_code_validator_task(user_id=user_id, code=code, file_extension=file_extension)
         llm_output = call_llm_task(user_id=user_id, prompt=prompt)
         reports = generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = 1)
         storage_result = store_report_task(user_id=user_id, report_full=reports.encoded_full)
         if storage_result:
-            print("Full-report: " + reports.encoded_full)
-            print("Summary: " + reports.encoded_summary)
             return reports.encoded_summary
         else:
-            logger.error(f" {user_id} Could not store the full report")
+            logger.error(f"Client: {user_id} Could not store the full report")
             raise ValueError("Error storing full report")
     else:
         logger.error("Invalid token received")
@@ -64,6 +67,9 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
         elif str(e) == "Invalid file extension received": # If an invalid file extension is received
             logger.error(f"Client: {client_host} Raised 422 due to invalid file extension")
             raise HTTPException(status_code=422, detail="Invalid file extension received")
+        elif str(e) == "Code too long":
+            logger.error(f"Client: {client_host} Raised 413 due to code too long")
+            raise HTTPException(status_code=418, detail="Code too long")
         else:
             logger.error(f"Client: {client_host} Raised 500 due to unknown error: {e}")
             raise HTTPException(status_code=500, detail="Server error occurred, please contact us for assistance.")
