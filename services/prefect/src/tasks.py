@@ -17,7 +17,7 @@ def validate_token_task(token: str) -> str:
         token_request = TokenRequest(token=token)
         response = requests.post(TOKEN_VALIDATOR_URL, json=token_request.model_dump())
         response.raise_for_status()
-        return TokenResponse(**response.json()).user_id
+        return True
     except requests.HTTPError as e:
         if e.response.status_code == 401:
             logger.error(f"Invalid token received: {e.response.status_code} - {e.response.text}")
@@ -27,7 +27,17 @@ def validate_token_task(token: str) -> str:
         logger.error(f"Request to token validator failed {e}")
     except Exception as e:
         logger.error(f"Token validation failed: {e}")
-    return ""
+    return False
+
+
+@task(name="Get User ID")
+def get_user_id_task(token: str) -> str:
+    try:
+        decoded = jwt.decode(token, options={"verify_signature": False})
+        return decoded.get("sub")
+    except Exception as e:
+        logger.error(f"An error occurred when decoding user token: {e}")
+        return ""
 
 @task(name="Validate Code and Generate Prompt")
 def generate_prompt_code_validator_task(code: str, file_extension: str) -> str:
