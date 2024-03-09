@@ -7,6 +7,7 @@ from models import CodeAnalysisRequest
 
 app = FastAPI()
 
+logger.remove()
 
 set_up_logger()
 
