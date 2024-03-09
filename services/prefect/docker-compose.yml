@@ -11,7 +11,8 @@ services:
       context: .
       dockerfile: Dockerfile
     volumes:
-      - ./logs:/usr/src/app/logs
+      - ./logs:/usr/src/logs
     ports:
       - "30000:30000"
-      
+    networks:
+      - bsc-group-17

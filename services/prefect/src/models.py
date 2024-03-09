@@ -4,7 +4,7 @@ class TokenRequest(BaseModel):
     token: str
 
 class TokenResponse(BaseModel):
-    user_id: str
+    message: str
 
 class CodeAnalysisRequest(BaseModel):
     code: str
@@ -30,11 +30,14 @@ class LLMResponse(BaseModel):
 
 class GenerateReportRequest(BaseModel):
     llm_output: str
+    user_id: str
+    file_extension: str
+    analyzed_code: str
+    starting_line_number: int
 
 class GenerateReportResponse(BaseModel):
-    report_summary: str
-    report_full: str
+    encoded_summary: str
+    encoded_full: str
 
 class StoreReportRequest(BaseModel):
     report_full: str
-  

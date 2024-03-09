@@ -19,6 +19,5 @@ EXPOSE 30000
 # Mark volume
 VOLUME ["/usr/src/app/logs"]
 
-# Set the entrypoint command for the container
-ENTRYPOINT ["uvicorn"]
-CMD ["main:app", "--host", "0.0.0.0", "--port", "30000"]
+# Set the launch command
+CMD ["python3", "main.py"]
