@@ -25,7 +25,7 @@ restart_service() {
 read -p "Do you want to start, stop, build, or restart a service? " action
 
 # Prompt the user for service(s)
-read -p "Which service(s) do you want to perform the action on? ('all', 'code-val', 'llm', 'rep-gen', 'web-app'. 'prefect' ) " services
+read -p "Which service(s) do you want to perform the action on? ('all', 'code-val', 'llm', 'rep-gen', 'web-app', 'prefect', 'token-val' ) " services
 
 # Perform the action based on user input
 case "$action" in
@@ -36,6 +36,7 @@ case "$action" in
             start_service "services/report-generator/docker-compose.yml"
             start_service "services/web-app/docker-compose.yml"
             start_service "services/prefect/docker-compose.yml"
+            start_service "services/token-validator/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
@@ -54,6 +55,9 @@ case "$action" in
                     prefect)
                         start_service "services/prefect/docker-compose.yml"
                         ;;
+                    token-val)
+                        start_service "services/token-validator/docker-compose.yml"
+                        ;;
                     *)
                         echo "Invalid service: $service"
                         ;;
@@ -68,16 +72,17 @@ case "$action" in
             stop_service "services/report-generator/docker-compose.yml"
             stop_service "services/web-app/docker-compose.yml"
             stop_service "services/prefect/docker-compose.yml"
+            stop_service "services/token-validator/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
-                    code-validator)
+                    code-val)
                         stop_service "services/code-validator/docker-compose.yml"
                         ;;
-                    codellama)
+                    llm)
                         stop_service "services/codellama/docker-compose.yml"
                         ;;
-                    report-generator)
+                    rep-gen)
                         stop_service "services/report-generator/docker-compose.yml"
                         ;;
                     web-app)
@@ -85,6 +90,9 @@ case "$action" in
                         ;;
                     prefect)
                         stop_service "services/prefect/docker-compose.yml"
+                        ;;
+                    token-val)
+                        stop_service "services/token-validator/docker-compose.yml"
                         ;;
                     *)
                         echo "Invalid service: $service"
@@ -100,16 +108,17 @@ case "$action" in
             build_service "services/report-generator/docker-compose.yml"
             build_service "services/web-app/docker-compose.yml"
             build_service "services/prefect/docker-compose.yml"
+            build_service "services/token-validator/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
-                    code-validator)
+                    code-val)
                         build_service "services/code-validator/docker-compose.yml"
                         ;;
-                    codellama)
+                    llm)
                         build_service "services/codellama/docker-compose.yml"
                         ;;
-                    report-generator)
+                    rep-gen)
                         build_service "services/report-generator/docker-compose.yml"
                         ;;
                     web-app)
@@ -117,6 +126,9 @@ case "$action" in
                         ;;
                     prefect)
                         build_service "services/prefect/docker-compose.yml"
+                        ;;
+                    token-val)
+                        build_service "services/token-validator/docker-compose.yml"
                         ;;
                     *)
                         echo "Invalid service: $service"
@@ -132,16 +144,17 @@ case "$action" in
             restart_service "services/report-generator/docker-compose.yml"
             restart_service "services/web-app/docker-compose.yml"
             restart_service "services/prefect/docker-compose.yml"
+            restart_service "services/token-validator/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
-                    code-validator)
+                    code-val)
                         restart_service "services/code-validator/docker-compose.yml"
                         ;;
-                    codellama)
+                    llm)
                         restart_service "services/codellama/docker-compose.yml"
                         ;;
-                    report-generator)
+                    rep-gen)
                         restart_service "services/report-generator/docker-compose.yml"
                         ;;
                     web-app)
@@ -149,6 +162,9 @@ case "$action" in
                         ;;
                     prefect)
                         restart_service "services/prefect/docker-compose.yml"
+                        ;;
+                    token-val)
+                        restart_service "services/token-validator/docker-compose.yml"
                         ;;
                     *)
                         echo "Invalid service: $service"
