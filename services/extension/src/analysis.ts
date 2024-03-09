@@ -51,6 +51,7 @@ async function analyzeCode(output_channel: vscode.OutputChannel, context: vscode
 	output_channel.show();
 	output_channel.appendLine(analyzed_code);
 	} catch (error) {
+		// This doubles with handling in getAnalyzedCode. Find a more centralized way to handle it. 
 		vscode.window.showErrorMessage(`An error occured: ${error}`);
 	  }	
 };
