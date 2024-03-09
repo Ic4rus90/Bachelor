@@ -17,7 +17,7 @@ COPY src/ .
 EXPOSE 30000
 
 # Mark volume
-VOLUME ["/usr/src/app/logs"]
+VOLUME ["/usr/src/logs"]
 
 # Set the launch command
 CMD ["python3", "main.py"]
