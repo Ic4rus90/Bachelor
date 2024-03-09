@@ -1,9 +1,14 @@
 from pydantic import BaseModel
 
 class GenerateRequest(BaseModel):
-    system_prompt: str = "WW91IGFyZSBhbiBleHBlcnQgcHJvZ3JhbW1lciB0aGF0IGdpdmVzIHNob3J0IGFuZCBjb25jaXNlIGFuc3dlcnMgdG8gdGhlIGdpdmVuIHF1ZXN0aW9ucw=="
-    user_prompt: str = "QW5hbHl6ZSB0aGUgZm9sbG93aW5nIGNvZGUgYW5kIGdpdmUgYSBsaXN0IG9mIHZ1bG5lcmFiaWxpdGllcyBkaXNjb3ZlcmVkOgoKY2hhciAqIGNvcHlfaW5wdXQoY2hhciAqdXNlcl9zdXBwbGllZF9zdHJpbmcpewppbnQgaSwgZHN0X2luZGV4OwpjaGFyICpkc3RfYnVmID0gKGNoYXIqKW1hbGxvYyg0KnNpemVvZihjaGFyKSAqIE1BWF9TSVpFKTsKaWYgKCBNQVhfU0laRSA8PSBzdHJsZW4odXNlcl9zdXBwbGllZF9zdHJpbmcpICl7CmRpZSgidXNlciBzdHJpbmcgdG9vIGxvbmcsIGRpZSBldmlsIGhhY2tlciEiKTsKfQpkc3RfaW5kZXggPSAwOwpmb3IgKCBpID0gMDsgaSA8IHN0cmxlbih1c2VyX3N1cHBsaWVkX3N0cmluZyk7IGkrKyApewppZiggJyYnID09IHVzZXJfc3VwcGxpZWRfc3RyaW5nW2ldICl7CmRzdF9idWZbZHN0X2luZGV4KytdID0gJyYnOwpkc3RfYnVmW2RzdF9pbmRleCsrXSA9ICdhJzsKZHN0X2J1Zltkc3RfaW5kZXgrK10gPSAnbSc7CmRzdF9idWZbZHN0X2luZGV4KytdID0gJ3AnOwpkc3RfYnVmW2RzdF9pbmRleCsrXSA9ICc7JzsKfQplbHNlIGlmICgnPCcgPT0gdXNlcl9zdXBwbGllZF9zdHJpbmdbaV0gKXsKCi8qIGVuY29kZSB0byAmbHQ7ICovCn0KZWxzZSBkc3RfYnVmW2RzdF9pbmRleCsrXSA9IHVzZXJfc3VwcGxpZWRfc3RyaW5nW2ldOwp9CnJldHVybiBkc3RfYnVmOwp9"
-    max_new_tokens: int = 2048
-    max_time: int = 120
-    repetition_penalty: float = 1.15
-    typical_p: float = 1
+    system_prompt: str
+    user_prompt: str
+    #max_time: int = 120
+    #repetition_penalty: float = 1.15
+    #typical_p: float = 1
+
+class GenerateResponse(BaseModel):
+    input_token_num: int
+    output_token_num: int
+    generation_time: float
+    llm_output: str

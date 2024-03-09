@@ -58,10 +58,15 @@ async function analyzeCode(output_channel, context) {
     }
     // Display message to the user. Kept for now for future development.
     vscode.window.showInformationMessage('Your code is sent for analysis.');
-    // Get the analyzed code
-    const analyzed_code = await (0, send_request_1.getAnalyzedCode)(code, file_extension, authenticated);
-    output_channel.show();
-    output_channel.appendLine(analyzed_code);
+    try {
+        // Get the analyzed code
+        const analyzed_code = await (0, send_request_1.getAnalyzedCode)(code, file_extension, authenticated);
+        output_channel.show();
+        output_channel.appendLine(analyzed_code);
+    }
+    catch (error) {
+        vscode.window.showErrorMessage(`An error occured: ${error}`);
+    }
 }
 exports.analyzeCode = analyzeCode;
 ;

@@ -16,8 +16,8 @@ CREATE TABLE vulnerability (
   vuln_id SERIAL PRIMARY KEY,
   report_id INTEGER NOT NULL,
   cwe_id VARCHAR(255) NOT NULL,
-  code_extract VARCHAR(500) NOT NULL,
-  vuln_summary VARCHAR(500),
+  code_extract VARCHAR(1000) NOT NULL,
+  vuln_summary VARCHAR(1000),
   FOREIGN KEY (report_id) REFERENCES report(report_id),
   FOREIGN KEY (cwe_id) REFERENCES cwe(cwe_id)
 );
@@ -25,7 +25,7 @@ CREATE TABLE vulnerability (
 CREATE TABLE analyzed_code (
   analyzed_code_id SERIAL PRIMARY KEY,
   report_id INTEGER NOT NULL,
-  code VARCHAR(5000) NOT NULL,
+  code VARCHAR(15000) NOT NULL,
   code_language VARCHAR(50) NOT NULL,
   starting_line_number INT,
   FOREIGN KEY (report_id) REFERENCES report(report_id)

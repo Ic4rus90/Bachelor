@@ -4,6 +4,16 @@ import * as vscode from 'vscode';
 import { analyzeCode } from './analysis';
 import { authenticate } from './auth';
 
+import * as dotenv from 'dotenv';
+import { join } from 'path';
+
+declare const __dirname: string;
+
+dotenv.config({
+    path: join(__dirname, '..', '.env')
+});
+
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {

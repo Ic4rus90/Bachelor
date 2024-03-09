@@ -1,18 +1,17 @@
 import { encodeToBase64 } from "./convert-to-base64";
+import * as vscode from 'vscode';
+import { decodeFromBase64 } from "./convert-to-base64";
 
-interface Vulnerability {
-	vulnerabilities: Array <{
-		cweID: string;
-		codeExtract: string;
-		vulnSummary: string
-	}>;
-}
+
 
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSummary: string }): string {
-	return `${vuln.cweID}
-			${vuln.vulnSummary}
-			Vulnerable code: ${vuln.codeExtract}
+    const decoded_code = vuln.codeExtract;
+    const decoded_cweID = vuln.cweID;
+    const decoded_summary = vuln.vulnSummary; 
+	return `${decoded_cweID}
+			${decoded_summary}
+			Vulnerable code: ${decoded_code}
 
 			`;
 }
@@ -27,6 +26,13 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
     // Define the URL to send the request to
     const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
 
+    // Abort controller instance for timeout
+    const controller = new AbortController();
+    const timeout = setTimeout(() => {
+        // Abort the fetch request if it takes too long
+        controller.abort();
+    }, 210000);
+
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -35,20 +41,67 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(data),
+            signal: controller.signal, // Passing the AbortController signal
         });
 
+        clearTimeout(timeout); // Clear the timeout when the response is received
+
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            switch (response.status) {
+                case 401: 
+                    throw new Error('Invalid token received');
+                case 400: 
+                    throw new Error('Invalid code received');
+                case 422:
+                    throw new Error('Invalid file extension received');
+                case 418:
+                    throw new Error('The code sent for analysis is too long. Please try again with a smaller code snippet.');
+                default:
+                    throw new Error('Server error occured. Please contact us for assistance');
+            }
         } 
 
-        const vulnerability_data: Vulnerability = await response.json() as Vulnerability;
+        // Read response body as text
+        const responseBody = await response.text();
+        
+        // Decode from base64 to utf-8
+        const decodedReport = Buffer.from(responseBody, 'base64').toString('utf-8');
+        //Buffer.from(responseBody, 'base64').toString('utf-8');
+        
+        // Convert JSON to vulnerability format
+        const reportJson: {
+            vulnerabilities: Array<{ 
+                cweID: string;
+                codeExtract: string;
+                vulnSummary: string; 
+            }> } = JSON.parse(decodedReport);
 
-        const formatted  = vulnerability_data.vulnerabilities.map(formatVulnerability).join('');
+        if (reportJson.vulnerabilities.length === 0) {
+            return 'Congratulations, your code looks squeaky clean.\nYou get a seal of approval.';
+        }
+        
+        // Format output
+        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n';
+        const formattedVulnerabilities  = reportJson.vulnerabilities.map(formatVulnerability).join('');
 
-        return formatted;
-    } catch (error) {
-        console.error('Error:', error);
-        throw error;
+        return vulnerabilityMessage + formattedVulnerabilities;
+
+    } catch (error: unknown) {
+        if (error instanceof Error) {
+            if (error.name === 'AbortError') {
+                // Handle the timeout
+                console.error('Request timed out');
+                vscode.window.showErrorMessage('Request timed out. Please try again.');
+                throw new Error('Request timed out');
+            } else {
+                console.error('Error:', error);
+                vscode.window.showErrorMessage(`Error: ${error}`);
+                throw error;
+            }
+        } else {
+            console.error('Unknown error:', error);
+            throw error;
+        }
     }
 }
 

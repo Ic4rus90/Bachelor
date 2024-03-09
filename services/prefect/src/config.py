@@ -4,6 +4,7 @@ LLM_URL = "http://localhost:30003/generate"
 REPORT_GENERATOR_URL = "http://localhost:30004/generate-report"
 REPORT_STORAGE_URL = "http://localhost:3001/addreports"
 
+
 LLM_SCHEMA = {
   "type": "object",
   "required": ["vulnerabilities"],
