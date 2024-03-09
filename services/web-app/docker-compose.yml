@@ -5,7 +5,8 @@ networks:
     external: true
 
 services:
-  db:
+  bsc-group-17-web-db:
+    container_name: bsc-group-17-web-db
     image: postgres:16.2
     restart: on-failure
     # set shared memory limit when using docker-compose
@@ -28,7 +29,8 @@ services:
     networks:
       - bsc-group-17
 
-  server:
+  bsc-group-17-web-server:
+    container_name: bsc-group-17-web-server
     build:
       context: /server
       dockerfile: Dockerfile
@@ -44,7 +46,8 @@ services:
     networks:
       - bsc-group-17
 
-  webapp:
+  bsc-group-17-webapp:
+    container_name: bsc-group-17-webapp
     build:
       context: /client
       dockerfile: Dockerfile
@@ -56,7 +59,8 @@ services:
     depends_on:
       - server
 
-  adminer:
+  bsc-group-17-adminer:
+    container_name: bsc-group-17-adminer
     image: adminer:4.8.1
     restart: on-failure
     ports:

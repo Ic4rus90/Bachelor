@@ -5,8 +5,11 @@ networks:
     external: true
 
 services:
-  code-validator:
-    image: ghcr.io/ic4rus90/bachelor/code-validator:latest
+  bsc-group-17-code-val:
+    container_name: bsc-group-17-code-val
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
       - ./logs:/usr/src/app/logs
     ports:
