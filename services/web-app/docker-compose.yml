@@ -32,24 +32,24 @@ services:
   bsc-group-17-web-server:
     container_name: bsc-group-17-web-server
     build:
-      context: /server
+      context: ./server
       dockerfile: Dockerfile
     restart: on-failure
     ports:
       - 3001:3001
     env_file:
-      - /.env
+      - .env
     environment:
       - DATABASE_URL=postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}
     depends_on:
-      - db
+      - bsc-group-17-web-db
     networks:
       - bsc-group-17
 
   bsc-group-17-webapp:
     container_name: bsc-group-17-webapp
     build:
-      context: /client
+      context: ./client
       dockerfile: Dockerfile
     restart: on-failure
     ports:
@@ -57,7 +57,7 @@ services:
     networks:
       - bsc-group-17
     depends_on:
-      - server
+      - bsc-group-17-web-server
 
   bsc-group-17-adminer:
     container_name: bsc-group-17-adminer

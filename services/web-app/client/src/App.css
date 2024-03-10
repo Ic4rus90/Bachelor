@@ -19,10 +19,13 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start; /* Align content to the top */
   font-size: calc(10px + 2vmin);
   color: white;
+  padding-top: 0; /* Adjust padding as needed */
+  margin-top: 0; /* Ensure there's no margin pushing it down */
 }
+
 
 .App-link {
   color: #61dafb;

@@ -1,0 +1,33 @@
+.nav-tabs {
+    --bs-nav-tabs-border-width: 1px;
+    --bs-nav-tabs-border-color: #6c757d;
+    --bs-nav-tabs-link-hover-border-color: transparent;
+
+    border-bottom: var(--bs-nav-tabs-border-width) solid var(--bs-nav-tabs-border-color);
+}
+
+.custom-tabs .nav-item .nav-link {
+    background-color: #181820; /* Dark background for the tab */
+    color: #adb5bd; /* Light text color */
+    font-size: 1.0rem;
+    border-bottom: 1px solid #6c757d;
+    
+}
+
+.custom-tabs .nav-item .nav-link.active {
+    font-size: 1.0rem;
+    color: #ffffff; /* White text color for active tab */
+    background-color: #181820; /* Slightly lighter background for active tab */
+    border: 1px solid #6c757d; /* Maintain the border for the active tab but with a transparent bottom border */
+    border-bottom-color: transparent;
+    /*border-color: #6c757d;  Solid border for active tab */
+    /*border-bottom-color: transparent;  Hide bottom border for active tab */
+}
+
+.custom-tabs .nav-item .nav-link:not(.active):hover {
+    color: #ffffff; /* White text color on hover for non-active tabs */
+}
+
+.custom-tabs {
+    margin-top: 1rem; /* Adjust this value to the desired amount of top margin */
+}
