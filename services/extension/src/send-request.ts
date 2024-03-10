@@ -9,9 +9,8 @@ function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSum
     const decoded_code = vuln.codeExtract;
     const decoded_cweID = vuln.cweID;
     const decoded_summary = vuln.vulnSummary; 
-	return `${decoded_cweID}
-			${decoded_summary}
-			Vulnerable code: ${decoded_code}
+	return `${decoded_cweID}: ${decoded_summary}
+			Vulnerable code:\n${decoded_code}
 
 			`;
 }
