@@ -56,6 +56,10 @@ services:
       - 8500:8500
     networks:
       - bsc-group-17
+    environment:
+      - HTTPS=true
+      - SSL_CRT_FILE=cair-gpu12.uia.no.crt 
+      - SSL_KEY_FILE=cair-gpu12.uia.no.key
     depends_on:
       - bsc-group-17-web-server
 
