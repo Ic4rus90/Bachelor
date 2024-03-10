@@ -58,8 +58,12 @@
     margin-left: 10px; /* Adds some space between the buttons */
     font-size: 16px;
     font-weight: bold;
+    text-decoration: none; /* Removes underline from text */
+    display: inline-block; /* Allows the padding and margin to work like a button */
+    text-align: center;
+    cursor: pointer; /* Changes cursor to indicate clickable item */
 }
-  
+
 .delete-account-button:hover {
     background-color: #c82333; /* A darker shade for hover */
 }
