@@ -12,5 +12,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./logs:/usr/src/logs
-    ports:
-      - "30004:30004"
+    #ports:
+    #  - "30004:30004"
+    networks:
+      - bsc-group-17

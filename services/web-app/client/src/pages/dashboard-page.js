@@ -10,6 +10,7 @@ export default function Dashboard() {
   
   const { isAuthenticated, isLoading } = useAuth0();
   console.log('Dashboard rendering', { isAuthenticated, isLoading });
+  
 
   if (isLoading) {
     return <div>Loading ...</div>;

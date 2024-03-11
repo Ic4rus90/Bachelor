@@ -22,8 +22,9 @@ const DashboardTabs = () => {
       const getReports = async () => {
           try {
               const token = await getAccessTokenSilently(); 
-              
-              const response = await fetch('http://127.0.0.1:3001/getreports', {
+            
+              const response = await fetch('http://bsc-group-17-web-server.bsc-group-17:3001/getreports', {
+
                   headers: {
                       Authorization: `Bearer ${token}`,
                   },

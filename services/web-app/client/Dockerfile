@@ -12,6 +12,8 @@ RUN npm install
 # Copy the rest of the files
 COPY public/ /app/public
 COPY src/ /app/src
+COPY cair-gpu12.uia.no.crt .
+COPY cair-gpu12.uia.no.key .
 
 # Remove the EXPOSE, ENV and CMD when going for production, and uncomment following:
 # RUN npm run build

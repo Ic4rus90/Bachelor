@@ -6,6 +6,10 @@ WORKDIR /usr/src/app
 COPY src/ .
 # Install requirements
 RUN pip install --no-cache-dir -r requirements.txt
+
+# Mark volume
+VOLUME ["/usr/src/logs"]
+
 # Expose the port that the app runs on
 EXPOSE 30003
 
