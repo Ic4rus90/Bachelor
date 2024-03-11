@@ -93,11 +93,11 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
             if (error.name === 'AbortError') {
                 // Handle the timeout
                 console.error('Request timed out');
-                vscode.window.showErrorMessage('Request timed out. Please try again.');
+                //vscode.window.showErrorMessage('Request timed out. Please try again.');
                 throw new Error('Request timed out');
             } else {
                 console.error('Error:', error);
-                vscode.window.showErrorMessage(`Error: ${error}`);
+                //vscode.window.showErrorMessage(`Error: ${error}`);
                 throw error;
             }
         } else {
