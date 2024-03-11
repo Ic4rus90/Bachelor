@@ -20,3 +20,44 @@
     color: #28a745;
     margin-right: 0.5rem;
 }
+
+.vulnerability-card {
+    background-color: transparent;
+    color: #FFFFFF;
+    padding: 20px;
+}
+
+.vulnerability-card:not(:last-child) {
+    border-bottom: 1px solid #6c757d;
+    border-radius: 0rem;
+}
+
+.vulnerability-card .card-header, .vulnerability-card .card-body {
+    border-bottom: none;
+}
+
+.vulnerability-card .card-header {
+    border-bottom: 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.cwe-id {
+    font-size: 0.8rem; /* Adjust the size as needed */
+    color: #adb5bd;
+    font-weight: normal;
+}
+
+.vuln-summary-custom {
+    font-size: 0.9rem; /* Makes text smaller */
+    font-weight: normal; /* Ensures text is not bold */
+    text-align: left;
+    padding-top: 1rem;
+}

@@ -7,6 +7,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { useEffect, useState } from 'react';
 import './dashboard-tabs.css'
 import '../pages/dashboard-page.css'
+import mapExtensionToLanguage from './language-mapper';
 
 
 
@@ -46,11 +47,13 @@ const DashboardTabs = () => {
   }
 
 
+  const language = reportData ? mapExtensionToLanguage(reportData.analyzed_code.code_language) : 'none';
+
 
   return (
     <>
       <div className="dashboard-header">
-        <h1 className="dashboard-title">Latest Security Scan Results</h1>
+        <h1 className="dashboard-title">Latest security scan</h1>
           {reportData && (
             <span className="dashboard-timestamp">
             Scanned: {formatDate(reportData.report.report_date)}
@@ -63,10 +66,12 @@ const DashboardTabs = () => {
         className="custom-tabs mb-3"
         >
         <Tab eventKey="vulnerabilities" title="Vulnerabilities" className="custom-tab">
-          <VulnerabilityCards vulnerabilities={reportData.vulnerabilities} />
+        <div className="vulnerabilities-container">
+          <VulnerabilityCards vulnerabilities={reportData.vulnerabilities} language={language} />
+        </div>
         </Tab>
-        <Tab eventKey="code" title="Code" className="custom-tab">
-          <CodeBlock codeString={reportData.analyzed_code.code} />
+        <Tab eventKey="code" title="Analyzed code" className="custom-tab">
+          <CodeBlock codeString={reportData.analyzed_code.code} language={language} />
         </Tab>
       </Tabs>
     </>

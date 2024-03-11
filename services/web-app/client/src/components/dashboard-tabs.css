@@ -31,3 +31,11 @@
 .custom-tabs {
     margin-top: 1rem; /* Adjust this value to the desired amount of top margin */
 }
+
+.vulnerabilities-container {
+    border: 1px solid #6c757d;
+    /* padding: 1rem; Or any other value */
+    /* Other styles if needed */
+    margin-bottom: 1rem; /* Adds margin below the border */
+    border-radius: 5px;
+} 

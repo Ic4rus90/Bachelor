@@ -2,13 +2,14 @@ import { Container, Button, Nav, Navbar } from 'react-bootstrap';
 import React from 'react';
 import { Link } from 'react-router-dom';
 import securityseal from '../pages/securityseal.png';
+import { PersonCircle } from 'react-bootstrap-icons';
 
 
 function AccountNavButton() {
   return (
     <Link to="/account">
-      <Button variant="outline-light">
-        Account
+      <Button variant="none" style={{ padding: 0, border: 'none', backgroundColor: 'transparent', marginRight: '8px' }}>
+        <PersonCircle size={35}/>
       </Button>
     </Link>
   );
@@ -30,11 +31,11 @@ export default function HeaderAuthenticated() {
       <Navbar expand="lg" style={{ backgroundColor: '#21212B' }}  data-bs-theme="dark">
           <Container fluid>
             <img src={securityseal} height={40} alt="Security Seal Logo"/>
-            <Navbar.Brand as={Link} to="/dashboard">Security Seal</Navbar.Brand>
+            <Navbar.Brand as={Link} to="/dashboard" style={{ color: 'white' }}>Security Seal</Navbar.Brand>
             <Navbar.Collapse id="basic-navbar-nav">
                 <Nav className="me-auto">
                   <Link to="/dashboard">
-                    <Button variant="none">
+                    <Button variant="none" style={{ color: 'white' }}>
                       Dashboard
                     </Button>
                   </Link>
