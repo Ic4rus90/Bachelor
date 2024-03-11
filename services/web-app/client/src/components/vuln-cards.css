@@ -1,0 +1,63 @@
+.success-message {
+    background-color: #28a745; /* A green that's not too bright */
+    color: #fff;
+    padding: 1rem;
+    border-radius: 0.25rem;
+    box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
+    margin-top: 1rem;
+    display: inline-block;
+    font-size: 1rem;
+}
+  
+  /* If you are using Bootstrap, you could use their alert class for the message */
+.alert-success {
+    color: #155724;
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+}
+  
+.success-icon {
+    color: #28a745;
+    margin-right: 0.5rem;
+}
+
+.vulnerability-card {
+    background-color: transparent;
+    color: #FFFFFF;
+    padding: 20px;
+}
+
+.vulnerability-card:not(:last-child) {
+    border-bottom: 1px solid #6c757d;
+    border-radius: 0rem;
+}
+
+.vulnerability-card .card-header, .vulnerability-card .card-body {
+    border-bottom: none;
+}
+
+.vulnerability-card .card-header {
+    border-bottom: 0;
+}
+
+.header-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: bold;
+}
+
+.cwe-id {
+    font-size: 0.8rem; /* Adjust the size as needed */
+    color: #adb5bd;
+    font-weight: normal;
+}
+
+.vuln-summary-custom {
+    font-size: 0.9rem; /* Makes text smaller */
+    font-weight: normal; /* Ensures text is not bold */
+    text-align: left;
+    padding-top: 1rem;
+}
