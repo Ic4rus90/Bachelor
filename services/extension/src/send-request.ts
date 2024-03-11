@@ -56,6 +56,8 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
                     throw new Error('Invalid file extension received');
                 case 418:
                     throw new Error('The code sent for analysis is too long. Please try again with a smaller code snippet.');
+                case 429:
+                    throw new Error('You have exceeded the rate limit. Please try again in a few minutes.');
                 default:
                     throw new Error('Server error occured. Please contact us for assistance');
             }

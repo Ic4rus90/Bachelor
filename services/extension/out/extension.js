@@ -151,6 +151,7 @@ async function analyzeCode(output_channel, context) {
         output_channel.appendLine(analyzed_code);
     }
     catch (error) {
+        // This doubles with handling in getAnalyzedCode. Find a more centralized way to handle it. 
         vscode.window.showErrorMessage(`An error occured: ${error}`);
     }
 }
@@ -8500,6 +8501,8 @@ async function getAnalyzedCode(code, file_extension, token) {
                     throw new Error('Invalid file extension received');
                 case 418:
                     throw new Error('The code sent for analysis is too long. Please try again with a smaller code snippet.');
+                case 429:
+                    throw new Error('You have exceeded the rate limit. Please try again in a few minutes.');
                 default:
                     throw new Error('Server error occured. Please contact us for assistance');
             }
