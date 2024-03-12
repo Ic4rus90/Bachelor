@@ -14,3 +14,7 @@ models--Phind*
 
 # Application logs
 logs*
+
+.env
+*.crt
+*.key
