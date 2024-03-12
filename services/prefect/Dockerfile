@@ -20,4 +20,4 @@ EXPOSE 30000
 VOLUME ["/usr/src/logs"]
 
 # Set the launch command
-CMD ["python3", "main.py"]
+CMD ["./start.sh"]
