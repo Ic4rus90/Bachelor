@@ -8473,9 +8473,9 @@ async function getAnalyzedCode(code, file_extension, token) {
     // Abort controller instance for timeout
     const controller = new AbortController();
     const timeout = setTimeout(() => {
-        // Abort the fetch request if it takes too long (6 minutes)
+        // Abort the fetch request if it takes too long (5 minutes)
         controller.abort();
-    }, 360000); // 360 seconds
+    }, 300000); // 300 seconds
     // Set up a timer to display a message after 120 seconds
     const heavyLoadTimeout = setTimeout(() => {
         vscode.window.showInformationMessage('The server is experiencing heavy loads. Your request is still being processed.');
