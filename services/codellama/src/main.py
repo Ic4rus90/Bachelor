@@ -36,8 +36,6 @@ async def worker():
             # Mark queue task as done
             request_queue.task_done()
         
-        # Mark the queue task as done
-        request_queue.task_done()
 
 @app.on_event("startup")
 async def startup_event():
