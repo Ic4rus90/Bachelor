@@ -16,3 +16,5 @@ services:
       - "30000:30000"
     networks:
       - bsc-group-17
+    env_file:
+      - .env
