@@ -1,0 +1,24 @@
+.custom-github-style {
+    background: #f6f8fa; /* GitHub background color */
+    border-radius: 5px; /* Rounded corners for the code block */
+    border: 1px solid #6c757d; /* GitHub-like border */
+    font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, Courier, monospace; /* GitHub font stack */
+    font-size: 13px; /* GitHub font size */
+    line-height: 1.5; /* GitHub line height */
+  }
+  
+/* Update token colors as needed to match GitHub */
+.custom-github-style .token.operator,
+.custom-github-style .token.entity,
+.custom-github-style .token.url,
+.custom-github-style .language-css .token.string,
+.custom-github-style .style .token.string {
+    color: #d63384;
+}
+
+.custom-github-style .token.comment,
+.custom-github-style .token.prolog,
+.custom-github-style .token.doctype,
+.custom-github-style .token.cdata {
+    color: #6a737d; /* GitHub comment color */
+}

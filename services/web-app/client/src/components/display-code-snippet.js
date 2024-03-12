@@ -6,15 +6,13 @@ import './display-code.css'
 
 
 
-const CodeBlock = ({ codeString, language }) => (
+const CodeBlockSnippet = ({ codeString, language }) => (
   <SyntaxHighlighter 
     language={language} 
     style={atomdark} 
-    showLineNumbers={true} // Enable line numbers
-    lineNumberStyle={{ color: '#888', paddingRight: '30px', paddingLeft: '10px' }} // Style line numbers
   >
     {codeString}
   </SyntaxHighlighter>
 );
 
-export default CodeBlock;
+export default CodeBlockSnippet;

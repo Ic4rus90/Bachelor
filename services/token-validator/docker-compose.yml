@@ -14,5 +14,5 @@ services:
       - ./logs:/usr/src/app/logs
     networks:
       - bsc-group-17
-    ports:
-      - "30001:30001"
+    #ports:
+    #  - "30001:30001"

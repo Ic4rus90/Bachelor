@@ -74,7 +74,10 @@ Fjernet fra Return frem til vi
       <header className="App-header">
         <Container fluid className="my-4">
           <div style={cardContainerStyle}>
-          
+          <h1 style={{ color: '#fff', marginBottom: '2rem', marginLeft: '0.3rem', textAlign: 'left', fontSize:30 }}> 
+          <PersonCircle size={60} style={{marginRight: '1rem'}}/>
+          Your Account
+          </h1>
             <Card style={cardStyle}>
               <Card.Body>
               <Row className="align-items-center" style={contentStyle}>
@@ -83,7 +86,7 @@ Fjernet fra Return frem til vi
                   <div>{user.email}</div>
                 </Col>
                 <Col xs="auto" style={buttonColumnStyle}>
-                  <Button className="custom-button" size="sm" style={buttonStyle}>Edit</Button>
+                  {/*<Button className="custom-button" size="sm" style={buttonStyle}>Edit</Button>*/}
                 </Col>
               </Row>
 
@@ -93,7 +96,7 @@ Fjernet fra Return frem til vi
                   <div>••••••••</div>
                 </Col>
                 <Col xs="auto" style={buttonColumnStyle}>
-                  <Button className="custom-button" size="sm" style={buttonStyle}>Change</Button>
+                  {/*<Button className="custom-button" size="sm" style={buttonStyle}>Change</Button>*/}
                 </Col>
               </Row>
               </Card.Body>
@@ -106,8 +109,8 @@ Fjernet fra Return frem til vi
             justifyContent: 'center',
             gap: '40px' /* This adds 20px of space between any flex items */
           }}>
-            <LogoutButton />       
-            <a href="mailto:thomasnw@uia.no?subject=Request%20Account%20Deletion">Request Account Deletion</a>
+            <LogoutButton />  
+            <a href="mailto:thomasnw@uia.no?subject=Request%20Account%20Deletion" class="delete-account-button">Request Account Deletion</a>
           </div>
         </Container>
       </header>

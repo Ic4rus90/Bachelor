@@ -1,5 +1,6 @@
-from loguru import logger
 import os
+from loguru import logger
+
 
 # Sets up loguru to log to a file under code-validator/logs
 def set_up_logger():

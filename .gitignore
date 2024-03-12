@@ -7,3 +7,14 @@ node_modules
 venv
 
 __pycache__
+
+# LLM models and tokenizers
+models--codellama*
+models--Phind*
+
+# Application logs
+logs*
+
+.env
+*.crt
+*.key
