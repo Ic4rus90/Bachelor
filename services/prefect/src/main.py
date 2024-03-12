@@ -3,7 +3,7 @@ from prefect import flow
 from tasks import validate_token_task, generate_prompt_code_validator_task, call_llm_task, generate_report_task, store_report_task, get_user_id_task
 from logger import logger, set_up_logger
 from models import CodeAnalysisRequest
-from slowapi import Limiter, _rate_limit_exceeded_handler
+from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
 
@@ -52,7 +52,7 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
     
 
 @app.post("/analyze-code/")
-@limiter.limit("1/2 minute")
+@limiter.limit("1/40 seconds")
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
     client_host = request.client.host
 
