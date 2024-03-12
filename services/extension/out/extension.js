@@ -285,7 +285,7 @@ async function exchangeCodeForTokens(authorizationCode, codeVerifier, context) {
     }
     catch (error) {
         console.error('Error:', error);
-        throw new Error(`Failed to exchange code for tokens: ${error}`);
+        throw new Error(`Authentication failed: ${error}`);
     }
 }
 async function storeTokens(tokens, context) {
@@ -8424,13 +8424,37 @@ exports.getAuthoritzationCode = getAuthoritzationCode;
 
 /***/ }),
 /* 49 */
-/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
 
 "use strict";
 
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getAnalyzedCode = void 0;
 const convert_to_base64_1 = __webpack_require__(50);
+const vscode = __importStar(__webpack_require__(1));
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln) {
     const decoded_code = vuln.codeExtract;
@@ -8449,9 +8473,13 @@ async function getAnalyzedCode(code, file_extension, token) {
     // Abort controller instance for timeout
     const controller = new AbortController();
     const timeout = setTimeout(() => {
-        // Abort the fetch request if it takes too long
+        // Abort the fetch request if it takes too long (6 minutes)
         controller.abort();
-    }, 210000);
+    }, 360000); // 360 seconds
+    // Set up a timer to display a message after 120 seconds
+    const heavyLoadTimeout = setTimeout(() => {
+        vscode.window.showInformationMessage('The server is experiencing heavy loads. Your request is still being processed.');
+    }, 120000); // 120 seconds
     try {
         const response = await fetch(url, {
             method: 'POST',
@@ -8462,7 +8490,9 @@ async function getAnalyzedCode(code, file_extension, token) {
             body: JSON.stringify(data),
             signal: controller.signal, // Passing the AbortController signal
         });
-        clearTimeout(timeout); // Clear the timeout when the response is received
+        // Clear the timeouts when request is complete
+        clearTimeout(timeout);
+        clearTimeout(heavyLoadTimeout);
         if (!response.ok) {
             switch (response.status) {
                 case 401:
@@ -8490,11 +8520,14 @@ async function getAnalyzedCode(code, file_extension, token) {
             return 'Congratulations, your code looks squeaky clean.\nYou get a seal of approval.';
         }
         // Format output
-        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n';
+        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n\n';
         const formattedVulnerabilities = reportJson.vulnerabilities.map(formatVulnerability).join('');
         return vulnerabilityMessage + formattedVulnerabilities;
     }
     catch (error) {
+        // Clear the timeouts when request fails
+        clearTimeout(timeout);
+        clearTimeout(heavyLoadTimeout);
         if (error instanceof Error) {
             if (error.name === 'AbortError') {
                 // Handle the timeout

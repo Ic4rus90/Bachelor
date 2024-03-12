@@ -25,9 +25,14 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
     // Abort controller instance for timeout
     const controller = new AbortController();
     const timeout = setTimeout(() => {
-        // Abort the fetch request if it takes too long
+        // Abort the fetch request if it takes too long (6 minutes)
         controller.abort();
-    }, 210000);
+    }, 360000); // 360 seconds
+
+    // Set up a timer to display a message after 120 seconds
+    const heavyLoadTimeout = setTimeout(() => {
+        vscode.window.showInformationMessage('The server is experiencing heavy loads. Your request is still being processed.');
+    }, 120000); // 120 seconds
 
     try {
         const response = await fetch(url, {
@@ -40,7 +45,9 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
             signal: controller.signal, // Passing the AbortController signal
         });
 
-        clearTimeout(timeout); // Clear the timeout when the response is received
+        // Clear the timeouts when request is complete
+        clearTimeout(timeout); 
+        clearTimeout(heavyLoadTimeout);
 
         if (!response.ok) {
             switch (response.status) {
@@ -85,6 +92,10 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
         return vulnerabilityMessage + formattedVulnerabilities;
 
     } catch (error: unknown) {
+        // Clear the timeouts when request fails
+        clearTimeout(timeout);
+        clearTimeout(heavyLoadTimeout);
+        
         if (error instanceof Error) {
             if (error.name === 'AbortError') {
                 // Handle the timeout
