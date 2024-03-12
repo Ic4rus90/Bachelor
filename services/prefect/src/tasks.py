@@ -130,7 +130,7 @@ def store_report_task(user_id:str, report_full: str) -> bool:
     logger.info(f"Client: {user_id} Sending report to web-app for storage")
     try:
         request_data = StoreReportRequest(report_full=report_full)
-        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
+        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump(), verify=HTTPS_CERT_PATH)
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(f"Client: {user_id} Error storing report: {e.response.status_code} - {e.response.text}")

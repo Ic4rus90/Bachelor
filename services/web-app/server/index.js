@@ -6,14 +6,22 @@ require("dotenv").config({ path: '/../.env' });
 const jwt = require('jsonwebtoken');
 const { insertAnalyzedCode, insertReport, insertVulnerability } = require('./database/insert-queries');
 
+const https = require('https');
+const fs = require('fs');
+
+const options = {
+    key: fs.readFileSync('cair-gpu12.uia.no.key'),
+    cert: fs.readFileSync('cair-gpu12.uia.no.crt')
+  };
+
 // Create a new express application
 const app = express(); 
 const port = process.env.SERVER_PORT; 
 
 // Middleware. Not sure if origin parameter is necessary. 
-app.use(cors({
-    origin: `${process.env.WEB_APP_URL}`, 
-}));
+app.use(cors());
+ { origin: [process.env.WEB_APP_URL] }
+
 
 // Connection string for the database
 const connection = `postgres://${process.env.DB_USER}:${process.env.DB_PASSWORD}@${process.env.DB_HOST}:${process.env.DB_PORT}/${process.env.DB_NAME}`
@@ -135,7 +143,7 @@ app.get('/getreports', checkJWT, async function(req, res) {
     }
 });
 
-
+ 
 // Add reports
 app.post('/addreports', async(req,res) => {
 
@@ -183,7 +191,12 @@ app.post('/addreports', async(req,res) => {
 });
 
 
-app.listen(port, () => {
-    console.log(`Example app listening at http://localhost:${port}`);
+// Create HTTPS server
+https.createServer(options, app).listen(port, () => {
+    console.log(`HTTPS server running on port ${port}`);
 });
 
+
+//app.listen(port, () => {
+//    console.log(`Example app listening at http://localhost:${port}`);
+//});
