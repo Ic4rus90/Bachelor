@@ -1,4 +1,4 @@
-from fastapi import FastAPI, HTTPException, Request
+from fastapi import FastAPI, HTTPException, Request, Response
 from prefect import flow
 from tasks import validate_token_task, generate_prompt_code_validator_task, call_llm_task, generate_report_task, store_report_task, get_user_id_task
 from logger import logger, set_up_logger
@@ -19,7 +19,7 @@ app.state.limiter = limiter
 async def custom_rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded):
     client_host = request.client.host
     logger.error(f"Rate limit exceeded for client: {client_host}")
-    return HTTPException(status_code=429, detail="Rate limit exceeded")
+    return Response(content="Rate limit exceeded", status_code=429)
 app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
 
