@@ -1,7 +1,7 @@
 from logger import logger
 from prefect import task
 from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse, StoreReportRequest
-from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
+from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL, HTTPS_CERT_PATH
 from json_verifier import verify_llm_output_format
 
 import jwt
@@ -9,7 +9,7 @@ import requests
 
 
 @task(name="Validate Token")
-def validate_token_task(token: str) -> str:
+async def validate_token_task(token: str) -> str:
     logger.info("Validating token...")
     try:
         token_request = TokenRequest(token=token)
@@ -29,7 +29,7 @@ def validate_token_task(token: str) -> str:
 
 
 @task(name="Get User ID")
-def get_user_id_task(token: str) -> str:
+async def get_user_id_task(token: str) -> str:
     try:
         decoded = jwt.decode(token, options={"verify_signature": False})
         return decoded.get("sub")
@@ -39,7 +39,7 @@ def get_user_id_task(token: str) -> str:
 
 
 @task(name="Validate Code and Generate Prompt")
-def generate_prompt_code_validator_task(user_id:str, code: str, file_extension: str) -> str:
+async def generate_prompt_code_validator_task(user_id:str, code: str, file_extension: str) -> str:
     logger.info(f"Client: {user_id} Sending code to code validator")
     try:
         request_data = SyntaxCheckRequest(file_extension=file_extension, code=code)
@@ -69,7 +69,7 @@ def generate_prompt_code_validator_task(user_id:str, code: str, file_extension: 
 
 
 @task(name="Call LLM Model", retries=3, retry_delay_seconds=5)
-def call_llm_task(user_id: str, prompt: str) -> str:
+async def call_llm_task(user_id: str, prompt: str) -> str:
     logger.info(f"Client: {user_id} Calling LLM model to analyze code")
     try:
         request_data = LLMRequest(user_prompt=prompt, system_prompt="")
@@ -99,7 +99,7 @@ def call_llm_task(user_id: str, prompt: str) -> str:
 
 
 @task(name="Generate Report")
-def generate_report_task(llm_output: str, user_id: str, file_extension: str, analyzed_code: str, starting_line_number: int) -> GenerateReportResponse:
+async def generate_report_task(llm_output: str, user_id: str, file_extension: str, analyzed_code: str, starting_line_number: int) -> GenerateReportResponse:
     logger.info(f"Client: {user_id} Sending LLM output to generate report summary")
     try:
         request_data = GenerateReportRequest(llm_output=llm_output, user_id=user_id, file_extension=file_extension, analyzed_code=analyzed_code, starting_line_number=starting_line_number)
@@ -126,7 +126,7 @@ def generate_report_task(llm_output: str, user_id: str, file_extension: str, ana
     
 
 @task(name="Store Report")
-def store_report_task(user_id:str, report_full: str) -> bool:
+async def store_report_task(user_id:str, report_full: str) -> bool:
     logger.info(f"Client: {user_id} Sending report to web-app for storage")
     try:
         request_data = StoreReportRequest(report_full=report_full)

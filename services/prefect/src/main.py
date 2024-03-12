@@ -24,10 +24,10 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
 
 @flow(name="Code Analysis Flow")
-def code_analysis_flow(code: str, file_extension: str, token: str):
-    validate_token_task(token)
-    if validate_token_task:
-        user_id = get_user_id_task(token)
+async def code_analysis_flow(code: str, file_extension: str, token: str):
+    valid_token = await validate_token_task(token)
+    if valid_token:
+        user_id = await get_user_id_task(token)
         if user_id == "":
             logger.error("Invalid token received, could not extract user ID")
             raise ValueError("Invalid token received")
@@ -36,11 +36,12 @@ def code_analysis_flow(code: str, file_extension: str, token: str):
             logger.error(f"Client: {user_id} Code length exceeds 15000 characters")
             raise ValueError("Code too long")
 
-        prompt = generate_prompt_code_validator_task(user_id=user_id, code=code, file_extension=file_extension)
-        llm_output = call_llm_task(user_id=user_id, prompt=prompt)
-        reports = generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = 1)
-        storage_result = store_report_task(user_id=user_id, report_full=reports.encoded_full)
+        prompt = await generate_prompt_code_validator_task(user_id=user_id, code=code, file_extension=file_extension)
+        llm_output = await call_llm_task(user_id=user_id, prompt=prompt)
+        reports = await generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = 1)
+        storage_result = await store_report_task(user_id=user_id, report_full=reports.encoded_full)
         if storage_result:
+            logger.info(f"Client: {user_id} Returning the summary to the extension")
             return reports.encoded_summary
         else:
             logger.error(f"Client: {user_id} Could not store the full report")
@@ -65,7 +66,7 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
 
     logger.info(f"Client: {client_host} Received code analysis request: {code_analysis_request}")
     try:
-        result = code_analysis_flow(code=code_analysis_request.code, 
+        result = await code_analysis_flow(code=code_analysis_request.code, 
                                     file_extension=code_analysis_request.file_extension, 
                                     token=token)
 
