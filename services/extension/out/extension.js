@@ -8424,47 +8424,19 @@ exports.getAuthoritzationCode = getAuthoritzationCode;
 
 /***/ }),
 /* 49 */
-/***/ (function(__unused_webpack_module, exports, __webpack_require__) {
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
 "use strict";
 
-var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    var desc = Object.getOwnPropertyDescriptor(m, k);
-    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
-      desc = { enumerable: true, get: function() { return m[k]; } };
-    }
-    Object.defineProperty(o, k2, desc);
-}) : (function(o, m, k, k2) {
-    if (k2 === undefined) k2 = k;
-    o[k2] = m[k];
-}));
-var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
-    Object.defineProperty(o, "default", { enumerable: true, value: v });
-}) : function(o, v) {
-    o["default"] = v;
-});
-var __importStar = (this && this.__importStar) || function (mod) {
-    if (mod && mod.__esModule) return mod;
-    var result = {};
-    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
-    __setModuleDefault(result, mod);
-    return result;
-};
 Object.defineProperty(exports, "__esModule", ({ value: true }));
 exports.getAnalyzedCode = void 0;
 const convert_to_base64_1 = __webpack_require__(50);
-const vscode = __importStar(__webpack_require__(1));
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln) {
     const decoded_code = vuln.codeExtract;
     const decoded_cweID = vuln.cweID;
     const decoded_summary = vuln.vulnSummary;
-    return `${decoded_cweID}
-			${decoded_summary}
-			Vulnerable code: ${decoded_code}
-
-			`;
+    return `${decoded_cweID}: ${decoded_summary}\n${decoded_code}\n\n`;
 }
 // Might need to change the return type of this function
 async function getAnalyzedCode(code, file_extension, token) {
@@ -8527,12 +8499,12 @@ async function getAnalyzedCode(code, file_extension, token) {
             if (error.name === 'AbortError') {
                 // Handle the timeout
                 console.error('Request timed out');
-                vscode.window.showErrorMessage('Request timed out. Please try again.');
+                //vscode.window.showErrorMessage('Request timed out. Please try again.');
                 throw new Error('Request timed out');
             }
             else {
                 console.error('Error:', error);
-                vscode.window.showErrorMessage(`Error: ${error}`);
+                //vscode.window.showErrorMessage(`Error: ${error}`);
                 throw error;
             }
         }

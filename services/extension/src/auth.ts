@@ -80,7 +80,7 @@ async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: st
 
   catch (error) {
     console.error('Error:', error);
-    throw new Error(`Failed to exchange code for tokens: ${error}`);
+    throw new Error(`Authentication failed: ${error}`);
   }
 }
 

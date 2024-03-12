@@ -9,11 +9,7 @@ function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSum
     const decoded_code = vuln.codeExtract;
     const decoded_cweID = vuln.cweID;
     const decoded_summary = vuln.vulnSummary; 
-	return `${decoded_cweID}
-			${decoded_summary}
-			Vulnerable code: ${decoded_code}
-
-			`;
+	return `${decoded_cweID}: ${decoded_summary}\n${decoded_code}\n\n`;
 }
 
 // Might need to change the return type of this function
@@ -83,7 +79,7 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
         }
         
         // Format output
-        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n';
+        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n\n';
         const formattedVulnerabilities  = reportJson.vulnerabilities.map(formatVulnerability).join('');
 
         return vulnerabilityMessage + formattedVulnerabilities;
