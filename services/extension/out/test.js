@@ -24,7 +24,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getAnalyzedCode = void 0;
-const convert_to_base64_1 = require("./convert-to-base64");
 const vscode = __importStar(require("vscode"));
 // Helper function for formatting each vulnerability
 function formatVulnerability(vuln) {
@@ -39,57 +38,63 @@ function formatVulnerability(vuln) {
 }
 // Might need to change the return type of this function
 async function getAnalyzedCode(code, file_extension, token) {
-    const data = {
-        code: (0, convert_to_base64_1.encodeToBase64)(code),
-        file_extension: file_extension,
-    };
-    // Define the URL to send the request to
-    const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
-    // Abort controller instance for timeout
-    const controller = new AbortController();
-    const timeout = setTimeout(() => {
-        // Abort the fetch request if it takes too long
-        controller.abort();
-    }, 210000);
-    try {
-        const response = await fetch(url, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(data),
-            signal: controller.signal, // Passing the AbortController signal
-        });
-        clearTimeout(timeout); // Clear the timeout when the response is received
-        if (!response.ok) {
-            switch (response.status) {
-                case 401:
-                    throw new Error('Invalid token received');
-                case 400:
-                    throw new Error('Invalid code received');
-                case 422:
-                    throw new Error('Invalid file extension received');
-                case 418:
-                    throw new Error('The code sent for analysis is too long. Please try again with a smaller code snippet.');
-                default:
-                    throw new Error('Server error occured. Please contact us for assistance');
+    /*
+        const data = {
+            code: encodeToBase64(code),
+            file_extension: file_extension,
+        };
+    
+        // Define the URL to send the request to
+        const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
+    
+        // Abort controller instance for timeout
+        const controller = new AbortController();
+        const timeout = setTimeout(() => {
+            // Abort the fetch request if it takes too long
+            controller.abort();
+        }, 210000);
+    
+       
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${token}`,
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data),
+                signal: controller.signal, // Passing the AbortController signal
+            });
+    
+            clearTimeout(timeout); // Clear the timeout when the response is received
+    
+            
+            if (!response.ok) {
+                switch (response.status) {
+                    case 401:
+                        throw new Error('Invalid token received');
+                    case 400:
+                        throw new Error('Invalid code received');
+                    case 422:
+                        throw new Error('Invalid file extension received');
+                    default:
+                        throw new Error('Server error occured. Please contact us for assistance');
+                }
             }
-        }
+            */
+    try {
         // Read response body as text
-        const responseBody = await response.text();
+        const responseBody = 'eyJ2dWxuZXJhYmlsaXRpZXMiOiBbXX0=';
         // Decode from base64 to utf-8
+        //const decodedReport = decodeFromBase64(responseBody);
         const decodedReport = Buffer.from(responseBody, 'base64').toString('utf-8');
-        //Buffer.from(responseBody, 'base64').toString('utf-8');
         // Convert JSON to vulnerability format
         const reportJson = JSON.parse(decodedReport);
         if (reportJson.vulnerabilities.length === 0) {
             return 'Congratulations, your code looks squeaky clean.\nYou get a seal of approval.';
         }
         // Format output
-        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n';
         const formattedVulnerabilities = reportJson.vulnerabilities.map(formatVulnerability).join('');
-        return vulnerabilityMessage + formattedVulnerabilities;
+        return formattedVulnerabilities;
     }
     catch (error) {
         if (error instanceof Error) {
@@ -112,4 +117,4 @@ async function getAnalyzedCode(code, file_extension, token) {
     }
 }
 exports.getAnalyzedCode = getAnalyzedCode;
-//# sourceMappingURL=send-request.js.map
+//# sourceMappingURL=test.js.map

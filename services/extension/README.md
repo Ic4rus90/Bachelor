@@ -1,71 +1,26 @@
-# extension README
+# Welcome
 
-This is the README for your extension "extension". After writing up a brief description, we recommend including the following sections.
+Welcome to Security Seal. We utilize an advanced microservices architecture with an LLM to analyze your code for security vulnerabilities from the CWE top 25 list (https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html). 
+Please note: This version of the software is for testing purposes only, and the seal of approval does not guarantee that your code is secure.  
 
-## Features
+## How to use Security Seal
+1. Make sure you are either at campus Grimstad utilizing eduroam or have eduVPN activated. Navigate to https://cair-gpu12.uia.no:8500, and create an account. In this web-application you will be able to see the complete report of your most recent vulnerability scan, including the full code and all detected vulnerabilities.
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+2. Select the code you want to analyze, right-click and select "Analyze code with Security Seal".
 
-For example if there is an image subfolder under your extension project workspace:
+3. If you have not yet authenticated with the extension, press the authentication button that appears in the lower right hand corner, and log in with the user you created at the web application. Please note, the system currently only supports C, C++, C# and Python, and the code needs to be functional.
 
-\!\[feature X\]\(images/feature-x.png\)
+4. When authentication is successfull, close the tab and go back to Visual Studio Code. Right-click the selected code again, and select "Analyze with Security Seal". 
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+5. Sit back and wait for our system to perform the check. This might take some time, so be patient. 
+Please note: As we are only operating with one LLM, rate limiting is implemented. This means that you will only be able to send one request per minute. 
 
-## Requirements
+6. When the process has finished, you will get a summary of the generated report in the extension, containing the vulnerabilities detected. To see the full report, sign in to the web application. If you perform the scan while on the dashboard page of the web application, navigate to the account page and back to the dashboard to display the most recent scan. 
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+7. If you wish to log out of the web application or delete your account, you can click the account button in the upper right hand corner of the web application, and select the respective option.  
 
-## Extension Settings
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
-
-For example:
-
-This extension contributes the following settings:
-
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
-
-## Known Issues
-
-Calling out known issues can help limit users opening duplicate issues against your extension.
-
-## Release Notes
-
-Users appreciate release notes as you update your extension.
-
-### 1.0.0
-
-Initial release of ...
-
-### 1.0.1
-
-Fixed issue #.
-
-### 1.1.0
-
-Added features X, Y, and Z.
-
----
-
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+## Known issues
+1. The LLM some times classify vulnerabilities outside of the scope. This leads to the system returning an error.
+2. The format of the output from the LLM is occasionally on the wrong format. This behavior might lead to delays and/or errors being thrown if the behavior persists. 
+3. Although registering in the extension appears as an option, this functionality is currently not implemented. Attempting to perform this operation will return an error.  

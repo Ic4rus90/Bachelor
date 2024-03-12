@@ -9,10 +9,7 @@ function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSum
     const decoded_code = vuln.codeExtract;
     const decoded_cweID = vuln.cweID;
     const decoded_summary = vuln.vulnSummary; 
-	return `${decoded_cweID}: ${decoded_summary}
-			Vulnerable code:\n${decoded_code}
-
-			`;
+	return `${decoded_cweID}: ${decoded_summary}\n${decoded_code}\n\n`;
 }
 
 // Might need to change the return type of this function
@@ -28,9 +25,14 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
     // Abort controller instance for timeout
     const controller = new AbortController();
     const timeout = setTimeout(() => {
-        // Abort the fetch request if it takes too long
+        // Abort the fetch request if it takes too long (5 minutes)
         controller.abort();
-    }, 210000);
+    }, 300000); // 300 seconds
+
+    // Set up a timer to display a message after 120 seconds
+    const heavyLoadTimeout = setTimeout(() => {
+        vscode.window.showInformationMessage('The server is experiencing heavy loads. Your request is still being processed.');
+    }, 120000); // 120 seconds
 
     try {
         const response = await fetch(url, {
@@ -43,7 +45,9 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
             signal: controller.signal, // Passing the AbortController signal
         });
 
-        clearTimeout(timeout); // Clear the timeout when the response is received
+        // Clear the timeouts when request is complete
+        clearTimeout(timeout); 
+        clearTimeout(heavyLoadTimeout);
 
         if (!response.ok) {
             switch (response.status) {
@@ -55,6 +59,8 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
                     throw new Error('Invalid file extension received');
                 case 418:
                     throw new Error('The code sent for analysis is too long. Please try again with a smaller code snippet.');
+                case 429:
+                    throw new Error('You have exceeded the rate limit. Please try again in a few minutes.');
                 default:
                     throw new Error('Server error occured. Please contact us for assistance');
             }
@@ -80,21 +86,25 @@ async function getAnalyzedCode(code: string, file_extension: string, token: stri
         }
         
         // Format output
-        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n';
+        const vulnerabilityMessage = 'Security Seal found vulnerabilities in your code:\n\n';
         const formattedVulnerabilities  = reportJson.vulnerabilities.map(formatVulnerability).join('');
 
         return vulnerabilityMessage + formattedVulnerabilities;
 
     } catch (error: unknown) {
+        // Clear the timeouts when request fails
+        clearTimeout(timeout);
+        clearTimeout(heavyLoadTimeout);
+        
         if (error instanceof Error) {
             if (error.name === 'AbortError') {
                 // Handle the timeout
                 console.error('Request timed out');
-                vscode.window.showErrorMessage('Request timed out. Please try again.');
+                //vscode.window.showErrorMessage('Request timed out. Please try again.');
                 throw new Error('Request timed out');
             } else {
                 console.error('Error:', error);
-                vscode.window.showErrorMessage(`Error: ${error}`);
+                //vscode.window.showErrorMessage(`Error: ${error}`);
                 throw error;
             }
         } else {
