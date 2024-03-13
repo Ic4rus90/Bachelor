@@ -56,9 +56,9 @@ async function authenticate(context: vscode.ExtensionContext) {
 
 // Exchanges the authorization code for tokens
 async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: string, context: vscode.ExtensionContext): Promise<AuthTokens> {
-  const tokenURL = `${process.env.TOKEN_URL}`; // 'https://security-seal.eu.auth0.com/oauth/token';
-  const clientID = `${process.env.CLIENT_ID}`; //'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
-  const redirectURI = `${process.env.REDIRECT_URI}`; //'http://localhost:3000/callback';
+  const tokenURL = 'https://security-seal.eu.auth0.com/oauth/token';
+  const clientID = 'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
+  const redirectURI = 'http://localhost:3000/callback';
 
   try {
     // Send a POST request to the token endpoint
@@ -80,7 +80,7 @@ async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: st
 
   catch (error) {
     console.error('Error:', error);
-    throw new Error(`Failed to exchange code for tokens: ${error}`);
+    throw new Error(`Authentication failed: ${error}`);
   }
 }
 

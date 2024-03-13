@@ -19,7 +19,7 @@ LLM_SCHEMA = {
         "properties": {
           "cweID": {
             "type": "string",
-            "pattern": "^CWE-\\d+$"
+            "enum": ["CWE-787", "CWE-79", "CWE-89", "CWE-416", "CWE-78", "CWE-20", "CWE-125", "CWE-22", "CWE-352", "CWE-434", "CWE-862", "CWE-476", "CWE-287", "CWE-190", "CWE-502", "CWE-77", "CWE-119", "CWE-798", "CWE-918", "CWE-306", "CWE-362", "CWE-269", "CWE-94", "CWE-863", "CWE-276"]
           },
           "codeExtract": {
             "type": "string"
