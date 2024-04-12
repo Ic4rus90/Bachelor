@@ -5,6 +5,7 @@ REPORT_GENERATOR_URL = "http://bsc-group-17-report-generator.bsc-group-17:30004/
 REPORT_STORAGE_URL = "https://bsc-group-17-web-server.bsc-group-17:3001/addreports"
 
 HTTPS_CERT_PATH ="cair-gpu12.uia.no.crt"
+RATE_LIMIT="1/40 seconds"
 
 
 LLM_SCHEMA = {
@@ -35,6 +36,7 @@ LLM_SCHEMA = {
     }
   }
 }
+
 
 REPORT_SUMMARY_SCHEMA = {
   "type": "object",
