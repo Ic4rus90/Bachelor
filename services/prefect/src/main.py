@@ -6,7 +6,7 @@ from models import CodeAnalysisRequest
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
-from config import RATE_LIMIT
+from config import RATE_LIMIT, ALLOWED_CODE_LENGTH
 
 
 logger.remove()
@@ -33,8 +33,8 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
             logger.error("Invalid token received, could not extract user ID")
             raise ValueError("Invalid token received")
         
-        if len(code) > 15000:
-            logger.error(f"Client: {user_id} Code length exceeds 15000 characters")
+        if len(code) > ALLOWED_CODE_LENGTH:
+            logger.error(f"Client: {user_id} Code length exceeds maximum limit")
             raise ValueError("Code too long")
 
         prompt = await generate_prompt_code_validator_task(user_id=user_id, code=code, file_extension=file_extension)

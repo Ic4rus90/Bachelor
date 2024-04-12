@@ -6,6 +6,7 @@ REPORT_STORAGE_URL = "https://bsc-group-17-web-server.bsc-group-17:3001/addrepor
 
 HTTPS_CERT_PATH ="cair-gpu12.uia.no.crt"
 RATE_LIMIT="1/40 seconds"
+ALLOWED_CODE_LENGTH=50000
 
 
 LLM_SCHEMA = {
