@@ -6,6 +6,7 @@ from models import CodeAnalysisRequest
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from config import RATE_LIMIT
 
 
 logger.remove()
@@ -52,7 +53,7 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
     
 
 @app.post("/analyze-code/")
-@limiter.limit("1/40 seconds")
+@limiter.limit(RATE_LIMIT)
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
     client_host = request.client.host
 
