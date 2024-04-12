@@ -18,9 +18,17 @@ const options = {
 const app = express(); 
 const port = process.env.SERVER_PORT; 
 
+
+const corsOptions = {
+    origin: process.env.WEB_APP_URL, // This should match the React app's origin
+    credentials: true, // Needed if your frontend sends credentials (like cookies or basic HTTP auth)
+    allowedHeaders: ['Authorization', 'Content-Type'], // Ensure custom headers used by your frontend are allowed
+};
+
+
 // Middleware. Not sure if origin parameter is necessary. 
-app.use(cors());
- { origin: [process.env.WEB_APP_URL] }
+app.use(cors(corsOptions));
+
 
 
 // Connection string for the database
