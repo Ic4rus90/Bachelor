@@ -21,7 +21,7 @@ services:
         reservations:
           devices:
             - driver: nvidia
-              device_ids: ['6', '7']
+              device_ids: ['7']
               capabilities: ['gpu']
     networks:
       - bsc-group-17
