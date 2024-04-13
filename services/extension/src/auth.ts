@@ -1,9 +1,13 @@
 import * as vscode from 'vscode';
 import axios from 'axios'; 
+import { randomBytes } from 'crypto';
+import * as dotenv from 'dotenv';
 
 import { generateCodeVerifier, generateCodeChallenge } from './pkce';
 import { getAuthoritzationCode } from './auth-code-listener';
 
+
+dotenv.config({ path: '../.env' });
 
 
 // This interface defines the shape of the tokens returned by the authentication server
@@ -20,19 +24,19 @@ async function authenticate(context: vscode.ExtensionContext) {
   // Generate a code verifier and a code challenge
   const codeVerifier = generateCodeVerifier();
   const codeChallenge = generateCodeChallenge(codeVerifier);
+  const state = generateState(); 
 
   // Create the authentication URL
   // TODO: Remove the hardcoded client_id and redirect_uri, and place them in a configuration file
   const authURL = `https://security-seal.eu.auth0.com/authorize?` + 
     `response_type=code&` + 
-    'client_id=KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj&' + 
-    'redirect_uri=http://localhost:3000/callback&' + 
+    `client_id=${process.env.CLIENT_ID}&` + 
+    `redirect_uri=${process.env.REDIRECT_URI}&` + 
     'scope=openid%20profile%20email&' + 
     `code_challenge=${codeChallenge}&` + 
-    'audience=https://the-seal-of-approval-API.com/v1/reports&' +
+    `audience=${process.env.AUDIENCE}&` +
     'code_challenge_method=S256&' + 
-    'state=ASDF2F2F2';
-    //TODO: Change state
+    `state=${state}`;
 
   // Open the authentication URL in the user's default web browser
   vscode.env.openExternal(vscode.Uri.parse(authURL));
@@ -51,6 +55,10 @@ async function authenticate(context: vscode.ExtensionContext) {
     console.error('Error:', err);
     vscode.window.showErrorMessage('Error during authentication');
   }  
+}
+
+function generateState(): string {
+  return randomBytes(16).toString('hex');
 }
 
 
