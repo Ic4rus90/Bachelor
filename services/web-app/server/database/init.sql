@@ -25,7 +25,7 @@ CREATE TABLE vulnerability (
 CREATE TABLE analyzed_code (
   analyzed_code_id SERIAL PRIMARY KEY,
   report_id INTEGER NOT NULL,
-  code VARCHAR(15000) NOT NULL,
+  code VARCHAR(50000) NOT NULL,
   code_language VARCHAR(50) NOT NULL,
   starting_line_number INT,
   FOREIGN KEY (report_id) REFERENCES report(report_id)

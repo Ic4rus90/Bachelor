@@ -19,15 +19,16 @@ const DashboardTabs = () => {
     return new Intl.DateTimeFormat('en-US', options).format(new Date(dateString));
   };
   useEffect(() => {
-      const getReports = async () => {
-          try {
-              const token = await getAccessTokenSilently(); 
-            
-              const response = await fetch('https://cair-gpu12.uia.no:3001/getreports', {
+    const getReports = async () => {
+        try {
+            const token = await getAccessTokenSilently(); 
+          
+            const response = await fetch('https://cair-gpu12.uia.no:3001/getreports', {
 
-                  headers: {
-                      Authorization: `Bearer ${token}`,
-                  },
+              headers: {
+                  Authorization: `Bearer ${token}`,
+              },
+              credentials: 'include',
               });
               if (response.ok) {
                   const data = await response.json();

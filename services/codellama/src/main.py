@@ -15,7 +15,6 @@ request_queue = asyncio.Queue()
 async def worker():
     while True:
         generate_request, result_future, client_request = await request_queue.get()
-
         processing_start = datetime.now()
         logger.info(f"Starting processing request from {client_request.client.host}. Queue size: {request_queue.qsize()}")
 
@@ -39,7 +38,10 @@ async def worker():
 
 @app.on_event("startup")
 async def startup_event():
-    task = asyncio.create_task(worker())
+    num_workers = 5
+    for _ in range(num_workers):
+        asyncio.create_task(worker())
+    #task = asyncio.create_task(worker())
 
 
 @app.post("/generate/")
