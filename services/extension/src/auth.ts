@@ -65,8 +65,8 @@ function generateState(): string {
 // Exchanges the authorization code for tokens
 async function exchangeCodeForTokens(authorizationCode: string, codeVerifier: string, context: vscode.ExtensionContext): Promise<AuthTokens> {
   const tokenURL = 'https://security-seal.eu.auth0.com/oauth/token';
-  const clientID = 'KNXjMEAsH8bpKUnZ1FN9ZA3rw1hU6lcj';
-  const redirectURI = 'http://localhost:3000/callback';
+  const clientID = `${process.env.CLIENT_ID}`;
+  const redirectURI = `${process.env.REDIRECT_URI}`;
 
   try {
     // Send a POST request to the token endpoint
