@@ -31,4 +31,11 @@ function getSelectedCode(editor: vscode.TextEditor): string {
 }
 
 
-export { getFileExtension, languageIsSupported, getSelectedCode };
+function getLineNumber(editor: vscode.TextEditor): number {
+	const selection = editor.selection;
+	console.log(selection.start.line + 1);
+	return selection.start.line + 1;
+}
+
+
+export { getFileExtension, languageIsSupported, getSelectedCode, getLineNumber };

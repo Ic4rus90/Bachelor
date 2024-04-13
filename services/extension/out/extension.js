@@ -142,13 +142,16 @@ async function analyzeCode(output_channel, context) {
         vscode.window.showErrorMessage("No code selected.");
         return;
     }
+    // Get the line number of the selected code
+    const line_number = (0, utils_1.getLineNumber)(editor);
+    console.log(line_number);
     // Display message to the user. Kept for now for future development.
     vscode.window.showInformationMessage('Your code is sent for analysis.');
     try {
         // Get the analyzed code
-        const analyzed_code = await (0, send_request_1.getAnalyzedCode)(code, file_extension, authenticated);
+        const analyzed_code = await (0, send_request_1.getAnalyzedCode)(code, file_extension, line_number, authenticated);
         output_channel.show();
-        output_channel.appendLine(analyzed_code);
+        output_channel.appendLine(analyzed_code + line_number);
     }
     catch (error) {
         // This doubles with handling in getAnalyzedCode. Find a more centralized way to handle it. 
@@ -166,7 +169,7 @@ exports.analyzeCode = analyzeCode;
 "use strict";
 
 Object.defineProperty(exports, "__esModule", ({ value: true }));
-exports.getSelectedCode = exports.languageIsSupported = exports.getFileExtension = void 0;
+exports.getLineNumber = exports.getSelectedCode = exports.languageIsSupported = exports.getFileExtension = void 0;
 function getFileExtension(editor) {
     const file_path = editor.document.uri.fsPath;
     // If the file is unsaved, return null
@@ -191,6 +194,12 @@ function getSelectedCode(editor) {
     return editor.document.getText(selection);
 }
 exports.getSelectedCode = getSelectedCode;
+function getLineNumber(editor) {
+    const selection = editor.selection;
+    console.log(selection.start.line + 1);
+    return selection.start.line + 1;
+}
+exports.getLineNumber = getLineNumber;
 
 
 /***/ }),
@@ -8463,10 +8472,11 @@ function formatVulnerability(vuln) {
     return `${decoded_cweID}: ${decoded_summary}\n${decoded_code}\n\n`;
 }
 // Might need to change the return type of this function
-async function getAnalyzedCode(code, file_extension, token) {
+async function getAnalyzedCode(code, file_extension, line_number, token) {
     const data = {
         code: (0, convert_to_base64_1.encodeToBase64)(code),
         file_extension: file_extension,
+        line_number: line_number
     };
     // Define the URL to send the request to
     const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
