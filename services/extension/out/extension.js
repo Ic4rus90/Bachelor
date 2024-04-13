@@ -151,10 +151,9 @@ async function analyzeCode(output_channel, context) {
         // Get the analyzed code
         const analyzed_code = await (0, send_request_1.getAnalyzedCode)(code, file_extension, line_number, authenticated);
         output_channel.show();
-        output_channel.appendLine(analyzed_code + line_number);
+        output_channel.appendLine(analyzed_code);
     }
     catch (error) {
-        // This doubles with handling in getAnalyzedCode. Find a more centralized way to handle it. 
         vscode.window.showErrorMessage(`An error occured: ${error}`);
     }
 }
