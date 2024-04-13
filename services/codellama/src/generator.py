@@ -1,7 +1,7 @@
 from datetime import datetime
 from fastapi import HTTPException
 from transformers import AutoTokenizer, LlamaForCausalLM
-from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt_preset, system_prompt_marker, user_prompt_marker, assistant_prompt_marker, max_new_tokens, repetition_penalty, do_sample, top_p, top_k, temperature
+from config import model_id, cache_dir_model, cache_dir_tokenizer, system_prompt_preset, system_prompt_marker, user_prompt_marker, assistant_prompt_marker, max_new_tokens, repetition_penalty, do_sample, top_p, top_k, temperature, max_input_tokens
 from encoder import decode_base, encode_base
 from logger import logger
 from models import GenerateRequest, GenerateResponse
@@ -41,11 +41,14 @@ async def generate_text(request, generate_request: GenerateRequest) -> GenerateR
 
     combined_prompt = system_prompt + user_prompt + assistant_prompt_marker
     try:
-        inputs = tokenizer(combined_prompt, return_tensors="pt", truncation=True, max_length=4096)
-
         # Get lenth of input in tokens
         input_tokens = len(tokenizer.encode(combined_prompt, add_special_tokens=True))
         logger.info(f"Number of tokens in the input (from: {client_host}): {input_tokens}")
+
+        if input_tokens > max_input_tokens:
+            raise ValueError("Input length exceeded max limit")
+
+        inputs = tokenizer(combined_prompt, return_tensors="pt", truncation=True, max_length=max_input_tokens)
         
         # Generate
         start_time = datetime.now()

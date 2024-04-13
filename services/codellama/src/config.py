@@ -3,6 +3,7 @@ cache_dir_model = "/usr/src/app/model"
 cache_dir_tokenizer = "/usr/src/app/tokenizer"
 
 max_new_tokens=2048
+max_input_tokens=16384
 #max_time=80
 repetition_penalty=1.15
 do_sample=True
