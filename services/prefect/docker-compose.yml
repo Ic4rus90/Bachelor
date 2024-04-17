@@ -12,6 +12,7 @@ services:
       dockerfile: Dockerfile
     volumes:
       - ./logs:/usr/src/logs
+    restart: on-failure
     ports:
       - "30000:30000"
     networks:
