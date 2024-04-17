@@ -1,0 +1,29 @@
+version: "3.8"
+
+networks:
+  bsc-group-17:
+    external: true
+
+services:
+  bsc-group-17-nginx:
+    container_name: bsc-group-17-nginx
+    image: nginx
+    secrets:
+      - source: server_key
+        target: /etc/nginx/certs/server.key
+    volumes:
+      - ./access.log:/var/log/nginx/access.log:rw
+      - ./error.log:/var/log/nginx/error.log:rw
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./server.crt:/etc/nginx/certs/server.crt:ro
+      - ./client.crt:/etc/nginx/certs/client.crt:ro
+      - /home/bachelor/Bachelor/services/web-app/client/build:/usr/share/nginx/html:ro
+    restart: on-failure
+    ports:
+      - "8080:80"
+      - "443:443"
+    networks:
+      - bsc-group-17
+secrets:
+  server_key:
+    file: ./server.key
