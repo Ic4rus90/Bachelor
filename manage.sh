@@ -25,7 +25,7 @@ restart_service() {
 read -p "Do you want to start, stop, build, or restart a service? " action
 
 # Prompt the user for service(s)
-read -p "Which service(s) do you want to perform the action on? ('all', 'code-val', 'llm', 'rep-gen', 'web-app', 'prefect', 'token-val' ) " services
+read -p "Which service(s) do you want to perform the action on? ('all', 'code-val', 'llm', 'rep-gen', 'web-app', 'prefect', 'token-val', 'nginx' ) " services
 
 # Perform the action based on user input
 case "$action" in
@@ -37,6 +37,7 @@ case "$action" in
             start_service "services/web-app/docker-compose.yml"
             start_service "services/prefect/docker-compose.yml"
             start_service "services/token-validator/docker-compose.yml"
+            start_service "services/nginx/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
@@ -58,6 +59,9 @@ case "$action" in
                     token-val)
                         start_service "services/token-validator/docker-compose.yml"
                         ;;
+                    nginx)
+                        start_service "services/nginx/docker-compose.yml"
+                        ;;
                     *)
                         echo "Invalid service: $service"
                         ;;
@@ -73,6 +77,7 @@ case "$action" in
             stop_service "services/web-app/docker-compose.yml"
             stop_service "services/prefect/docker-compose.yml"
             stop_service "services/token-validator/docker-compose.yml"
+            stop_service "services/nginx/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
@@ -94,6 +99,9 @@ case "$action" in
                     token-val)
                         stop_service "services/token-validator/docker-compose.yml"
                         ;;
+                    nginx)
+                        stop_service "services/nginx/docker-compose.yml"
+                        ;;
                     *)
                         echo "Invalid service: $service"
                         ;;
@@ -109,6 +117,7 @@ case "$action" in
             build_service "services/web-app/docker-compose.yml"
             build_service "services/prefect/docker-compose.yml"
             build_service "services/token-validator/docker-compose.yml"
+            build_service "services/nginx/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
@@ -130,6 +139,9 @@ case "$action" in
                     token-val)
                         build_service "services/token-validator/docker-compose.yml"
                         ;;
+                    nginx)
+                        build_service "services/nginx/docker-compose.yml"
+                        ;;
                     *)
                         echo "Invalid service: $service"
                         ;;
@@ -145,6 +157,7 @@ case "$action" in
             restart_service "services/web-app/docker-compose.yml"
             restart_service "services/prefect/docker-compose.yml"
             restart_service "services/token-validator/docker-compose.yml"
+            restart_service "services/nginx/docker-compose.yml"
         else
             for service in $services; do
                 case "$service" in
@@ -165,6 +178,9 @@ case "$action" in
                         ;;
                     token-val)
                         restart_service "services/token-validator/docker-compose.yml"
+                        ;;
+                    nginx)
+                        restart_service "services/nginx/docker-compose.yml"
                         ;;
                     *)
                         echo "Invalid service: $service"
