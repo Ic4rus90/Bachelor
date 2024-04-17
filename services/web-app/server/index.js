@@ -6,13 +6,15 @@ require("dotenv").config({ path: '/../.env' });
 const jwt = require('jsonwebtoken');
 const { insertAnalyzedCode, insertReport, insertVulnerability } = require('./database/insert-queries');
 
-const https = require('https');
-const fs = require('fs');
 
-const options = {
-    key: fs.readFileSync('cair-gpu12.uia.no.key'),
-    cert: fs.readFileSync('cair-gpu12.uia.no.crt')
-  };
+const http = require('http')
+//const https = require('https');
+//const fs = require('fs');
+
+//const options = {
+//    key: fs.readFileSync('cair-gpu12.uia.no.key'),
+//    cert: fs.readFileSync('cair-gpu12.uia.no.crt')
+//  };
 
 // Create a new express application
 const app = express(); 
@@ -191,10 +193,15 @@ app.post('/addreports', async(req,res) => {
 });
 
 
-// Create HTTPS server
-https.createServer(options, app).listen(port, () => {
-    console.log(`HTTPS server running on port ${port}`);
+// Create HTTP server
+http.createServer(app).listen(port, () => {
+    console.log(`HTTP server running on port ${port}`);
 });
+
+// Create HTTPS server
+//https.createServer(options, app).listen(port, () => {
+//    console.log(`HTTPS server running on port ${port}`);
+//});
 
 
 //app.listen(port, () => {

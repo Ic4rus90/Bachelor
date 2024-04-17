@@ -1,4 +1,5 @@
 from fastapi import FastAPI, HTTPException, Request, Response
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from prefect import flow
 from tasks import validate_token_task, generate_prompt_code_validator_task, call_llm_task, generate_report_task, store_report_task, get_user_id_task
 from logger import logger, set_up_logger
@@ -12,7 +13,15 @@ logger.remove()
 set_up_logger()
 
 
-app = FastAPI()
+app = FastAPI(root_path="/api/analyze-code/")
+
+# Trust requests coming through the Nginx proxy
+app.add_middleware(
+    TrustedHostMiddleware,
+    allowed_hosts=["securityseal.no", "*.securityseal.no"]
+)
+
+
 limiter = Limiter(key_func=get_remote_address, default_limits=["1/minute"])
 app.state.limiter = limiter
 # Custom exception handler for rate limits
@@ -51,7 +60,7 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
         raise ValueError("Invalid token received")        
     
 
-@app.post("/analyze-code/")
+@app.post("/analyze-code")
 @limiter.limit("1/40 seconds")
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
     client_host = request.client.host
@@ -94,5 +103,5 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=30000)
+    uvicorn.run("main:app", host="0.0.0.0", port=30000, proxy_headers=True)
     
