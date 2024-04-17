@@ -10,6 +10,7 @@ services:
       context: .
       dockerfile: Dockerfile
     container_name: bsc-group-17-tokenval
+    restart: on-failure
     volumes:
       - ./logs:/usr/src/app/logs
     networks:
