@@ -9,7 +9,10 @@ class TokenResponse(BaseModel):
 class CodeAnalysisRequest(BaseModel):
     code: str
     file_extension: str
+    line_number: int
     #token: str
+    class Config:
+        extra = "forbid"
 
 class SyntaxCheckRequest(BaseModel):
     file_extension: str

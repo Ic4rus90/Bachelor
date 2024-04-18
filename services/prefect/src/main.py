@@ -24,7 +24,7 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
 
 @flow(name="Code Analysis Flow")
-async def code_analysis_flow(code: str, file_extension: str, token: str):
+async def code_analysis_flow(code: str, file_extension: str, token: str, line_number: int):
     valid_token = await validate_token_task(token)
     if valid_token:
         user_id = await get_user_id_task(token)
@@ -38,7 +38,7 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
 
         prompt = await generate_prompt_code_validator_task(user_id=user_id, code=code, file_extension=file_extension)
         llm_output = await call_llm_task(user_id=user_id, prompt=prompt)
-        reports = await generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = 1)
+        reports = await generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = line_number)
         storage_result = await store_report_task(user_id=user_id, report_full=reports.encoded_full)
         if storage_result:
             logger.info(f"Client: {user_id} Returning the summary to the extension")
@@ -68,7 +68,8 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
     try:
         result = await code_analysis_flow(code=code_analysis_request.code, 
                                     file_extension=code_analysis_request.file_extension, 
-                                    token=token)
+                                    token=token,
+                                    line_number=code_analysis_request.line_number)
 
         return result
     except ValueError as e:
