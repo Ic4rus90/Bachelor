@@ -11,8 +11,8 @@ RUN pip install --no-cache-dir -r requirements.txt
 VOLUME ["/usr/src/logs"]
 
 # Expose the port that the app runs on
-EXPOSE 30003
+EXPOSE 30011 30012 30013
 
 # Starts the app within the container
 ENTRYPOINT ["uvicorn"]
-CMD ["main:app", "--host", "0.0.0.0", "--port", "30003"]
+CMD ["main:app", "--host", "0.0.0.0", "--port", "30011"]

@@ -5,17 +5,77 @@ networks:
     external: true
 
 services:
-  bsc-group-17-llm:
-    container_name: bsc-group-17-llm
+  bsc-group-17-llm-load-balancer:
+    container_name: bsc-group-17-llm-load-balancer
+    image: nginx:1.25.4
+    restart: on-failure
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./logs/nginx/access.log:/var/log/nginx/access.log
+      - ./logs/nginx/error.log:/var/log/nginx/error.log
+    ports:
+      - "30003:30003"
+    networks:
+      - bsc-group-17
+
+  bsc-group-17-llm1:
+    container_name: bsc-group-17-llm1
     build:
       context: .
       dockerfile: Dockerfile
+    restart: on-failure
     volumes:
-      - ./tokenizer:/usr/src/app/tokenizer
-      - ./model:/usr/src/app/model
-      - ./logs:/usr/src/logs
-    #ports:
-    #  - "30003:30003"
+      - ./tokenizers/llm1:/usr/src/app/tokenizer
+      - ./models/llm1:/usr/src/app/model
+      - ./logs/codellama-70b.log:/usr/src/logs
+    ports:
+      - "30011:30011"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['5']
+              capabilities: ['gpu']
+    command: ["main:app", "--host", "0.0.0.0", "--port", "30011"]
+    networks:
+      - bsc-group-17
+
+  bsc-group-17-llm2:
+    container_name: bsc-group-17-llm2
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./tokenizers/llm2:/usr/src/app/tokenizer
+      - ./models/llm2:/usr/src/app/model
+      - ./logs/codellama-70b.log:/usr/src/logs
+    ports:
+      - "30012:30012"
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: ['6']
+              capabilities: ['gpu']
+    command: ["main:app", "--host", "0.0.0.0", "--port", "30012"]
+    networks:
+      - bsc-group-17
+
+  bsc-group-17-llm3:
+    container_name: bsc-group-17-llm3
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: on-failure
+    volumes:
+      - ./tokenizers/llm3:/usr/src/app/tokenizer
+      - ./models/llm3:/usr/src/app/model
+      - ./logs/codellama-70b.log:/usr/src/logs
+    ports:
+      - "30013:30013"
     deploy:
       resources:
         reservations:
@@ -23,5 +83,6 @@ services:
             - driver: nvidia
               device_ids: ['7']
               capabilities: ['gpu']
+    command: ["main:app", "--host", "0.0.0.0", "--port", "30013"]
     networks:
       - bsc-group-17
