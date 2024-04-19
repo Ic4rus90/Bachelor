@@ -13,10 +13,11 @@ function formatVulnerability(vuln: { cweID: string; codeExtract: string; vulnSum
 }
 
 // Might need to change the return type of this function
-async function getAnalyzedCode(code: string, file_extension: string, token: string): Promise<string> {
+async function getAnalyzedCode(code: string, file_extension: string, line_number: number, token: string): Promise<string> {
     const data = {
         code: encodeToBase64(code),
         file_extension: file_extension,
+        line_number: line_number
     };
 
     // Define the URL to send the request to

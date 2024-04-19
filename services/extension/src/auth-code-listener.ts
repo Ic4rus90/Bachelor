@@ -31,8 +31,8 @@ export function getAuthoritzationCode(): Promise<string> {
             } else {
                 // Reject the promise if no code is found
                 res.writeHead(400, { 'Content-Type': 'text/html' });
-                res.end('Authorization code not found in the redirect');
-                reject(new Error('Authorization code not found in the redirect'));
+                res.end('An error occured. Please try again.');
+                reject(new Error('An error occured. Please try again.'));
             }
         });
 
