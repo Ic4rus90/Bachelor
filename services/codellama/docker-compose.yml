@@ -27,7 +27,7 @@ services:
     volumes:
       - ./tokenizers/llm1:/usr/src/app/tokenizer
       - ./models/llm1:/usr/src/app/model
-      - ./logs/codellama-70b.log:/usr/src/logs
+      - ./logs/llm1/codellama-70b.log:/usr/src/logs
     ports:
       - "30011:30011"
     deploy:
@@ -50,7 +50,7 @@ services:
     volumes:
       - ./tokenizers/llm2:/usr/src/app/tokenizer
       - ./models/llm2:/usr/src/app/model
-      - ./logs/codellama-70b.log:/usr/src/logs
+      - ./logs/llm2/codellama-70b.log:/usr/src/logs
     ports:
       - "30012:30012"
     deploy:
@@ -73,7 +73,7 @@ services:
     volumes:
       - ./tokenizers/llm3:/usr/src/app/tokenizer
       - ./models/llm3:/usr/src/app/model
-      - ./logs/codellama-70b.log:/usr/src/logs
+      - ./logs/llm3/codellama-70b.log:/usr/src/logs
     ports:
       - "30013:30013"
     deploy:
