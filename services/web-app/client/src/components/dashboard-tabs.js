@@ -23,7 +23,7 @@ const DashboardTabs = () => {
           try {
               const token = await getAccessTokenSilently(); 
             
-              const response = await fetch('https://securityseal.no/getreports', {
+              const response = await fetch('https://cair-gpu12.uia.no:8500/getreports', {
 
                   headers: {
                       Authorization: `Bearer ${token}`,

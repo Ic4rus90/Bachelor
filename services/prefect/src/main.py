@@ -7,20 +7,20 @@ from models import CodeAnalysisRequest
 from slowapi import Limiter
 from slowapi.util import get_remote_address
 from slowapi.errors import RateLimitExceeded
+from config import RATE_LIMIT, ALLOWED_CODE_LENGTH
 
 
 logger.remove()
 set_up_logger()
 
 
-app = FastAPI(root_path="/api/analyze-code/")
+app = FastAPI(root_path="/analyze-code/")
 
 # Trust requests coming through the Nginx proxy
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["securityseal.no", "*.securityseal.no"]
+    allowed_hosts=["cair-gpu12.uia.no", "*.cair-gpu12.uia.no"]
 )
-
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["1/minute"])
 app.state.limiter = limiter
@@ -33,7 +33,7 @@ app.add_exception_handler(RateLimitExceeded, custom_rate_limit_exceeded_handler)
 
 
 @flow(name="Code Analysis Flow")
-async def code_analysis_flow(code: str, file_extension: str, token: str):
+async def code_analysis_flow(code: str, file_extension: str, token: str, line_number: int):
     valid_token = await validate_token_task(token)
     if valid_token:
         user_id = await get_user_id_task(token)
@@ -41,13 +41,13 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
             logger.error("Invalid token received, could not extract user ID")
             raise ValueError("Invalid token received")
         
-        if len(code) > 15000:
-            logger.error(f"Client: {user_id} Code length exceeds 15000 characters")
+        if len(code) > ALLOWED_CODE_LENGTH:
+            logger.error(f"Client: {user_id} Code length exceeds maximum limit")
             raise ValueError("Code too long")
 
         prompt = await generate_prompt_code_validator_task(user_id=user_id, code=code, file_extension=file_extension)
         llm_output = await call_llm_task(user_id=user_id, prompt=prompt)
-        reports = await generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = 1)
+        reports = await generate_report_task(user_id=user_id, llm_output = llm_output, file_extension = file_extension, analyzed_code = code, starting_line_number = line_number)
         storage_result = await store_report_task(user_id=user_id, report_full=reports.encoded_full)
         if storage_result:
             logger.info(f"Client: {user_id} Returning the summary to the extension")
@@ -60,8 +60,8 @@ async def code_analysis_flow(code: str, file_extension: str, token: str):
         raise ValueError("Invalid token received")        
     
 
-@app.post("/analyze-code")
-@limiter.limit("1/40 seconds")
+@app.post("/api/analyze-code")
+@limiter.limit(RATE_LIMIT)
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
     client_host = request.client.host
 
@@ -77,7 +77,8 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
     try:
         result = await code_analysis_flow(code=code_analysis_request.code, 
                                     file_extension=code_analysis_request.file_extension, 
-                                    token=token)
+                                    token=token,
+                                    line_number=code_analysis_request.line_number)
 
         return result
     except ValueError as e:
@@ -103,5 +104,5 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=30000, proxy_headers=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=30000)
     

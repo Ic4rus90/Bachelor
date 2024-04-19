@@ -1,8 +1,12 @@
 TOKEN_VALIDATOR_URL = "http://bsc-group-17-tokenval.bsc-group-17:30001/verify-token"
 CODE_VALIDATOR_URL = "http://bsc-group-17-code-val.bsc-group-17:30002/check-syntax"
-LLM_URL = "http://cair-gpu12.uia.no:30003/generate"
+LLM_URL = "http://bsc-group-17-llm-load-balancer.bsc-group-17:30003/generate"
 REPORT_GENERATOR_URL = "http://bsc-group-17-report-generator.bsc-group-17:30004/generate-report"
-REPORT_STORAGE_URL = "http://bsc-group-17-web-server.bsc-group-17:3001/addreports"
+REPORT_STORAGE_URL = "https://bsc-group-17-web-server.bsc-group-17:3001/addreports"
+
+HTTPS_CERT_PATH ="cair-gpu12.uia.no.crt"
+RATE_LIMIT="1/40 seconds"
+ALLOWED_CODE_LENGTH=50000
 
 
 LLM_SCHEMA = {
@@ -33,6 +37,7 @@ LLM_SCHEMA = {
     }
   }
 }
+
 
 REPORT_SUMMARY_SCHEMA = {
   "type": "object",
