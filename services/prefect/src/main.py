@@ -14,14 +14,13 @@ logger.remove()
 set_up_logger()
 
 
-app = FastAPI(root_path="/api/analyze-code/")
+app = FastAPI(root_path="/analyze-code/")
 
 # Trust requests coming through the Nginx proxy
 app.add_middleware(
     TrustedHostMiddleware,
-    allowed_hosts=["securityseal.no", "*.securityseal.no"]
+    allowed_hosts=["cair-gpu12.uia.no", "*.cair-gpu12.uia.no"]
 )
-
 
 limiter = Limiter(key_func=get_remote_address, default_limits=["1/minute"])
 app.state.limiter = limiter
@@ -61,7 +60,7 @@ async def code_analysis_flow(code: str, file_extension: str, token: str, line_nu
         raise ValueError("Invalid token received")        
     
 
-@app.post("/analyze-code/")
+@app.post("/api/analyze-code")
 @limiter.limit(RATE_LIMIT)
 async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAnalysisRequest):
     client_host = request.client.host
@@ -105,5 +104,5 @@ async def analyze_code_endpoint(request: Request, code_analysis_request: CodeAna
 
 if __name__ == "__main__":
     import uvicorn
-    uvicorn.run("main:app", host="0.0.0.0", port=30000, proxy_headers=True)
+    uvicorn.run("main:app", host="0.0.0.0", port=30000)
     

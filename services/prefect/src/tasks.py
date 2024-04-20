@@ -1,7 +1,7 @@
 from logger import logger
 from prefect import task
 from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse, StoreReportRequest
-from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
+from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL, HTTPS_CERT_PATH
 from json_verifier import verify_llm_output_format
 
 import jwt
@@ -68,12 +68,12 @@ async def generate_prompt_code_validator_task(user_id:str, code: str, file_exten
         raise ValueError("Code validation failed")
 
 
-@task(name="Call LLM Model", retries=3, retry_delay_seconds=5)
+@task(name="Call LLM Model", retries=5, retry_delay_seconds=5)
 async def call_llm_task(user_id: str, prompt: str) -> str:
     logger.info(f"Client: {user_id} Calling LLM model to analyze code")
     try:
         request_data = LLMRequest(user_prompt=prompt, system_prompt="")
-        response = requests.post(LLM_URL, json=request_data.model_dump())
+        response = requests.post(LLM_URL, json=request_data.model_dump(), headers={'Content-Type': 'application/json'})
         response.raise_for_status()
         llm_output = LLMResponse(**response.json()).llm_output
         input_token_num = LLMResponse(**response.json()).input_token_num
@@ -130,7 +130,7 @@ async def store_report_task(user_id:str, report_full: str) -> bool:
     logger.info(f"Client: {user_id} Sending report to web-app for storage")
     try:
         request_data = StoreReportRequest(report_full=report_full)
-        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
+        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump(), verify=HTTPS_CERT_PATH)
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(f"Client: {user_id} Error storing report: {e.response.status_code} - {e.response.text}")

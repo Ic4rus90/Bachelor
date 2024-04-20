@@ -12,18 +12,18 @@ services:
       - source: server_key
         target: /etc/nginx/certs/server.key
     volumes:
-      - ./access.log:/var/log/nginx/access.log:rw
-      - ./error.log:/var/log/nginx/error.log:rw
+      - ./access1.log:/var/log/nginx/access.log:rw
+      - ./error1.log:/var/log/nginx/error.log:rw
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./server.crt:/etc/nginx/certs/server.crt:ro
-      - ./client.crt:/etc/nginx/certs/client.crt:ro
-      - /home/bachelor/Bachelor/services/web-app/client/build:/usr/share/nginx/html:ro
+      - /raid/bsc-gruppe17-24v/Bachelor/services/web-app/client/build:/usr/share/nginx/html:ro
     restart: on-failure
     ports:
       - "8080:80"
-      - "443:443"
+      - "8500:8500"
     networks:
       - bsc-group-17
+
 secrets:
   server_key:
     file: ./server.key

@@ -20,8 +20,13 @@ async function getAnalyzedCode(code: string, file_extension: string, line_number
         line_number: line_number
     };
 
+    // This allows self-signed https certificated. Required since our application is self-hosted on UiA's domain.
+    // We do not have access to retrieve an officially signed certificate.
+    process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
+
+
     // Define the URL to send the request to
-    const url = 'http://cair-gpu12.uia.no:30000/analyze-code/';
+    const url = 'https://cair-gpu12.uia.no:8500/analyze-code/';
 
     // Abort controller instance for timeout
     const controller = new AbortController();
