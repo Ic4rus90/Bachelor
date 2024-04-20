@@ -14,7 +14,7 @@ export default function ReportHistoryPage() {
       try {
         const token = await getAccessTokenSilently(); 
         console.log(token)
-        const response = await fetch('http://127.0.0.1:3000/getreports', {
+        const response = await fetch('https://securityseal.no/getreports', {
           headers: {
             Authorization: `Bearer ${token}`,
           },
