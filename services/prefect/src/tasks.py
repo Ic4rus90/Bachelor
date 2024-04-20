@@ -1,7 +1,7 @@
 from logger import logger
 from prefect import task
 from models import TokenRequest, SyntaxCheckRequest, SyntaxCheckResponse, LLMRequest, LLMResponse, GenerateReportRequest, GenerateReportResponse, StoreReportRequest
-from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL, HTTPS_CERT_PATH
+from config import TOKEN_VALIDATOR_URL, CODE_VALIDATOR_URL, LLM_URL, REPORT_GENERATOR_URL, REPORT_STORAGE_URL
 from json_verifier import verify_llm_output_format
 
 import jwt
@@ -130,7 +130,7 @@ async def store_report_task(user_id:str, report_full: str) -> bool:
     logger.info(f"Client: {user_id} Sending report to web-app for storage")
     try:
         request_data = StoreReportRequest(report_full=report_full)
-        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump(), verify=HTTPS_CERT_PATH)
+        response = requests.post(REPORT_STORAGE_URL, json=request_data.model_dump())
         response.raise_for_status()
     except requests.HTTPError as e:
         logger.error(f"Client: {user_id} Error storing report: {e.response.status_code} - {e.response.text}")
