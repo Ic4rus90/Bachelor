@@ -68,7 +68,7 @@ async def generate_prompt_code_validator_task(user_id:str, code: str, file_exten
         raise ValueError("Code validation failed")
 
 
-@task(name="Call LLM Model", retries=5, retry_delay_seconds=5)
+@task(name="Call LLM Model", retries=3, retry_delay_seconds=5)
 async def call_llm_task(user_id: str, prompt: str) -> str:
     logger.info(f"Client: {user_id} Calling LLM model to analyze code")
     try:
