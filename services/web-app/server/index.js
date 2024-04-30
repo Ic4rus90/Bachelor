@@ -6,15 +6,13 @@ require("dotenv").config({ path: '/../.env' });
 const jwt = require('jsonwebtoken');
 const { insertAnalyzedCode, insertReport, insertVulnerability } = require('./database/insert-queries');
 
+const https = require('https');
+const fs = require('fs');
 
-const http = require('http')
-//const https = require('https');
-//const fs = require('fs');
-
-//const options = {
-//    key: fs.readFileSync('cair-gpu12.uia.no.key'),
-//    cert: fs.readFileSync('cair-gpu12.uia.no.crt')
-//  };
+const options = {
+    key: fs.readFileSync('cair-gpu12.uia.no.key'),
+    cert: fs.readFileSync('cair-gpu12.uia.no.crt')
+  };
 
 // Create a new express application
 const app = express(); 
@@ -22,10 +20,20 @@ const port = process.env.SERVER_PORT;
 
 
 const corsOptions = {
-    origin: process.env.WEB_APP_URL, // This should match the React app's origin
-    credentials: true, // Needed if your frontend sends credentials (like cookies or basic HTTP auth)
-    allowedHeaders: ['Authorization', 'Content-Type'], // Ensure custom headers used by your frontend are allowed
+    origin: (origin, callback) => {
+        console.log('Received request from origin: ', origin);
+        if (!origin || process.env.WEB_APP_URL === origin) {
+            console.log('Allowing CORS for: ', origin);
+            callback(null, true);
+        } else {
+            console.log('CORS rejected for: ', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    allowedHeaders: ['Authorization', 'Content-Type'],
 };
+
 
 
 // Middleware. Not sure if origin parameter is necessary. 
@@ -201,15 +209,10 @@ app.post('/addreports', async(req,res) => {
 });
 
 
-// Create HTTP server
-http.createServer(app).listen(port, () => {
-    console.log(`HTTP server running on port ${port}`);
-});
-
 // Create HTTPS server
-//https.createServer(options, app).listen(port, () => {
-//    console.log(`HTTPS server running on port ${port}`);
-//});
+https.createServer(options, app).listen(port, () => {
+    console.log(`HTTPS server running on port ${port}`);
+});
 
 
 //app.listen(port, () => {
