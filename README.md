@@ -32,7 +32,7 @@ The services are orchestrated through Prefect.
 1. In Visual Studio Code, highlight the code you want to analyze, right click and select _Analyze code with Security Seal_. 
    ![image](https://github.com/Ic4rus90/Bachelor/assets/104506911/d9d1a93d-b35e-4cd7-b15d-f58d9ff460da)
    
-   _Note: The file must be saved and have an extension reflecting the supported languages (.c, .cpp, .cs or .py)._
+   _Note: The file must be saved and have an extension reflecting a supported languages (.c, .cpp, .cs or .py)._
 
 ### Viewing the results
 1. When the code analysis has been completed, a summary of the findings is presented in the output.
