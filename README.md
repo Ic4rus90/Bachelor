@@ -1,5 +1,8 @@
-# Welcome
-Welcome to Security Seal. Security Seal is a model agnostic framework for scanning user code for vulnerabilities. The standard LLM  This scan is performed leveraging  for   an advanced microservices architecture with an LLM to analyze your code for security vulnerabilities from the CWE top 25 list (https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html).
+# Security Seal
+Welcome to Security Seal. Security Seal is a system for scanning user code in C, C++, C# and Python for vulnerabilities in the CWE top 25 list (https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html) leveraging a large language model (LLM).
+The system is developed using a microservice architecture with a Visual Studio Code extension for sending code to analysis and displaying a summary of the results, and a web application to display the report in its entirety.
+The back-end services include a token validator, a code verifier (to verify that the code sent is in the correct language), an LLM (currently the Phind 34b model), and a report generator (for creating and summarizing the output from the LLM).
+The services are orchestrated through Prefect.
 
 ## **Install Visual Studio Code extension**
 1. Navigate to [services/extension](https://github.com/Ic4rus90/Bachelor/tree/main/services/extension) and download `security-seal-0.0.1.vsix`.
