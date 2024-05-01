@@ -1,5 +1,5 @@
 # Security Seal
-Welcome to Security Seal. Security Seal is a system for scanning user code in C, C++, C# and Python for vulnerabilities in the CWE top 25 list (https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html) leveraging a large language model (LLM).
+Welcome to Security Seal. Security Seal is a system for scanning user code in C, C++, C# and Python for vulnerabilities in the [CWE top 25 list](https://cwe.mitre.org/top25/archive/2023/2023_top25_list.html) leveraging a large language model (LLM).
 The system is developed using a microservice architecture with a Visual Studio Code extension for sending code to analysis and displaying a summary of the results, and a web application to display the report in its entirety.
 The back-end services include a token validator, a code verifier (to verify that the code sent is in the correct language), an LLM (currently the Phind 34b model), and a report generator (for creating and summarizing the output from the LLM).
 The services are orchestrated through Prefect.
