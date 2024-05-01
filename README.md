@@ -4,7 +4,7 @@ The system is developed using a microservice architecture with a Visual Studio C
 The back-end services include a token validator, a code verifier (to verify that the code sent is in the correct language), an LLM (currently the Phind 34b model), and a report generator (for creating and summarizing the output from the LLM).
 The services are orchestrated through Prefect.
 
-## **Install Visual Studio Code extension**
+## **Installing the Visual Studio Code extension**
 1. Navigate to [services/extension](https://github.com/Ic4rus90/Bachelor/tree/main/services/extension) and download `security-seal-0.0.1.vsix`.
 2. Open extensions in Visual Studio Code, click the three dots (...) and then _Install from VSIX..._
 ![image](https://github.com/Ic4rus90/Bachelor/assets/104506911/a43c0b63-efaa-48e6-ae0b-761efa55b0c9)
