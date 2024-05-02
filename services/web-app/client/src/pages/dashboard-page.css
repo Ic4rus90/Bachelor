@@ -8,15 +8,15 @@
 .dashboard-header {
     display: flex;
     justify-content: space-between;
-    align-items: center; /* Align items to the center */
-    border-bottom: 1px solid #6c757d; /* Adds a line under the title */
-    padding-bottom: 0.5rem; /* Adjust space between the title and the line */
+    align-items: center; 
+    border-bottom: 1px solid #6c757d;
+    padding-bottom: 0.5rem;
 }
 
 .dashboard-timestamp {
-    font-size: 0.9rem; /* Smaller font size for the timestamp */
+    font-size: 0.9rem;
     font-weight: normal;
-    align-self: flex-end; /* Align the timestamp to the end */
-    padding-bottom: 0.2rem; /* Adjust to align it right above the line */
+    align-self: flex-end; 
+    padding-bottom: 0.2rem;
     color: #adb5bd;
 }

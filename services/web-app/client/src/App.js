@@ -8,12 +8,13 @@ import DashboardPage from './pages/dashboard-page';
 import UserManagementPage from './pages/user-management-page'
 import AboutPage from './pages/about-page';
 
-
+// Main app component where routing is configured
 function App() {
   return (
     <Router>
       <div className="App">
         <header className="app-header">
+          {/*Routes setup, including AuthGuard protection for pages requiring authentication*/}
           <Routes>
             <Route path="/" element={<HomePage />} />
             <Route path="/about" element={<AboutPage />} />

@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom';
 import securityseal from '../pages/securityseal.png';
 import { PersonCircle } from 'react-bootstrap-icons';
 
-
+// Component for rendering the account navigation button
 function AccountNavButton() {
   return (
     <Link to="/account">
@@ -15,16 +15,7 @@ function AccountNavButton() {
   );
 }
 
-/*
-Removed this from header for now, as report history is not implemented.
-<Link to="/history">
-                    <Button variant="none">
-                      History
-                    </Button>
-                  </Link>
-
-*/
-
+// Header component for authenticated users
 export default function HeaderAuthenticated() {
   return (
     <div className="App">

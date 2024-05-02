@@ -5,9 +5,7 @@ import { Container } from 'react-bootstrap';
 import HeaderNotAuthenticated from '../components/header-not-authenticated'
 
 
-
-
-
+// Component for displaying the home page
 export default function HomePage() {
   return (
     <div className="App" style={{ height: '100vh', overflow: 'hidden' }}>

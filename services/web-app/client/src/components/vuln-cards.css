@@ -1,5 +1,5 @@
 .success-message {
-    background-color: #28a745; /* A green that's not too bright */
+    background-color: #28a745; 
     color: #fff;
     padding: 1rem;
     border-radius: 0.25rem;
@@ -9,7 +9,6 @@
     font-size: 1rem;
 }
   
-  /* If you are using Bootstrap, you could use their alert class for the message */
 .alert-success {
     color: #155724;
     background-color: #d4edda;
@@ -50,14 +49,14 @@
 }
 
 .cwe-id {
-    font-size: 0.8rem; /* Adjust the size as needed */
+    font-size: 0.8rem; 
     color: #adb5bd;
     font-weight: normal;
 }
 
 .vuln-summary-custom {
-    font-size: 0.9rem; /* Makes text smaller */
-    font-weight: normal; /* Ensures text is not bold */
+    font-size: 0.9rem;
+    font-weight: normal; 
     text-align: left;
     padding-top: 1rem;
 }

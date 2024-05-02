@@ -1,10 +1,10 @@
+// Maps the analysed code language received from the VS Code extension to the correct format
 const mapExtensionToLanguage = (extension) => {
     const languageMap = {
       c: 'c',
       cpp: 'cpp',
       cs: 'csharp',
       py: 'python',
-      // ...other mappings
     };
   
     return languageMap[extension] || extension;

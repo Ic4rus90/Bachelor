@@ -1,17 +1,16 @@
 import React from 'react';
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter';
-import { coldarkDark } from 'react-syntax-highlighter/dist/esm/styles/prism';
 import atomdark from './atomdark';
 import './display-code.css'
 
 
-
+// Displays code with syntax highlighting
 const CodeBlock = ({ codeString, language }) => (
   <SyntaxHighlighter 
-    language={language} 
+    language={language} // Specifies programming language for correct syntax highlighting
     style={atomdark} 
-    showLineNumbers={true} // Enable line numbers
-    lineNumberStyle={{ color: '#888', paddingRight: '30px', paddingLeft: '10px' }} // Style line numbers
+    showLineNumbers={true} 
+    lineNumberStyle={{ color: '#888', paddingRight: '30px', paddingLeft: '10px' }} 
   >
     {codeString}
   </SyntaxHighlighter>
