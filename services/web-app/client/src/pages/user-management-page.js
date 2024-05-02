@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Card, Button, Row, Col } from 'react-bootstrap';
+import { Container, Card, Row, Col } from 'react-bootstrap';
 import './user-management-page.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HeaderAuthenticated from '../components/header-authenticated'
@@ -37,11 +37,6 @@ export default function UserManagementPage() {
     marginBottom: '2rem'
   };
 
-  const buttonStyle = {
-    fontSize: '1rem',
-    padding: '0.375rem 0.75rem'
-  };
-
   const cardContainerStyle = {
     maxWidth: '600px', // Adjust the max-width as needed
     margin: '0 auto' // This centers the card in the middle of the page
@@ -58,18 +53,10 @@ export default function UserManagementPage() {
   };
 
   
-/*
-Fjernet fra Return frem til vi 
-<h1 style={{ color: '#fff', marginBottom: '2rem', marginLeft: '0.3rem', textAlign: 'left', fontSize:30 }}> 
-          
-          <PersonCircle size={60} style={{marginRight: '1rem'}}/>
-          Tuva Emilie
-          </h1>
-          */
   
   return (
     isAuthenticated && (
-      <div className="dashboard">
+      <div className="dashboard" style={{ height: '100vh', overflow: 'hidden' }}>
       <HeaderAuthenticated />
       <header className="App-header">
         <Container fluid className="my-4">

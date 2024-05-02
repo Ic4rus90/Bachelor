@@ -10,7 +10,7 @@ import HeaderNotAuthenticated from '../components/header-not-authenticated'
 
 export default function HomePage() {
   return (
-    <div className="App">
+    <div className="App" style={{ height: '100vh', overflow: 'hidden' }}>
       <HeaderNotAuthenticated />
       <header className="App-header">
         <Container fluid style={{ marginTop: '40px' }}>
