@@ -5,7 +5,7 @@ import { useAuth0 } from '@auth0/auth0-react';
 import React, { Fragment, useEffect, useState } from 'react';
 
 
-
+// Component for displaying the history of reports (not currently in use as this is still a work in progress)
 export default function ReportHistoryPage() {
   const [reportData, setReportData] = useState(null);
   const { getAccessTokenSilently } = useAuth0();

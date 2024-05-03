@@ -1,18 +1,17 @@
 .sign-out-button {
-  background-color: #2e2e3c; /* Solid color, no gradient */
-  color: white;              /* Assuming the text color is white */
-  border: none;              /* No border */
-  border-radius: 10px;       /* Rounded corners, adjust as needed */
-  padding: 10px 20px;        /* Padding, adjust as needed */
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Subtle shadow, adjust as needed */
-  transition: all 0.3s ease; /* Smooth transition for hover effects */
-  font-size: 16px;           /* Font size, adjust as needed */
-  font-weight: bold;         /* Bold text */
-  outline: none;             /* Remove outline on focus (optional) */
+  background-color: #2e2e3c; 
+  color: white;              
+  border: none;              
+  border-radius: 10px;       
+  padding: 10px 20px;        
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  transition: all 0.3s ease; 
+  font-size: 16px;           
+  font-weight: bold;         
+  outline: none;             
 }
   
 .sign-out-button:hover {
-  /* For hover, we can make the button slightly lighter or add other effects */
-  background-color: #3d3d53; /* This is a made-up color for hover, slightly lighter than the base */
-  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* More pronounced shadow on hover */
+  background-color: #3d3d53; 
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); 
 }

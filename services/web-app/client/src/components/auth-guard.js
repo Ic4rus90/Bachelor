@@ -7,7 +7,7 @@ export const AuthGuard = ({ page }) => {
         // If the user is not authenticated, the user will be redirected to the login page
         onRedirecting: () => (
             // While the user wait this page will be shown
-            <div>Please authenticate to view this page</div>
+            <div>Loading...</div>
             ),
     });
     return <GuardedComponent />;

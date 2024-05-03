@@ -1,3 +1,4 @@
+// Component for displaying the not found page, used for non-existing pages
 export default function NotFoundPage() {
     return (
         <div className="App-header">

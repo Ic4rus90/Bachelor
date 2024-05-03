@@ -6,24 +6,23 @@ import App from './App';
 import reportWebVitals from './reportWebVitals';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
+// Create a root container where app will be rendered
 const root = ReactDOM.createRoot(document.getElementById('root'));
 
+// Render the app component within the Auth0Provider
 root.render(
   <Auth0Provider
-    domain="security-seal.eu.auth0.com"
-    clientId="VuzDCxivmpVSsXZC7VZSWZslwFzf0zXB"
+    domain="security-seal.eu.auth0.com" // Auth0 domain
+    clientId="VuzDCxivmpVSsXZC7VZSWZslwFzf0zXB" // Auth0 client ID
     authorizationParams={{
-      redirect_uri: window.location.origin + '/dashboard',
-      audience: "https://the-seal-of-approval-API.com/v1/reports",
+      redirect_uri: window.location.origin + '/dashboard', // Redirect URI after login
+      audience: "https://the-seal-of-approval-API.com/v1/reports", // API identifier for permissions
       scope: "openid email profile"
     }}
     >
-      <App />
+      <App /> {/*Main App component that contains the router and pages*/}
   </Auth0Provider>
 );
 
 
-// If you want to start measuring performance in your app, pass a function
-// to log results (for example: reportWebVitals(console.log))
-// or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals
 reportWebVitals();

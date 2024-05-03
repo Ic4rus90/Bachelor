@@ -1,5 +1,5 @@
 import React from 'react';
-import { Container, Card, Button, Row, Col } from 'react-bootstrap';
+import { Container, Card, Row, Col } from 'react-bootstrap';
 import './user-management-page.css';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import HeaderAuthenticated from '../components/header-authenticated'
@@ -8,97 +8,47 @@ import LogoutButton from '../components/logout-button'
 import { PersonCircle } from 'react-bootstrap-icons';
 
 
-
+// Component for displaying the user management (account) page
 export default function UserManagementPage() {
   
+  // Fetches user data and authentication status from Auth0
   const { user, isAuthenticated, isLoading } = useAuth0();
-  //const { user, isAuthenticated, isLoading, getAccessTokenSilently } = useAuth0();
-  
-  
 
+  // Display loading message during authentication process
   if (isLoading) {
     return <div className="loading">Loading ...</div>;
   }
 
-  const cardStyle = {
-    backgroundColor: '#21212B',
-    color: '#FFFFFF',
-    padding: '20px',
-    borderRadius: '8px'
-  };
-
-  const labelStyle = {
-    fontSize: '0.9rem',
-    color: '#ADB5BD',
-    marginBottom: '0.5rem'
-  };
-
-  const contentStyle = {
-    marginBottom: '2rem'
-  };
-
-  const buttonStyle = {
-    fontSize: '1rem',
-    padding: '0.375rem 0.75rem'
-  };
-
-  const cardContainerStyle = {
-    maxWidth: '600px', // Adjust the max-width as needed
-    margin: '0 auto' // This centers the card in the middle of the page
-  };
-
-  const contentColumnStyle = {
-    textAlign: 'left', // This ensures that the text aligns to the left
-    paddingRight: '0', // This removes padding to the right of the column, if desired
-  };
-
-  const buttonColumnStyle = {
-    textAlign: 'right', // This ensures that the buttons align to the right
-    paddingLeft: '0', // This removes padding to the left of the button column, if desired
-  };
-
-  
-/*
-Fjernet fra Return frem til vi 
-<h1 style={{ color: '#fff', marginBottom: '2rem', marginLeft: '0.3rem', textAlign: 'left', fontSize:30 }}> 
-          
-          <PersonCircle size={60} style={{marginRight: '1rem'}}/>
-          Tuva Emilie
-          </h1>
-          */
-  
+  // Render the user management page if the user is authenticated
   return (
     isAuthenticated && (
-      <div className="dashboard">
+      <div className="dashboard" style={{ height: '100vh', overflow: 'hidden' }}>
       <HeaderAuthenticated />
       <header className="App-header">
         <Container fluid className="my-4">
-          <div style={cardContainerStyle}>
+          <div style={{maxWidth: '600px', margin: '0 auto' }}>
           <h1 style={{ color: '#fff', marginBottom: '2rem', marginLeft: '0.3rem', textAlign: 'left', fontSize:30 }}> 
           <PersonCircle size={60} style={{marginRight: '1rem'}}/>
           Your Account
           </h1>
-            <Card style={cardStyle}>
+            <Card style={{backgroundColor: '#21212B', color: '#FFFFFF', padding: '20px', borderRadius: '8px'}}>
               <Card.Body>
-              <Row className="align-items-center" style={contentStyle}>
-                <Col style={contentColumnStyle}>
-                  <div style={labelStyle}>Email</div>
-                  <div>{user.email}</div>
-                </Col>
-                <Col xs="auto" style={buttonColumnStyle}>
-                  {/*<Button className="custom-button" size="sm" style={buttonStyle}>Edit</Button>*/}
-                </Col>
-              </Row>
-
-              <Row className="align-items-center">
-                <Col style={contentColumnStyle}>
-                  <div style={labelStyle}>Password</div>
-                  <div>••••••••</div>
-                </Col>
-                <Col xs="auto" style={buttonColumnStyle}>
-                  {/*<Button className="custom-button" size="sm" style={buttonStyle}>Change</Button>*/}
-                </Col>
-              </Row>
+                <Row className="align-items-center" style={{marginBottom: '2rem'}}>
+                  <Col style={{textAlign: 'left', paddingRight: '0',}}>
+                    <div style={{fontSize: '0.9rem', color: '#ADB5BD', marginBottom: '0.5rem'}}>Email</div>
+                    <div>{user.email}</div> {/*Displays user's email*/}
+                  </Col>
+                  <Col xs="auto" style={{textAlign: 'right', paddingLeft: '0', }}>
+                  </Col>
+                </Row>
+                <Row className="align-items-center">
+                  <Col style={{textAlign: 'left', paddingRight: '0',}}>
+                    <div style={{fontSize: '0.9rem', color: '#ADB5BD', marginBottom: '0.5rem'}}>Password</div>
+                    <div>••••••••</div>
+                  </Col>
+                  <Col xs="auto" style={{textAlign: 'right', paddingLeft: '0', }}>
+                  </Col>
+                </Row>
               </Card.Body>
             </Card>
           </div>
@@ -107,10 +57,10 @@ Fjernet fra Return frem til vi
             marginTop: '2rem', 
             display: 'flex', 
             justifyContent: 'center',
-            gap: '40px' /* This adds 20px of space between any flex items */
+            gap: '40px' 
           }}>
             <LogoutButton />  
-            <a href="mailto:thomasnw@uia.no?subject=Request%20Account%20Deletion" class="delete-account-button">Request Account Deletion</a>
+            <a href="mailto:thomasnw@uia.no?subject=Request%20Account%20Deletion" class="delete-account-button">Request Account Deletion</a> {/*Opens an email draft to request account deletion*/}
           </div>
         </Container>
       </header>

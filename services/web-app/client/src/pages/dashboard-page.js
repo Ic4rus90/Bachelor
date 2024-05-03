@@ -5,22 +5,24 @@ import { useAuth0 } from "@auth0/auth0-react";
 import DashboardTabs from '../components/dashboard-tabs'
 import './dashboard-page.css'
 
-
+// Component for displaying the Dashboard page for authenticated users
 export default function Dashboard() {
   
+  // Fetches user's authentication status
   const { isAuthenticated, isLoading } = useAuth0();
   console.log('Dashboard rendering', { isAuthenticated, isLoading });
   
-
+  // Display loading message during authentication process
   if (isLoading) {
     return <div>Loading ...</div>;
   }
+
+  // Show login prompt if user is not authenticated
   if (!isAuthenticated) {
-    // Optionally redirect to login or show a message
     return <div>Please log in to view the dashboard.</div>;
   }
 
-  
+  // Render the dashboard page if the user is authenticated
   return (
     isAuthenticated && (
       <div className="Dashboard">
@@ -28,7 +30,6 @@ export default function Dashboard() {
         <header className="App-header">
           <Container fluid>
             <Container>
-              {/*<h1 className="dashboard-title">Latest security scan results</h1>*/}
               <DashboardTabs />
             </Container>
           </Container>
