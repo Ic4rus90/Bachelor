@@ -73,7 +73,7 @@ async def call_llm_task(user_id: str, prompt: str) -> str:
     logger.info(f"Client: {user_id} Calling LLM model to analyze code")
     try:
         request_data = LLMRequest(user_prompt=prompt, system_prompt="")
-        response = requests.post(LLM_URL, json=request_data.model_dump())
+        response = requests.post(LLM_URL, json=request_data.model_dump(), headers={'Content-Type': 'application/json'})
         response.raise_for_status()
         llm_output = LLMResponse(**response.json()).llm_output
         input_token_num = LLMResponse(**response.json()).input_token_num

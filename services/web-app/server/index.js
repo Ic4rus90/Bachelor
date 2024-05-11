@@ -20,10 +20,20 @@ const port = process.env.SERVER_PORT;
 
 
 const corsOptions = {
-    origin: process.env.WEB_APP_URL, // This should match the React app's origin
-    credentials: true, // Needed if your frontend sends credentials (like cookies or basic HTTP auth)
-    allowedHeaders: ['Authorization', 'Content-Type'], // Ensure custom headers used by your frontend are allowed
+    origin: (origin, callback) => {
+        console.log('Received request from origin: ', origin);
+        if (!origin || process.env.WEB_APP_URL === origin) {
+            console.log('Allowing CORS for: ', origin);
+            callback(null, true);
+        } else {
+            console.log('CORS rejected for: ', origin);
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true,
+    allowedHeaders: ['Authorization', 'Content-Type'],
 };
+
 
 
 // Middleware. Not sure if origin parameter is necessary. 

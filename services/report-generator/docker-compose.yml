@@ -10,6 +10,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    restart: on-failure
     volumes:
       - ./logs:/usr/src/logs
     #ports:

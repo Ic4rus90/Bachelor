@@ -23,12 +23,11 @@ const DashboardTabs = () => {
 
   // Fetches report
   useEffect(() => {
-    const getReports = async () => {
-        try {
-            const token = await getAccessTokenSilently(); 
-          
-            // Request to get reports
-            const response = await fetch('https://cair-gpu12.uia.no:3001/getreports', {
+      const getReports = async () => {
+          try {
+              const token = await getAccessTokenSilently(); 
+            
+              const response = await fetch('https://cair-gpu12.uia.no:8500/getreports', {
 
               headers: {
                   Authorization: `Bearer ${token}`,
