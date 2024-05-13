@@ -11,6 +11,7 @@ import json
 def transform_to_summary(input_data):
     try:
         summary_data = {"vulnerabilities": []}
+        # Removes the lineNumber field from each vulnerability for the summary report
         for vuln in input_data["vulnerabilities"]:
             summary_vuln = {key: vuln[key] for key in vuln if key != "lineNumber"}
             summary_data["vulnerabilities"].append(summary_vuln)    
@@ -32,6 +33,8 @@ def transform_to_full(input_data, user_id, analyzed_code):
         logger.error(f"Error transforming data to full report: {e}")
         raise ValueError("Error transforming data to full report")
 
+
+# Function to generate the reports, returning the summary and full report in a response model.
 def generate_reports(request: TransformRequest) -> TransformResponse:
     logger.info("Decoding input base64...")
     llm_output = request.llm_output
@@ -40,9 +43,11 @@ def generate_reports(request: TransformRequest) -> TransformResponse:
     analyzed_code = request.analyzed_code
     starting_line_number = request.starting_line_number
 
+    # Decode the base-64 encoded input
     decoded_data = (decode_base(llm_output))
 
     try:
+        # Parse the decoded data as JSON
         decoded_data = json.loads(decoded_data)
     except Exception as e:
         logger.error(f"Error decoding JSON: {e}")

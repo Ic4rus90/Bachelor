@@ -12,6 +12,7 @@ set_up_logger()
 
 request_queue = asyncio.Queue()
 
+# Worker function that processes requests from the queue
 async def worker():
     while True:
         generate_request, result_future, client_request = await request_queue.get()
@@ -35,15 +36,14 @@ async def worker():
             # Mark queue task as done
             request_queue.task_done()
         
-
+# Startup event to create worker tasks
 @app.on_event("startup")
 async def startup_event():
     num_workers = 5
     for _ in range(num_workers):
         asyncio.create_task(worker())
-    #task = asyncio.create_task(worker())
 
-
+# Endpoint to handle generate requests
 @app.post("/generate/")
 async def generate(request: Request, generate_request: GenerateRequest):
     # Create a future that the worker will use to send back the result

@@ -1,6 +1,6 @@
 import json
 
-def clean_response(llm_output) -> str:  # Change the return type hint to str
+def clean_response(llm_output) -> str: 
     # Locate the last occurrence of "Destination: user"
     last_occurrence_index = llm_output.rfind("### Assistant\n")
 
