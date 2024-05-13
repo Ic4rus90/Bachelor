@@ -8,6 +8,7 @@ import jwt
 import requests
 
 
+# Task that calls the Token Validator to validate the user token.
 @task(name="Validate Token")
 async def validate_token_task(token: str) -> str:
     logger.info("Validating token...")
@@ -27,7 +28,7 @@ async def validate_token_task(token: str) -> str:
         logger.error(f"Token validation failed: {e}")
     return False
 
-
+# Task to retrieve user ID from the token
 @task(name="Get User ID")
 async def get_user_id_task(token: str) -> str:
     try:
@@ -38,6 +39,7 @@ async def get_user_id_task(token: str) -> str:
         return ""
 
 
+# Task to send the request to the Code Validator, receiving the prompt in the response.
 @task(name="Validate Code and Generate Prompt")
 async def generate_prompt_code_validator_task(user_id:str, code: str, file_extension: str) -> str:
     logger.info(f"Client: {user_id} Sending code to code validator")
@@ -68,6 +70,7 @@ async def generate_prompt_code_validator_task(user_id:str, code: str, file_exten
         raise ValueError("Code validation failed")
 
 
+# Task to call the LLM to perform the code analysis.
 @task(name="Call LLM Model", retries=3, retry_delay_seconds=5)
 async def call_llm_task(user_id: str, prompt: str) -> str:
     logger.info(f"Client: {user_id} Calling LLM model to analyze code")
@@ -80,6 +83,8 @@ async def call_llm_task(user_id: str, prompt: str) -> str:
         output_token_num = LLMResponse(**response.json()).output_token_num
         generation_time = LLMResponse(**response.json()).generation_time
         logger.info(f"Client: {user_id} LLM output received: \nInput tokens: {input_token_num}, output tokens: {output_token_num}, generation time: {generation_time}\nLLM output: {llm_output}")
+        
+        # Verifies that the LLM output conforms to the required schemas. (3 retries allowed if not)
         if verify_llm_output_format(llm_output, source="llm"):
             return llm_output
         else:
@@ -97,7 +102,7 @@ async def call_llm_task(user_id: str, prompt: str) -> str:
         logger.error(f"Client: {user_id} LLM model call failed: {e}")
         raise ValueError("LLM model call failed")
 
-
+# Task that calls the Report Generator, returning a model with both reports.
 @task(name="Generate Report")
 async def generate_report_task(llm_output: str, user_id: str, file_extension: str, analyzed_code: str, starting_line_number: int) -> GenerateReportResponse:
     logger.info(f"Client: {user_id} Sending LLM output to generate report summary")
@@ -125,6 +130,7 @@ async def generate_report_task(llm_output: str, user_id: str, file_extension: st
     return result
     
 
+# Task to store the generated full report.
 @task(name="Store Report")
 async def store_report_task(user_id:str, report_full: str) -> bool:
     logger.info(f"Client: {user_id} Sending report to web-app for storage")

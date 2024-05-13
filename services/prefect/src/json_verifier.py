@@ -6,6 +6,8 @@ from encoder import decode_base
 
 import json
 
+
+# Function that verifies JSON objects against the required JSON schemas.
 def verify_llm_output_format(llm_output: str, source: str) -> bool:
     logger.info(f"Verifying LLM output format with source: {source}...")
     
